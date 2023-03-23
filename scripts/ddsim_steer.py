@@ -299,7 +299,7 @@ def aiDance(kernel):
    sensitives.enableUI()
    seq.adopt(sensitives)
 
-   model = DetectorConstruction(kernel, str('FancyMLShowerModel/ShowerModel'))
+   model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelONNXModel/ShowerModel'))
 
 ##   # Mandatory model parameters
    model.RegionName = 'EcalBarrelRegion'
