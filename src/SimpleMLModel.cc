@@ -1,12 +1,12 @@
-#include "DDFastShowerML/FastMLShower.h"
-#include "DDFastShowerML/ONNXInference.h"
+#include "DDML/FastMLShower.h"
+#include "DDML/ONNXInference.h"
 
 #include <G4FastStep.hh>                 // for G4FastStep
 #include <G4FastTrack.hh>                // for G4FastTrack
 #include <G4Track.hh>                    // for G4Track
 
 
-typedef ONNXInference INFERENCE ;
+typedef ddml::ONNXInference INFERENCE ;
 
 
 

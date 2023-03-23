@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 3.15)
-project(DDFastShowerML)
+project(DDML)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -61,9 +61,9 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 #----------------------------------------------------------------------------
-add_dd4hep_plugin(DDFastShowerML SHARED ${sources})
+add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
 
-target_link_libraries(DDFastShowerML
+target_link_libraries(${PROJECT_NAME}
   ${Geant4_LIBRARIES}
   ${OnnxRuntime_LIBRARY}
   EDM4HEP::edm4hep
@@ -79,7 +79,7 @@ target_link_libraries(DDFastShowerML
 # Make sure to use the correct typedef depending on which version of podio we
 # build a against
 if(${podio_VERSION} VERSION_GREATER_EQUAL "0.14.1")
-  target_compile_definitions(DDFastShowerML PUBLIC use_new_EDM4hep=1)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC use_new_EDM4hep=1)
 else()
   target_compile_definitions(SimpleCalo PUBLIC use_new_EDM4hep=0)
 endif()
@@ -113,7 +113,7 @@ endif()
 set( CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 
-install(TARGETS DDFastShowerML DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 
 
 #Create this_package.sh file, and install
