@@ -13,6 +13,8 @@
 namespace ddml {
 
 /** Running the inference with ONXX - assuming a simple input and output vector 
+ *  @author F.Gaede, DESY
+ *  @date Mar 2023
  */
   
   class ONNXInference : public InferenceInterface {

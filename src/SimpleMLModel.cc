@@ -1,18 +1,30 @@
 #include "DDML/FastMLShower.h"
+
 #include "DDML/ONNXInference.h"
+#include "DDML/RegularGridGANModel.h"
+#include "DDML/PolyhedraBarrelGeometry.h"
+#include "DDML/Geant4FastHitMakerGlobal.h"
+
 
 #include <G4FastStep.hh>                 // for G4FastStep
 #include <G4FastTrack.hh>                // for G4FastTrack
 #include <G4Track.hh>                    // for G4Track
 
 
-typedef ddml::ONNXInference INFERENCE ;
+typedef ddml::ONNXInference Inference ;
 
+typedef ddml::RegularGridGANModel MLModel ;
 
+typedef ddml::PolyhedraBarrelGeometry Geometry ;
+
+typedef Geant4FastHitMakerGlobal HitMaker ;
 
 struct MyFancyMLModel {
 
-  INFERENCE inference ;
+  Inference inference ;
+  MLModel   model ;
+  Geometry  geometry ;
+  HitMaker  hitMaker ;
   
   const bool has_constructGeo = false ;
   const bool has_constructField = false ;
@@ -20,19 +32,12 @@ struct MyFancyMLModel {
   const bool has_check_applicability = false ;
   const bool has_check_trigger = false ;
 
-  int nCellsX = 0 ; 
-  int nCellsY = 0 ; 
-  int nCellsZ = 0 ; 
-
   
   void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
 
-    plugin->declareProperty("NCellsX" , this->nCellsX ) ;
-    plugin->declareProperty("NCellsY" , this->nCellsY ) ;
-    plugin->declareProperty("NCellsZ" , this->nCellsZ ) ;
-
+    model.declareProperties( plugin ) ;
     inference.declareProperties( plugin ) ;
-
+    geometry.declareProperties( plugin ) ;
   }
 
 };
@@ -52,31 +57,25 @@ namespace dd4hep  {
       aFastStep.SetPrimaryTrackPathLength(0.0);
       G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
       aFastStep.SetTotalEnergyDeposited(energy);
-      G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
-      G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
-      
-      std::cout << "  FastMLShower::modelShower:  pos0 = " << position << " - dir = " << direction << " - E = " << energy << std::endl ;
-      
-      // calculate the incident angle
-      G4float angle = direction.theta();
-      
-      // calculate how to deposit energy within the detector
-      // get it from inference model
-      // // fInference->GetEnergies(fEnergies, energy, angle);
-      // // fInference->GetPositions(fEnergies, fPositions, position, direction);
+ 
       
       std::vector<float> input, output ;
-      int outputSize = fastsimML.nCellsX * fastsimML.nCellsY * fastsimML.nCellsZ ;
+      std::vector<ddml::SpacePointVec> spacepoints ;
+
+      fastsimML.model.prepareInput( aFastTrack, input , output ) ;
 
       fastsimML.inference.runInference(input, output ) ;
 
+      fastsimML.model.convertOutput( aFastTrack, output , spacepoints) ;
 
-      // deposit energy in the detector using calculated values of energy deposits
-      // and positions
-      for(size_t iHit = 0; iHit < output.size(); iHit++)
-      {
-//	fHitMaker->make(G4FastHit(fPositions[iHit], fEnergies[iHit]), aFastTrack);
-      }
+      fastsimML.geometry.localToGlobal( aFastTrack, spacepoints ) ;
+      
+      // now deposit energies in the detector using calculated global positions
+
+      for( auto& layerSPs : spacepoints )
+	for( auto& sp : layerSPs ) {
+	  fastsimML.hitMaker.make( G4FastHit( G4ThreeVector(sp.X,sp.Y,sp.Z) , sp.E ), aFastTrack);
+	}
     }
     
     typedef FastMLShower<MyFancyMLModel> FancyMLShowerModel ;

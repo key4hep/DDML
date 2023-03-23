@@ -7,6 +7,8 @@ namespace ddml {
 
 /** The basic interface for running inference with one input vector and one output vector.
  *
+ *  @author F.Gaede, DESY
+ *  @date Mar 2023
  */
   
   class InferenceInterface {
