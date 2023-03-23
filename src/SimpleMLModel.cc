@@ -21,10 +21,12 @@ typedef Geant4FastHitMakerGlobal HitMaker ;
 
 struct MyFancyMLModel {
 
-  Inference inference ;
-  MLModel   model ;
-  Geometry  geometry ;
-  HitMaker  hitMaker ;
+  Inference inference={} ;
+  MLModel   model={} ;
+  Geometry  geometry={} ;
+  HitMaker*  hitMaker={} ;
+
+  MyFancyMLModel() : hitMaker( new HitMaker ) {} 
   
   const bool has_constructGeo = false ;
   const bool has_constructField = false ;
@@ -74,7 +76,7 @@ namespace dd4hep  {
 
       for( auto& layerSPs : spacepoints )
 	for( auto& sp : layerSPs ) {
-	  fastsimML.hitMaker.make( G4FastHit( G4ThreeVector(sp.X,sp.Y,sp.Z) , sp.E ), aFastTrack);
+	  fastsimML.hitMaker->make( G4FastHit( G4ThreeVector(sp.X,sp.Y,sp.Z) , sp.E ), aFastTrack);
 	}
     }
     

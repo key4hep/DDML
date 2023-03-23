@@ -1,0 +1,21 @@
+#
+#  test_onnx.mac
+#  example script to run inference on a GAN w/ ONNX runtime
+
+# --- the particle gun
+/gps/pos/centre 0 0 0
+/gps/particle  gamma
+/gps/energy    20 GeV
+
+# for SimpleCalo
+#/gps/direction  0. 0. 1.
+
+# for ILD barrel
+/gps/ang/type iso
+/gps/ang/mintheta 45. deg 
+/gps/ang/maxtheta 135. deg 
+#/gps/direction  0.1 -0.8 .1
+
+
+/run/beamOn 20
+

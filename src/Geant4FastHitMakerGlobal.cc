@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 
-#include "Geant4FastHitMakerGlobal.h"
+#include "DDML/Geant4FastHitMakerGlobal.h"
 
 #include "G4TransportationManager.hh"
 #include "G4VSensitiveDetector.hh"

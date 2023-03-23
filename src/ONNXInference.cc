@@ -51,6 +51,13 @@ namespace ddml {
   void ONNXInference::runInference(std::vector<float>& input,
 				   std::vector<float>& output ) {
 
+    static bool isInitialized = false ;
+    if( ! isInitialized ){
+      initialize() ;
+      isInitialized = true ;
+    }
+      
+
     // input nodes
     Ort::AllocatorWithDefaultOptions allocator;
     std::vector<int64_t> input_node_dims;

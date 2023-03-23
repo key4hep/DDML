@@ -42,7 +42,7 @@ namespace ddml {
       //    genVector[i] = CLHEP::RandGauss::shoot(0., 1.);
     }
 
-    input[ _latentSize ] = energy ;
+    input[ _latentSize ] = energy / CLHEP::GeV ;;
 
     // ... later ...
     // input[ _latentSize + 1 ] = angle ;
