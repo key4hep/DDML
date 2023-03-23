@@ -1,9 +1,35 @@
-#include <DDG4/Geant4FastSimShowerModel.h>
-#include <DDG4/Geant4FastSimShowerModel.inl.h>
+#include "DDFastShowerML/FastMLShower.h"
+#include "DDFastShowerML/ONNXInference.h"
+
+
+typedef ONNXInference INFERENCE ;
 
 
 
 struct MyFancyMLModel {
+
+  INFERENCE inference ;
+  
+  const bool has_constructGeo = false ;
+  const bool has_constructField = false ;
+  const bool has_constructSensitives = false ;
+  const bool has_check_applicability = false ;
+  const bool has_check_trigger = false ;
+
+  int nCellsX = 0 ; 
+  int nCellsY = 0 ; 
+  int nCellsZ = 0 ; 
+
+  
+  void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
+
+    plugin->declareProperty("NCellsX" , this->nCellsX ) ;
+    plugin->declareProperty("NCellsY" , this->nCellsY ) ;
+    plugin->declareProperty("NCellsZ" , this->nCellsZ ) ;
+
+    inference.declareProperties( plugin ) ;
+
+  }
 
 };
 
@@ -14,9 +40,15 @@ namespace dd4hep  {
   namespace sim  {
 
 
-    typedef Geant4FSShowerModel<MyFancyMLModel> FancyMLShowerModel ;
+    template <typename MyFancyMLModel>
+    void FastMLShower<MyFancyMLModel>::modelShower(G4FastTrack const&, G4FastStep&){
 
 
+    }
+
+
+    
+    typedef FastMLShower<MyFancyMLModel> FancyMLShowerModel ;
   }
 }
 

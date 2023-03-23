@@ -12,7 +12,7 @@ public:
   virtual ~InferenceInterface(){};
   
   /// run the inference model 
-  virtual void runInference(const std::vector<float>& input,
+  virtual void runInference(std::vector<float>& input,
 			    std::vector<float>& output,
 			    int outputSize) = 0;
 };
