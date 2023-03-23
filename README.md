@@ -30,20 +30,20 @@ make -j 4 install
 ## Running the example
 
 For running the example with the ILD detector there has to be a region
-defined for which to run the fast ML shower simulation, e.g:
+defined for which to run the fast ML shower simulation.
+For example modify in your local copy of lcgeo/k4geo:
 
 
 ```diff
 diff --git a/ILD/compact/ILD_common_v02/SEcal06_hybrid_Barrel.xml b/ILD/compact/ILD_common_v02/SEcal06_hybrid_Barrel.xml
-index 5ff2e50..65822af 100644
+index 5ff2e50..084f7ea 100644
 --- a/ILD/compact/ILD_common_v02/SEcal06_hybrid_Barrel.xml
 +++ b/ILD/compact/ILD_common_v02/SEcal06_hybrid_Barrel.xml
-@@ -1,7 +1,15 @@
+@@ -1,7 +1,14 @@
  <lccdd>
 +
 +  <regions>
-+    <region name="SimpleCaloRegion" eunit="MeV" lunit="mm" cut="0.001" threshold="0.001">
-+      <limitsetref name="cal_limits"/>
++    <region name="EcalBarrelRegion">
 +    </region>
 +  </regions>
 +
@@ -51,10 +51,57 @@ index 5ff2e50..65822af 100644
  
 -    <detector name="EcalBarrel" type="SEcal06_Barrel" id="ILDDetID_ECAL" readout="EcalBarrelCollection" vis="BlueVis" >
 +    <detector name="EcalBarrel" type="SEcal06_Barrel" id="ILDDetID_ECAL" readout="EcalBarrelCollection" vis="BlueVis"
-+     region="SimpleCaloRegion" limits="cal_limits">
++     region="EcalBarrelRegion">
  
        <comment>EM Calorimeter Barrel</comment>
+ 
 ```
+
+- this model has to be activated in the `ddsim_steer.py` file:
+
+```python
+def aiDance(kernel):
+   from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
+   from DDG4 import DetectorConstruction, Geant4, PhysicsList
+   geant4 = Geant4(kernel)
+   
+   seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
+   act.DebugMaterials = True
+   act.DebugElements = False
+   act.DebugVolumes = True
+   act.DebugShapes = True
+
+   # Apply sensitive detectors
+   sensitives = DetectorConstruction(kernel, str('Geant4DetectorSensitivesConstruction/ConstructSD'))
+   sensitives.enableUI()
+   seq.adopt(sensitives)
+
+   model = DetectorConstruction(kernel, str('FancyMLShowerModel/ShowerModel'))
+
+##   # Mandatory model parameters
+   model.RegionName = 'EcalBarrelRegion'
+   model.Enable = True
+   # Energy boundaries are optional: Units are GeV
+   model.ApplicableParticles = {'e+','e-','gamma'}
+   model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
+   model.ModelPath = "../models/francisca_gan.onnx"
+
+   model.enableUI()
+   seq.adopt(model)
+
+   # Now build the physics list:
+   phys = kernel.physicsList()
+   ph = PhysicsList(kernel, str('Geant4FastPhysics/FastPhysicsList'))
+   ph.EnabledParticles = ['e+', 'e-','gamma']
+   ph.BeVerbose = True
+   ph.enableUI()
+   phys.adopt(ph)
+   phys.dump()
+
+SIM.physics.setupUserPhysics( aiDance)
+```
+
+
 
 - then run the simulation as usual w/ ddsim:
 

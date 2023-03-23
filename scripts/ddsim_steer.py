@@ -302,7 +302,7 @@ def aiDance(kernel):
    model = DetectorConstruction(kernel, str('FancyMLShowerModel/ShowerModel'))
 
 ##   # Mandatory model parameters
-   model.RegionName = 'SimpleCaloRegion'
+   model.RegionName = 'EcalBarrelRegion'
    model.Enable = True
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
