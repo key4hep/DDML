@@ -11,10 +11,9 @@ class InferenceInterface {
 public:
   virtual ~InferenceInterface(){};
   
-  /// run the inference model 
+  /// run the inference model - based on input vector and resized outputvector
   virtual void runInference(std::vector<float>& input,
-			    std::vector<float>& output,
-			    int outputSize) = 0;
+			    std::vector<float>& output ) = 0;
 };
 
 #endif

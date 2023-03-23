@@ -27,10 +27,9 @@ public:
   /// initialize the model - based on defined properties
   void initialize() ;
 
-  /// run the inference model 
+  /// run the inference model - based on input vector and resized outputvector
   virtual void runInference(std::vector<float>& input,
-			    std::vector<float>& output,
-			    int outputSize ) ;
+			    std::vector<float>& output ) ;
 
 
   

@@ -21,7 +21,7 @@ namespace dd4hep  {
     class FastMLShower : public Geant4FastSimShowerModel    {
 
     protected:
-      ML_MODEL model;
+      ML_MODEL fastsimML ;
 
     public:
       /** C'tor that calls initialize of the concrete model implementation in order to
@@ -30,7 +30,7 @@ namespace dd4hep  {
       FastMLShower(Geant4Context* context, const std::string& nam)
 	: Geant4FastSimShowerModel(context, nam) {
 	
-	model.declareProperties( this );
+	fastsimML.declareProperties( this );
       }
 
       /// Default destructor
@@ -38,7 +38,7 @@ namespace dd4hep  {
 
       /// Geometry construction callback. Called at "Construct()"
       virtual void constructGeo(Geant4DetectorConstructionContext* ctxt)  override {
-	// if( model.has_constructGeo )      model.constructGeo( ctxt ) ;
+	// if( fastsimML.has_constructGeo )      fastsimML.constructGeo( ctxt ) ;
 	// else
 	  this->Geant4FastSimShowerModel::constructGeo(ctxt);
 				    
@@ -46,14 +46,14 @@ namespace dd4hep  {
 
       /// Electromagnetic field construction callback. Called at "ConstructSDandField()"
       virtual void constructField(Geant4DetectorConstructionContext* ctxt)  override {
-	// if( model.has_constructField )      model.constructField( ctxt ) ;
+	// if( fastsimML.has_constructField )      fastsimML.constructField( ctxt ) ;
 	// else
 	this->Geant4FastSimShowerModel::constructField(ctxt);
       }
 
       /// Sensitive detector construction callback. Called at "ConstructSDandField()"
       virtual void constructSensitives(Geant4DetectorConstructionContext* ctxt)  override {
-	// if( model.has_constructSensitives )      model.constructSensitives( ctxt ) ;
+	// if( fastsimML.has_constructSensitives )      fastsimML.constructSensitives( ctxt ) ;
 	// else
 	this->Geant4FastSimShowerModel::constructSensitives(ctxt);
     }
@@ -62,7 +62,7 @@ namespace dd4hep  {
       /** Default implementation checks if the particle is registered in 'ApplicableParticles'
        */
       virtual bool check_applicability(const G4ParticleDefinition& particle)  override {
-	// if( model.has_check_applicability )   return  model.check_applicability(particle) ;
+	// if( fastsimML.has_check_applicability )   return  fastsimML.check_applicability(particle) ;
 	// else
 	return this->Geant4FastSimShowerModel::check_applicability(particle);
       }
@@ -72,7 +72,7 @@ namespace dd4hep  {
        *  the kinetic energy is bigger than the value.
        */
       virtual bool check_trigger(const G4FastTrack& track)  override {
-	// if( model.has_check_trigger ) return model.check_trigger(track ) ;
+	// if( fastsimML.has_check_trigger ) return fastsimML.check_trigger(track ) ;
 	// else
 	return this->Geant4FastSimShowerModel::check_trigger(track);
       }

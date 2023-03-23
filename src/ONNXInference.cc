@@ -48,8 +48,7 @@ void ONNXInference::initialize(){
 
 /// run the inference model 
 void ONNXInference::runInference(std::vector<float>& input,
-				 std::vector<float>& output,
-				 int outputSize ) {
+				 std::vector<float>& output ) {
 
   // input nodes
   Ort::AllocatorWithDefaultOptions allocator;
@@ -133,8 +132,8 @@ void ONNXInference::runInference(std::vector<float>& input,
 
   // get pointer to output tensor float values
   float* floatarr = ort_outputs.front().GetTensorMutableData<float>();
-  output.assign(outputSize, 0);
-  for(int i = 0; i < outputSize; ++i){
+//  output.assign(outputSize, 0);
+  for(int i = 0, N=output.size() ; i < N ; ++i){
     output[i] = floatarr[i];
     //    if(DEBUGPRINT) std::cout << " e = " << output[i] << ", " ;
   }
