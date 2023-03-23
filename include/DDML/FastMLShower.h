@@ -3,6 +3,12 @@
 
 #include <DDG4/Geant4FastSimShowerModel.h>
 
+#include <G4FastStep.hh>
+#include <G4FastTrack.hh>
+#include <G4Track.hh>
+#include <G4FastHit.hh>
+
+#include "DDML/DDML.h"
 
 /// Namespace for the AIDA detector description toolkit
 namespace dd4hep  {
@@ -11,7 +17,7 @@ namespace dd4hep  {
   namespace sim  {
 
     /** The templated base class for running fast shower simulation with ML.
-     *  The actual implementation is or can be provided by the templated class 
+     *  The actual implementation is provided by the templated class 
      *  ML_MODEL.  
      * 
      * @author F.Gaede, DESY
@@ -77,8 +83,35 @@ namespace dd4hep  {
 	return this->Geant4FastSimShowerModel::check_trigger(track);
       }
 
-      /// User callback to model the particle/energy shower
-      virtual void modelShower(const G4FastTrack& track, G4FastStep& step)  override ;
+      /// User callback to model the particle/energy shower - details defined in ML_MODEL
+      virtual void modelShower(const G4FastTrack& track, G4FastStep& step) override {
+	
+	// remove particle from further processing by G4
+	step.KillPrimaryTrack();
+	step.SetPrimaryTrackPathLength(0.0);
+	G4double energy = track.GetPrimaryTrack()->GetKineticEnergy();
+	step.SetTotalEnergyDeposited(energy);
+	
+	
+	std::vector<float> input, output ;
+	std::vector<ddml::SpacePointVec> spacepoints ;
+	
+	fastsimML.model.prepareInput( track, input , output ) ;
+	
+	fastsimML.inference.runInference(input, output ) ;
+	
+	fastsimML.model.convertOutput( track, output , spacepoints) ;
+	
+	fastsimML.geometry.localToGlobal( track, spacepoints ) ;
+	
+	// now deposit energies in the detector using calculated global positions
+	
+	for( auto& layerSPs : spacepoints )
+	  for( auto& sp : layerSPs ) {
+	    fastsimML.hitMaker->make( G4FastHit( G4ThreeVector(sp.X,sp.Y,sp.Z) , sp.E ), track);
+	  }
+      }
+      
     };
   }     /* End namespace sim   */
 }       /* End namespace dd4hep */
