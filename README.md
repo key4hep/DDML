@@ -107,7 +107,7 @@ SIM.physics.setupUserPhysics( aiDance)
 
 ```
 cd ./scripts
-ddsim --steeringFile ddsim_steer.py --compactFile /usr/local/ilcsoft/HEAD/lcgeo/HEAD/ILD/compact/ILD_l5_o1_v05/ILD_l5_o1_v05.xml
+ddsim --steeringFile ddsim_steer.py --compactFile /usr/local/ilcsoft/HEAD/lcgeo/HEAD/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml
 ```
 
 - visualize the events
