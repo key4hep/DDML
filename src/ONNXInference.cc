@@ -51,10 +51,9 @@ namespace ddml {
   void ONNXInference::runInference(std::vector<float>& input,
 				   std::vector<float>& output ) {
 
-    static bool isInitialized = false ;
-    if( ! isInitialized ){
+    if( ! _isInitialized ){
       initialize() ;
-      isInitialized = true ;
+      _isInitialized = true ;
     }
       
 

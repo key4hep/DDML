@@ -299,6 +299,7 @@ def aiDance(kernel):
    sensitives.enableUI()
    seq.adopt(sensitives)
 
+   #-----------------
    model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelONNXModel/ShowerModel'))
 
 ##   # Mandatory model parameters
@@ -311,6 +312,20 @@ def aiDance(kernel):
 
    model.enableUI()
    seq.adopt(model)
+   #-------------------
+   model1 = DetectorConstruction(kernel, str('RegularGridGANEndcapONNXModel/ShowerModel'))
+
+##   # Mandatory model parameters
+   model1.RegionName = 'EcalEndcapRegion'
+   model1.Enable = True
+   # Energy boundaries are optional: Units are GeV
+   model1.ApplicableParticles = {'e+','e-','gamma'}
+   model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
+   model1.ModelPath = "../models/francisca_gan.onnx"
+
+   model1.enableUI()
+   seq.adopt(model1)
+   #-------------------
 
    # Now build the physics list:
    phys = kernel.physicsList()

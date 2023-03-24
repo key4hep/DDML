@@ -52,6 +52,8 @@ namespace ddml {
     /// they can also be retrieved from model.summary()
     std::vector<const char*> fInames;
 
+    bool _isInitialized = false ;
+
 
     /// onxx properties for plugin
     std::string modelPath={} ;

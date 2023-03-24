@@ -1,5 +1,5 @@
-#ifndef PolyhedraBarrelGeometry_H
-#define PolyhedraBarrelGeometry_H
+#ifndef EndcapGeometry_H
+#define EndcapGeometry_H
 
 #include "DDML/GeometryInterface.h"
 #include "DDML/FastMLShower.h"
@@ -7,7 +7,7 @@
 
 namespace ddml {
 
-/** Class for geometry conversions for a polyhedra barrel geometry (for now only octagonal).
+/** Class for geometry conversions for an endcap geometry symmetric around the origin.
  *  Faking the angle conditioning by positioning the layers centered at intersections
  *  of particle direction and calo layers. 
  * 
@@ -15,12 +15,12 @@ namespace ddml {
  *  @date Mar 2023
  */
   
-  class PolyhedraBarrelGeometry : public GeometryInterface {
+  class EndcapGeometry : public GeometryInterface {
     
   public:
-    PolyhedraBarrelGeometry() ;
+    EndcapGeometry() ;
     
-    virtual ~PolyhedraBarrelGeometry(){};
+    virtual ~EndcapGeometry(){};
     
     /// declare the proerties needed for the plugin
     void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
@@ -39,7 +39,7 @@ namespace ddml {
     std::vector<float> _caloLayerDistances ={} ;
 
     /// model properties for plugin
-    std::string _detector = { "EcalBarrel" } ;
+    std::string _detector = { "EcalEndcap" } ;
   };
 
 } // namespace

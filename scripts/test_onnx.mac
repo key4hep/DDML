@@ -12,8 +12,10 @@
 
 # for ILD barrel
 /gps/ang/type iso
-/gps/ang/mintheta 45. deg 
-/gps/ang/maxtheta 135. deg 
+/gps/ang/mintheta 15. deg 
+/gps/ang/maxtheta 165. deg 
+#/gps/ang/mintheta 45. deg 
+#/gps/ang/maxtheta 135. deg 
 #/gps/direction  0.1 -0.8 .1
 
 
