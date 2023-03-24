@@ -46,25 +46,26 @@ namespace ddml {
 		<< " - dir = " << direction << " - E = " << energy << std::endl ;
     
     
+    float signZ = ( position.z() > 0. ?  1.0 : -1.0 ) ;
 
     // find the first layer that will have signals as sometimes particles are create in the calorimeter !
     int firstLayer = 0 ;
     int nLayer = spacepoints.size() ;
     for(int l= 0; l < nLayer ; ++l ){ 
-      double r = _caloLayerDistances[l] ;
+      double zL = signZ * _caloLayerDistances[l] ;
       firstLayer = l ;
       // lamda for intersection of particle direction and calo plane in phi sector 0
-      double lambda = ( r - position.z() ) / direction.z() ;
+      double lambda = ( zL - position.z() ) / direction.z() ;
       if( lambda > 0.)
 	break ;
     }
 
     for(int l= 0; l < nLayer ; ++l ){ 
       
-      double r = _caloLayerDistances[ l + firstLayer ] ;
+      double zL = signZ * _caloLayerDistances[ l + firstLayer ] ;
       
       // lamda for intersection of particle direction and calo plane in phi sector 0
-      double lambda = ( r - position.z() ) / direction.z() ;
+      double lambda = ( zL - position.z() ) / direction.z() ;
       
       G4ThreeVector posC = position + lambda * direction ;
       
@@ -74,7 +75,7 @@ namespace ddml {
 	
 	sp.X += posC.x()  ;
 	sp.Y += posC.y()  ;
-	sp.Z =  float( _caloLayerDistances[l] ) ; // == posC.z() 
+	sp.Z =  zL ; // =  posC.z()
 	
       }
     }
