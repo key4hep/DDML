@@ -24,6 +24,9 @@ namespace ddml {
   protected:
     ML_MODEL fastsimML ;
 
+    std::vector<float> _input, _output ;
+    std::vector<ddml::SpacePointVec> _spacepoints ;
+
   public:
     /** C'tor that calls initialize of the concrete model implementation in order to
      *  allow for dedicated properties to be declared.
@@ -88,20 +91,23 @@ namespace ddml {
       step.SetTotalEnergyDeposited(energy);
 	
 	
-      std::vector<float> input, output ;
-      std::vector<ddml::SpacePointVec> spacepoints ;
+
+      _input.clear() ;
+      _output.clear() ;
+      for( auto& layerSPs : _spacepoints )
+	layerSPs.clear() ;
 	
-      fastsimML.model.prepareInput( track, input , output ) ;
+      fastsimML.model.prepareInput( track, _input , _output ) ;
 	
-      fastsimML.inference.runInference(input, output ) ;
-	
-      fastsimML.model.convertOutput( track, output , spacepoints) ;
-	
-      fastsimML.geometry.localToGlobal( track, spacepoints ) ;
-	
+      fastsimML.inference.runInference(_input, _output ) ;
+
+      fastsimML.model.convertOutput( track, _output , _spacepoints) ;
+
+      fastsimML.geometry.localToGlobal( track, _spacepoints ) ;
+
       // now deposit energies in the detector using calculated global positions
 	
-      for( auto& layerSPs : spacepoints )
+      for( auto& layerSPs : _spacepoints )
 	for( auto& sp : layerSPs ) {
 	  fastsimML.hitMaker->make( G4FastHit( G4ThreeVector(sp.X,sp.Y,sp.Z) , sp.E ), track);
 	}

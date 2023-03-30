@@ -24,7 +24,7 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 20
+SIM.numberOfEvents = 100
 ## Outputfile from the simulation,only lcio output is supported
 SIM.outputFile = "dummyOutput.slcio"
 ## Physics list to use in simulation
@@ -309,6 +309,7 @@ def aiDance(kernel):
    model.ApplicableParticles = {'e+','e-','gamma'}
    model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
    model.ModelPath = "../models/francisca_gan.onnx"
+   model.OptimizeFlag = 1
 
    model.enableUI()
    seq.adopt(model)
@@ -322,6 +323,7 @@ def aiDance(kernel):
    model1.ApplicableParticles = {'e+','e-','gamma'}
    model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
    model1.ModelPath = "../models/francisca_gan.onnx"
+   model.OptimizeFlag = 1
 
    model1.enableUI()
    seq.adopt(model1)
