@@ -56,7 +56,6 @@ namespace ddml {
       _isInitialized = true ;
     }
       
-
     // input nodes
     Ort::AllocatorWithDefaultOptions allocator;
     std::vector<int64_t> input_node_dims;

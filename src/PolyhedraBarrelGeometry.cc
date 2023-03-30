@@ -8,7 +8,7 @@
 #include "DDRec/DetectorData.h"
 
 
-#define DEBUGPRINT 1
+#define DEBUGPRINT 0
 
 namespace ddml {
 

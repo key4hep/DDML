@@ -23,6 +23,8 @@ find_package(EDM4HEP REQUIRED)
 # make sure the onnx find script is found:
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+#--------------------------------------------------
+
 find_package(OnnxRuntime REQUIRED)
 if(OnnxRuntime_FOUND)
   message("ONNX Runtime inference library found.")
@@ -32,9 +34,19 @@ else()
   message("ONNX Runtime not found!")
 endif()
 
+find_package(Torch REQUIRED)
+if(Torch_FOUND)
+  message("Torch inference library found.")
+  add_definitions(-DUSE_INFERENCE)
+  add_definitions(-DUSE_INFERENCE_LIBTORCH)
+else()
+  message("Torch not found!")
+endif()
+
+
 #----------------------------------------------------
 IF(NOT TARGET DD4hep::DDCore)
-  find_package ( DD4hep REQUIRED )
+  find_package ( DD4hep REQUIRED COMPONENTS DDG4)
   include ( ${DD4hep_DIR}/cmake/DD4hep.cmake )
   include ( ${DD4hep_DIR}/cmake/DD4hepBuild.cmake )
   dd4hep_configure_output()
@@ -54,6 +66,7 @@ include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include
                     ${Geant4_INCLUDE_DIR}
 		    ${OnnxRuntime_INCLUDE_DIR}
+		    ${TORCH_INCLUDE_DIRS}
 		    ${DD4hep_INCLUDE_DIRS})
 
 
@@ -73,6 +86,7 @@ target_link_libraries(${PROJECT_NAME}
   podio::podioDict
   DD4hep::DDCore
   DD4hep::DDG4
+  torch
   )
 
 

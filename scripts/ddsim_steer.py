@@ -338,5 +338,61 @@ def aiDance(kernel):
    phys.adopt(ph)
    phys.dump()
 
-SIM.physics.setupUserPhysics( aiDance)
+def aiDanceTorch(kernel):
+   from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
+   from DDG4 import DetectorConstruction, Geant4, PhysicsList
+   geant4 = Geant4(kernel)
+   
+   seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
+   act.DebugMaterials = True
+   act.DebugElements = False
+   act.DebugVolumes = True
+   act.DebugShapes = True
+
+   # Apply sensitive detectors
+   sensitives = DetectorConstruction(kernel, str('Geant4DetectorSensitivesConstruction/ConstructSD'))
+   sensitives.enableUI()
+   seq.adopt(sensitives)
+
+   #-----------------
+   model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelTorchModel/ShowerModel'))
+
+##   # Mandatory model parameters
+   model.RegionName = 'EcalBarrelRegion'
+   model.Enable = True
+   # Energy boundaries are optional: Units are GeV
+   model.ApplicableParticles = {'e+','e-','gamma'}
+   model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
+   model.ModelPath = "../models/francisca_gan_jit.pt"
+   model.OptimizeFlag = 1
+
+   model.enableUI()
+   seq.adopt(model)
+   #-------------------
+   model1 = DetectorConstruction(kernel, str('RegularGridGANEndcapTorchModel/ShowerModel'))
+
+##   # Mandatory model parameters
+   model1.RegionName = 'EcalEndcapRegion'
+   model1.Enable = True
+   # Energy boundaries are optional: Units are GeV
+   model1.ApplicableParticles = {'e+','e-','gamma'}
+   model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
+   model1.ModelPath = "../models/francisca_gan_jit.pt"
+   model.OptimizeFlag = 1
+
+   model1.enableUI()
+   seq.adopt(model1)
+   #-------------------
+
+   # Now build the physics list:
+   phys = kernel.physicsList()
+   ph = PhysicsList(kernel, str('Geant4FastPhysics/FastPhysicsList'))
+   ph.EnabledParticles = ['e+', 'e-','gamma']
+   ph.BeVerbose = True
+   ph.enableUI()
+   phys.adopt(ph)
+   phys.dump()
+
+#SIM.physics.setupUserPhysics( aiDance)
+SIM.physics.setupUserPhysics( aiDanceTorch)
 
