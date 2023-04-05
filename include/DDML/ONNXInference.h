@@ -4,8 +4,8 @@
 #include "DDML/InferenceInterface.h"
 #include <DDG4/Geant4Action.h>
 
-#include <core/session/onnxruntime_c_api.h>    // for OrtMemoryInfo
 #include "core/session/onnxruntime_cxx_api.h"  // for Env, Session, SessionO...
+
 #include <memory>                              // for unique_ptr
 #include <vector>                              // for vector
 #include <string>                              // for string

@@ -1,5 +1,7 @@
 #include "DDML/ONNXInference.h"
 
+#include <cassert>
+
 #define DEBUGPRINT 0
 
 namespace ddml {
@@ -58,13 +60,22 @@ namespace ddml {
       
     // input nodes
     Ort::AllocatorWithDefaultOptions allocator;
+#if ORT_API_VERSION < 13
+    // Before 1.13 we have to roll our own unique_ptr wrapper here
+    auto allocDeleter = [&allocator](char* p) { allocator.Free(p); };
+    using AllocatedStringPtr = std::unique_ptr<char, decltype(allocDeleter)>;
+#endif
     std::vector<int64_t> input_node_dims;
     size_t num_input_nodes = fSession->GetInputCount();
     std::vector<const char*> input_node_names(num_input_nodes);
     for(std::size_t i = 0; i < num_input_nodes; i++)
     {
-      char* input_name               = fSession->GetInputNameAllocated(i, allocator).release() ;
-    
+#if ORT_API_VERSION < 13
+      const auto input_name = AllocatedStringPtr(fSession->GetInputName(i, allocator), allocDeleter).release();
+#else
+      const auto input_name               = fSession->GetInputNameAllocated(i, allocator).release() ;
+#endif
+
       if(DEBUGPRINT) std::cout << " *** input_name : " << i << " = " << input_name << std::endl ;
       fInames.push_back( input_name ) ;
       input_node_names[i]            = input_name;
@@ -85,7 +96,11 @@ namespace ddml {
     std::vector<const char*> output_node_names(num_output_nodes);
     for(std::size_t i = 0; i < num_output_nodes; i++)
     {
-      char* output_name              = fSession->GetOutputNameAllocated(i, allocator).release() ;
+#if ORT_API_VERSION < 12
+      const auto output_name = AllocatedStringPtr(fSession->GetOutputName(i, allocator), allocDeleter).release();
+#else
+      const auto output_name              = fSession->GetOutputNameAllocated(i, allocator).release() ;
+#endif
       output_node_names[i]           = output_name;
       if(DEBUGPRINT) std::cout << " *** output_name : " << i << " = " << output_name << std::endl ;
       Ort::TypeInfo type_info        = fSession->GetOutputTypeInfo(i);
