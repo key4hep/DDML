@@ -45,19 +45,9 @@ namespace ddml {
     auto sessionLocal = std::make_unique<Ort::Session>(*fEnv, modelPath.c_str(), fSessionOptions);
     fSession          = std::move(sessionLocal);
     fInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemTypeDefault);
-  
-  }
 
-
-/// run the inference model 
-  void ONNXInference::runInference(const std::vector<float>& input,
-				   std::vector<float>& output ) {
-
-    if( ! _isInitialized ){
-      initialize() ;
-      _isInitialized = true ;
-    }
-      
+    // Collect information about input parameter shapes and names that are
+    // necessary to run inference.
     // input nodes
     Ort::AllocatorWithDefaultOptions allocator;
 #if ORT_API_VERSION < 13
@@ -101,6 +91,7 @@ namespace ddml {
 #else
       const auto output_name              = fSession->GetOutputNameAllocated(i, allocator).release() ;
 #endif
+      fOnames.push_back( output_name );
       output_node_names[i]           = output_name;
       if(DEBUGPRINT) std::cout << " *** output_name : " << i << " = " << output_name << std::endl ;
       Ort::TypeInfo type_info        = fSession->GetOutputTypeInfo(i);
@@ -114,6 +105,19 @@ namespace ddml {
 	if(DEBUGPRINT) std::cout << "     - dim " << j << " : " << output_node_dims[j] << std::endl ;
       }
     }
+
+  }
+
+
+  /// run the inference model
+  void ONNXInference::runInference(const std::vector<float>& input,
+				   std::vector<float>& output ) {
+
+    if( ! _isInitialized ){
+      initialize() ;
+      _isInitialized = true ;
+    }
+
 
     // --- batch_size = 1 
     // --- noise = torch.FloatTensor(batch_size, 100, 1, 1, 1).uniform_(-1, 1).detach() 
@@ -147,12 +151,12 @@ namespace ddml {
     // run the inference session
     std::vector<Ort::Value> ort_outputs =
       fSession->Run(Ort::RunOptions{ nullptr }, fInames.data(), ort_inputs.data(), ort_inputs.size(),
-		    output_node_names.data(), output_node_names.size());
+		    fOnames.data(), fOnames.size());
 
 
 
     // get pointer to output tensor float values
-    float* floatarr = ort_outputs.front().GetTensorMutableData<float>();
+    const auto* floatarr = ort_outputs.front().GetTensorData<float>();
 //  output.assign(outputSize, 0);
     for(int i = 0, N=output.size() ; i < N ; ++i){
       output[i] = floatarr[i];

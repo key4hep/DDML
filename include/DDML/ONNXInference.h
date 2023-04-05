@@ -51,6 +51,7 @@ namespace ddml {
     /// when defining  the model's architecture (if applicable)
     /// they can also be retrieved from model.summary()
     std::vector<const char*> fInames;
+    std::vector<const char*> fOnames;
 
     bool _isInitialized = false ;
 
