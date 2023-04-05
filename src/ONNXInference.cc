@@ -50,7 +50,7 @@ namespace ddml {
 
 
 /// run the inference model 
-  void ONNXInference::runInference(std::vector<float>& input,
+  void ONNXInference::runInference(const std::vector<float>& input,
 				   std::vector<float>& output ) {
 
     if( ! _isInitialized ){
@@ -126,14 +126,14 @@ namespace ddml {
     std::vector<int64_t> dimsG = { 1, 100, 1 , 1 ,1 };
 
     Ort::Value Input_noise_tensor =
-      Ort::Value::CreateTensor<float>(fInfo, input.data(), 100 , dimsG.data(), dimsG.size());
+      Ort::Value::CreateTensor<float>(fInfo, const_cast<float*>(input.data()), 100 , dimsG.data(), dimsG.size());
 
     assert(Input_noise_tensor.IsTensor());
 
     std::vector<int64_t> dimsE = { 1, 1 , 1 , 1 ,1 };
 
     Ort::Value Input_energy_tensor =
-      Ort::Value::CreateTensor<float>(fInfo, &input[100] , 1 , dimsE.data(), dimsE.size());
+      Ort::Value::CreateTensor<float>(fInfo, const_cast<float*>(&input[100]) , 1 , dimsE.data(), dimsE.size());
 
     assert(Input_energy_tensor.IsTensor());
 
