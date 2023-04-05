@@ -1,9 +1,14 @@
+#ifdef DDML_USE_TORCH_INFERENCE
 // -- includes this before any ROOT stuff - as it defines a struct ClassDef that is otherwise overwritten by Rtypes.h
 #include "DDML/TorchInference.h"
+#endif
 
 #include "DDML/FastMLShower.h"
 
+#ifdef DDML_USE_ONNX_INFERENCE
 #include "DDML/ONNXInference.h"
+#endif
+
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/EndcapGeometry.h"
@@ -12,6 +17,7 @@
 
 namespace ddml {
 
+#ifdef DDML_USE_ONNX_INFERENCE
   /// a concrete model for regular grid GANs applied to the barrel calorimeter with ONNX
   typedef FastMLShower<FastMLModel<ddml::ONNXInference,
 				   ddml::RegularGridGANModel,
@@ -25,7 +31,9 @@ namespace ddml {
 				   ddml::EndcapGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridGANEndcapONNXModel ;
+#endif
 
+#ifdef DDML_USE_TORCH_INFERENCE
   /// a concrete model for regular grid GANs applied to the barrel calorimeter with Torch
   typedef FastMLShower<FastMLModel<ddml::TorchInference,
 				   ddml::RegularGridGANModel,
@@ -39,21 +47,17 @@ namespace ddml {
 				   ddml::EndcapGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridGANEndcapTorchModel ;
+#endif
 }
 
-
 #include <DDG4/Factories.h>
+
+#ifdef DDML_USE_ONNX_INFERENCE
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelONNXModel)
-
-#include <DDG4/Factories.h>
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapONNXModel)
+#endif
 
-#include <DDG4/Factories.h>
+#ifdef DDML_USE_TORCH_INFERENCE
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelTorchModel)
-
-#include <DDG4/Factories.h>
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapTorchModel)
-
-
-
-
+#endif
