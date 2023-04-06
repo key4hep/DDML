@@ -33,7 +33,7 @@ namespace ddml {
 
 
 /// run the inference model 
-  void TorchInference::runInference(std::vector<float>& input,
+  void TorchInference::runInference(const std::vector<float>& input,
 				   std::vector<float>& output ) {
 
     if( ! _isInitialized ){
