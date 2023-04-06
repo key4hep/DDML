@@ -16,7 +16,7 @@ namespace ddml {
     virtual ~InferenceInterface(){};
     
     /// run the inference model - based on input vector and resized outputvector
-    virtual void runInference(std::vector<float>& input,
+    virtual void runInference(const std::vector<float>& input,
 			      std::vector<float>& output ) = 0;
   };
 

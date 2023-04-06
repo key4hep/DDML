@@ -4,8 +4,8 @@
 #include "DDML/InferenceInterface.h"
 #include <DDG4/Geant4Action.h>
 
-#include <core/session/onnxruntime_c_api.h>    // for OrtMemoryInfo
 #include "core/session/onnxruntime_cxx_api.h"  // for Env, Session, SessionO...
+
 #include <memory>                              // for unique_ptr
 #include <vector>                              // for vector
 #include <string>                              // for string
@@ -32,7 +32,7 @@ namespace ddml {
     void initialize() ;
 
     /// run the inference model - based on input vector and resized outputvector
-    virtual void runInference(std::vector<float>& input,
+    virtual void runInference(const std::vector<float>& input,
 			      std::vector<float>& output ) ;
 
 
@@ -51,6 +51,7 @@ namespace ddml {
     /// when defining  the model's architecture (if applicable)
     /// they can also be retrieved from model.summary()
     std::vector<const char*> fInames;
+    std::vector<const char*> fOnames;
 
     bool _isInitialized = false ;
 
