@@ -284,6 +284,16 @@ SIM.random.type = None
 
 
 def aiDance(kernel):
+   ild = True
+   if ild == True :
+      ml_barrel_name = 'EcalBarrel'
+      ml_barrel_symmetry = 8
+      ml_endcap_name = 'EcalEndcap'
+   else :
+      ml_barrel_name = 'ECalBarrel'
+      ml_barrel_symmetry = 12
+      ml_endcap_name = 'ECalEndcap'
+
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
    geant4 = Geant4(kernel)
@@ -304,6 +314,8 @@ def aiDance(kernel):
 
 ##   # Mandatory model parameters
    model.RegionName = 'EcalBarrelRegion'
+   model.Detector= ml_barrel_name
+   model.Symmetry = ml_barrel_symmetry
    model.Enable = True
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
@@ -318,6 +330,7 @@ def aiDance(kernel):
 
 ##   # Mandatory model parameters
    model1.RegionName = 'EcalEndcapRegion'
+   model1.Detector= ml_endcap_name
    model1.Enable = True
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
@@ -339,6 +352,16 @@ def aiDance(kernel):
    phys.dump()
 
 def aiDanceTorch(kernel):
+   ild = True
+   if ild == True :
+      ml_barrel_name = 'EcalBarrel'
+      ml_barrel_symmetry = 8
+      ml_endcap_name = 'EcalEndcap'
+   else :
+      ml_barrel_name = 'ECalBarrel'
+      ml_barrel_symmetry = 12
+      ml_endcap_name = 'ECalEndcap'
+
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
    geant4 = Geant4(kernel)
@@ -359,6 +382,8 @@ def aiDanceTorch(kernel):
 
 ##   # Mandatory model parameters
    model.RegionName = 'EcalBarrelRegion'
+   model.Detector= ml_barrel_name
+   model.Symmetry = ml_barrel_symmetry
    model.Enable = True
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
@@ -373,6 +398,7 @@ def aiDanceTorch(kernel):
 
 ##   # Mandatory model parameters
    model1.RegionName = 'EcalEndcapRegion'
+   model1.Detector= ml_endcap_name
    model1.Enable = True
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
@@ -393,6 +419,6 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-#SIM.physics.setupUserPhysics( aiDance)
-SIM.physics.setupUserPhysics( aiDanceTorch)
+SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics( aiDanceTorch)
 
