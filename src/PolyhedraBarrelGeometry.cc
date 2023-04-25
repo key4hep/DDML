@@ -12,29 +12,29 @@
 
 namespace ddml {
 
-  PolyhedraBarrelGeometry::PolyhedraBarrelGeometry() {
+  void PolyhedraBarrelGeometry::initialize(){
 
     auto& theDetector = dd4hep::Detector::getInstance();
     auto det = theDetector.detector( _detector ) ;
     auto* cal = det.extension<dd4hep::rec::LayeredCalorimeterData>() ;
-    
+
     if( cal){
       for( auto l : cal->layers ){
-
 	_caloLayerDistances.push_back(  (l.distance + l.inner_thickness) / dd4hep::mm  ) ;
       }
-    
     } else{
 
       std::cout << " ###### error:  detector " << _detector << " not found !" << std::endl ;
     }
   }
 
-
   void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
 					      std::vector<SpacePointVec>& spacepoints ) {
 
-
+    if( ! _isInitialized ){
+      initialize() ;
+      _isInitialized = true ;
+    }
 
     G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
     
@@ -42,11 +42,11 @@ namespace ddml {
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
     
     if( DEBUGPRINT ) 
-      std::cout << "  PolyhedraBarrelGeometry::localToGlobal   pos0 = " << position
+      std::cout << "  PolyhedraBarrelGeometry::localToGlobal  - symmetry = " << _nSymmetry <<  " pos0 = " << position
 		<< " - dir = " << direction << " - E = " << energy << std::endl ;
     
     
-    // compute phi sector - 0-7 for octagonal barrel     - TODO : generalise to arbitrary polyhedra
+    // compute phi sector, e.g. 0-7 for octagonal barrel
     //         2
     //        --
     //    3 /    \ 1
@@ -59,9 +59,9 @@ namespace ddml {
     if( phi < 0. )
       phi = 2. * M_PI + phi ;
     
-    int phiSec = phi / (M_PI/8.) ;
+    int phiSec = phi / (M_PI/_nSymmetry) ;
     
-    if( phiSec == 0 || phiSec == 15 )
+    if( phiSec == 0 || phiSec == (2*_nSymmetry-1) )
       phiSec = 0 ;
     else
       phiSec = (phiSec+1) / 2. ;
@@ -70,10 +70,10 @@ namespace ddml {
     // --- rotate position and direction to phi sector 0  (calo plane parallel to y-axis at positive x )
     
     G4RotationMatrix rotNeg ;
-    rotNeg.rotateZ( - phiSec * M_PI/4. );
+    rotNeg.rotateZ( - phiSec * 2. * M_PI/_nSymmetry );
     
     G4RotationMatrix rotPos ;
-    rotPos.rotateZ( + phiSec * M_PI/4. );
+    rotPos.rotateZ( + phiSec * 2. * M_PI/_nSymmetry );
     
     auto posR = rotNeg * position ;
     auto dirR = rotNeg * direction ;

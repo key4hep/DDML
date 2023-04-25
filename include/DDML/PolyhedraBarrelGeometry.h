@@ -18,15 +18,18 @@ namespace ddml {
   class PolyhedraBarrelGeometry : public GeometryInterface {
     
   public:
-    PolyhedraBarrelGeometry() ;
+    PolyhedraBarrelGeometry(){} ;
     
     virtual ~PolyhedraBarrelGeometry(){};
     
+    /// initialize the plugin - after properties have been set
+    void initialize() ;
+
     /// declare the proerties needed for the plugin
     void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
 
       plugin->declareProperty("Detector" , this->_detector ) ;
-
+      plugin->declareProperty("Symmetry" , this->_nSymmetry ) ;
     }
   
     /** convert the local spacepoints to global spacepoints
@@ -37,9 +40,11 @@ namespace ddml {
     
   private:
     std::vector<float> _caloLayerDistances ={} ;
+    bool _isInitialized = false ;
 
     /// model properties for plugin
     std::string _detector = { "EcalBarrel" } ;
+    int _nSymmetry = 8 ;
   };
 
 } // namespace
