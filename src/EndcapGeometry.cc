@@ -12,7 +12,7 @@
 
 namespace ddml {
 
-  EndcapGeometry::EndcapGeometry() {
+  void EndcapGeometry::initialize() {
 
     auto& theDetector = dd4hep::Detector::getInstance();
     auto det = theDetector.detector( _detector ) ;
@@ -34,7 +34,10 @@ namespace ddml {
   void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack,
 					      std::vector<SpacePointVec>& spacepoints ) {
 
-
+    if( ! _isInitialized ){
+      initialize() ;
+      _isInitialized = true ;
+    }
 
     G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
     

@@ -18,7 +18,10 @@ namespace ddml {
   class EndcapGeometry : public GeometryInterface {
     
   public:
-    EndcapGeometry() ;
+    EndcapGeometry(){} ;
+
+    /// initialize the plugin - after properties have been set
+    void initialize() ;
     
     virtual ~EndcapGeometry(){};
     
@@ -37,6 +40,7 @@ namespace ddml {
     
   private:
     std::vector<float> _caloLayerDistances ={} ;
+    bool _isInitialized = false ;
 
     /// model properties for plugin
     std::string _detector = { "EcalEndcap" } ;
