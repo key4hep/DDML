@@ -28,7 +28,7 @@ namespace ddml {
     
     if( DEBUGPRINT ) 
       std::cout << "  RegularGridGANModel::prepareInput   pos0 = " << position
-		<< " - dir = " << direction << " - E = " << energy << std::endl ;
+		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV << std::endl ;
     
     
     // the input for this model is the latent space and the energy conditioning

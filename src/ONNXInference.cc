@@ -4,6 +4,7 @@
 
 #define DEBUGPRINT 0
 
+
 namespace ddml {
 
   ONNXInference::ONNXInference() {
@@ -141,7 +142,7 @@ namespace ddml {
 
     assert(Input_energy_tensor.IsTensor());
 
-    if(DEBUGPRINT) std::cout << " Input_energy_tensor : " <<  input[100]  << std::endl ;
+    if(DEBUGPRINT) std::cout << " ONNXInference::runInference: Input_energy_tensor : " <<  input[100]  << std::endl ;
 
 
     std::vector<Ort::Value> ort_inputs;
