@@ -10,6 +10,32 @@
 
 #include "DDML/DDML.h"
 
+#ifndef DDML_INSTRUMENT_MODEL_SHOWER
+#define DDML_INSTRUMENT_MODEL_SHOWER 0
+#endif
+
+#if DDML_INSTRUMENT_MODEL_SHOWER
+#include "podio/ROOTFrameWriter.h"
+#include "podio/UserDataCollection.h"
+#include "podio/Frame.h"
+
+#include <chrono>
+#include <functional>
+#include <numeric>
+
+using ClockT = std::chrono::high_resolution_clock;
+
+template <class Obj, typename MemberFunc, typename... Args>
+inline auto run_void_member_timed(Obj& obj, MemberFunc func, Args&&... args) {
+  const auto start = ClockT::now();
+  std::invoke(func, obj, std::forward<Args>(args)...);
+  const auto end = ClockT::now();
+
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+}
+#endif
+
+
 namespace ddml {
   /** The templated base class for running fast shower simulation with ML.
    *  The actual implementation is provided by the templated class 
@@ -27,18 +53,30 @@ namespace ddml {
     std::vector<float> _input, _output ;
     std::vector<ddml::SpacePointVec> _spacepoints ;
 
+#if DDML_INSTRUMENT_MODEL_SHOWER
+    podio::ROOTFrameWriter m_timeWriter;
+#endif
+
   public:
     /** C'tor that calls initialize of the concrete model implementation in order to
      *  allow for dedicated properties to be declared.
      */
     FastMLShower(dd4hep::sim::Geant4Context* context, const std::string& nam)
-      : Geant4FastSimShowerModel(context, nam) {
+      : Geant4FastSimShowerModel(context, nam)
+#if DDML_INSTRUMENT_MODEL_SHOWER
+      , m_timeWriter("times_" + nam + ".root")
+#endif
+      {
 	
       fastsimML.declareProperties( this );
     }
 
     /// Default destructor
-    virtual ~FastMLShower(){}
+    virtual ~FastMLShower(){
+#if DDML_INSTRUMENT_MODEL_SHOWER
+      m_timeWriter.finish();
+#endif
+    }
 
     /// Geometry construction callback. Called at "Construct()"
     virtual void constructGeo(dd4hep::sim::Geant4DetectorConstructionContext* ctxt)  override {
@@ -90,29 +128,77 @@ namespace ddml {
       G4double energy = track.GetPrimaryTrack()->GetKineticEnergy();
       step.SetTotalEnergyDeposited(energy);
 	
-	
+#if DDML_INSTRUMENT_MODEL_SHOWER
+      podio::UserDataCollection<double> prepareInputTime;
+      podio::UserDataCollection<double> runInferenceTime;
+      podio::UserDataCollection<double> convertOutputTime;
+      podio::UserDataCollection<double> localToGlobalTime;
+      podio::UserDataCollection<double> hitMakerTime;
+      podio::UserDataCollection<uint64_t> nHits;
+#endif
 
       _input.clear() ;
       _output.clear() ;
       for( auto& layerSPs : _spacepoints )
 	layerSPs.clear() ;
-	
+
+#if DDML_INSTRUMENT_MODEL_SHOWER
+      prepareInputTime.push_back(
+          run_void_member_timed(fastsimML.model,
+                                &ML_MODEL::MLModelT::prepareInput, track,
+                                _input, _output)
+              .count());
+      runInferenceTime.push_back(
+          run_void_member_timed(fastsimML.inference,
+                                &ML_MODEL::InferenceT::runInference, _input,
+                                _output)
+              .count());
+      convertOutputTime.push_back(
+          run_void_member_timed(fastsimML.model,
+                                &ML_MODEL::MLModelT::convertOutput, track,
+                                _output, _spacepoints)
+              .count());
+      localToGlobalTime.push_back(
+          run_void_member_timed(fastsimML.geometry,
+                                &ML_MODEL::GeometryT::localToGlobal, track,
+                                _spacepoints)
+              .count());
+
+      nHits.push_back(std::accumulate(
+          _output.begin(), _output.end(), 0u,
+          [](const auto sum, const auto v) { return sum + (v != 0); }));
+#else
       fastsimML.model.prepareInput( track, _input , _output ) ;
-	
       fastsimML.inference.runInference(_input, _output ) ;
-
       fastsimML.model.convertOutput( track, _output , _spacepoints) ;
-
       fastsimML.geometry.localToGlobal( track, _spacepoints ) ;
-
+#endif
       // now deposit energies in the detector using calculated global positions
-	
+#if DDML_INSTRUMENT_MODEL_SHOWER
+      const auto start = ClockT::now();
+#endif
       for( auto& layerSPs : _spacepoints )
 	for( auto& sp : layerSPs ) {
 	  fastsimML.hitMaker->make( G4FastHit( G4ThreeVector(sp.X,sp.Y,sp.Z) , sp.E ), track);
 	}
+
+#if DDML_INSTRUMENT_MODEL_SHOWER
+      const auto end = ClockT::now();
+      hitMakerTime.push_back(
+          std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)
+              .count());
+
+      auto frame = podio::Frame{};
+      frame.put(std::move(prepareInputTime), "prepareInput");
+      frame.put(std::move(runInferenceTime), "runInference");
+      frame.put(std::move(convertOutputTime), "convertOutput");
+      frame.put(std::move(localToGlobalTime), "localToGlobal");
+      frame.put(std::move(hitMakerTime), "hitMaker");
+      frame.put(std::move(nHits), "nHits");
+
+      m_timeWriter.writeFrame(frame, "events");
+#endif
     }
-      
   };
 
 
@@ -123,6 +209,11 @@ namespace ddml {
    */
   template< class Inference, class MLModel, class Geometry, class HitMaker>
   struct FastMLModel {
+
+    using InferenceT = Inference;
+    using MLModelT = MLModel;
+    using GeometryT = Geometry;
+    using HitMakerT = HitMaker;
     
     Inference inference={} ;
     MLModel   model={} ;
