@@ -22,6 +22,14 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
   endif()
 endif()
 
+
+# Change the default install prefix away from /usr/local
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  message(STATUS "Setting install prefix to ${PROJECT_SOURCE_DIR}/install")
+  set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install CACHE STRING "Install prefix" FORCE)
+endif()
+
+
 # Set up C++ Standard
 # ``-DCMAKE_CXX_STANDARD=<standard>`` when invoking CMake
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "")
