@@ -26,7 +26,7 @@ namespace ddml {
      */
     
     virtual void prepareInput(G4FastTrack const& aFastTrack,
-			      std::vector<float>& input,
+			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) = 0;
 
 

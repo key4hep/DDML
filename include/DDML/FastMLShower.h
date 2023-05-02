@@ -24,7 +24,9 @@ namespace ddml {
   protected:
     ML_MODEL fastsimML ;
 
-    std::vector<float> _input, _output ;
+    InputVecs _input ;
+    TensorDimVecs _dimVecs ;
+    std::vector<float> _output ;
     std::vector<ddml::SpacePointVec> _spacepoints ;
 
   public:
@@ -92,14 +94,15 @@ namespace ddml {
 	
 	
 
-      _input.clear() ;
+      for( auto& invec : _input ) invec.clear() ;
+
       _output.clear() ;
-      for( auto& layerSPs : _spacepoints )
-	layerSPs.clear() ;
+
+      for( auto& layerSPs : _spacepoints ) layerSPs.clear() ;
 	
-      fastsimML.model.prepareInput( track, _input , _output ) ;
+      fastsimML.model.prepareInput( track, _input, _dimVecs, _output ) ;
 	
-      fastsimML.inference.runInference(_input, _output ) ;
+      fastsimML.inference.runInference(_input, _dimVecs, _output ) ;
 
       fastsimML.model.convertOutput( track, _output , _spacepoints) ;
 

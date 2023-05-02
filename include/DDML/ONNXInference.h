@@ -32,7 +32,7 @@ namespace ddml {
     void initialize() ;
 
     /// run the inference model - based on input vector and resized outputvector
-    virtual void runInference(const std::vector<float>& input,
+    virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
 			      std::vector<float>& output ) ;
 
 

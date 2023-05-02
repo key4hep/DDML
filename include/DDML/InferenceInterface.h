@@ -1,9 +1,12 @@
 #ifndef InferenceInterface_H
 #define InferenceInterface_H
 
+#include "DDML/DDML.h"
+
 #include <vector>
 
 namespace ddml {
+
 
 /** The basic interface for running inference with one input vector and one output vector.
  *
@@ -16,7 +19,7 @@ namespace ddml {
     virtual ~InferenceInterface(){};
     
     /// run the inference model - based on input vector and resized outputvector
-    virtual void runInference(const std::vector<float>& input,
+    virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
 			      std::vector<float>& output ) = 0;
   };
 
