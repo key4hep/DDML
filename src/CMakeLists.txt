@@ -7,12 +7,26 @@ set(sources
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
+
+if(Torch_FOUND)
+  target_sources(${PROJECT_NAME} PRIVATE
+   TorchInference.cc
+   )
+ target_link_libraries(${PROJECT_NAME} PUBLIC
+   torch
+   )
+ target_compile_definitions(${PROJECT_NAME} PUBLIC
+   DDML_USE_TORCH_INFERENCE
+ )
+endif()
+
 target_link_libraries(${PROJECT_NAME} PUBLIC
+  DD4hep::DDCore
+  DD4hep::DDG4
+  DD4hep::DDDetectors
   ${Geant4_LIBRARIES}
   EDM4HEP::edm4hep
   podio::podio
-  DD4hep::DDCore
-  DD4hep::DDG4
   )
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -38,18 +52,7 @@ if(OnnxRuntime_FOUND)
     )
 endif()
 
-if(Torch_FOUND)
-  target_sources(${PROJECT_NAME} PRIVATE
-    TorchInference.cc
-    )
-  target_link_libraries(${PROJECT_NAME} PUBLIC
-    torch
-    )
-  target_compile_definitions(${PROJECT_NAME} PUBLIC
-    DDML_USE_TORCH_INFERENCE
-  )
-endif()
-
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_INTERFACE_MULTIPLICITY 4)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets
