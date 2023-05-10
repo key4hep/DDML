@@ -60,18 +60,25 @@ namespace ddml {
     torch::Tensor genTensor = torch::tensor( latent , m_options).view( dimsG ) ; //{1, 100, 1, 1, 1});
     torch::Tensor ETensor = torch::tensor( input[100], m_options).view( dimsE ); //{1, 1, 1, 1, 1});
     
-    if(DEBUGPRINT) std::cout << " Input_energy_tensor : " <<  input[100]  << std::endl ;
-   
+    if(DEBUGPRINT) {
+      std::cout << " genTensor : " <<  genTensor  << std::endl ;
+      std::cout << " ETensor : " << ETensor << std::endl ;
+
+    }
+
     at::Tensor outTensor = fModule.forward({genTensor, ETensor}).toTensor();//.contiguous();
+
+    if(DEBUGPRINT) {
+      std::cout << " outTensor : " <<  outTensor  << std::endl ;
+    }
 
     //torch.flatten(outTensor);
     //std::cout << "**" << outTensor << std::endl;
     //std::vector<float> output( outTensor.data_ptr<float>(), outTensor.data_ptr<float>() + outTensor.numel() );
 
-    for (auto out : std::vector<float>(outTensor.data_ptr<float>(), outTensor.data_ptr<float>() +outTensor.numel())) {
-
-            output.push_back(out);
+    for(int i = 0, N=output.size() ; i < N ; ++i){
+      output[i] = *(outTensor.data_ptr<float>() + i ) ;
     }
- 
+
   }
 } // namespace

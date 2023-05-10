@@ -24,7 +24,7 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 100
+SIM.numberOfEvents = 10
 ## Outputfile from the simulation,only lcio output is supported
 SIM.outputFile = "dummyOutput.slcio"
 ## Physics list to use in simulation
@@ -419,6 +419,6 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-SIM.physics.setupUserPhysics( aiDance)
-#SIM.physics.setupUserPhysics( aiDanceTorch)
+#SIM.physics.setupUserPhysics( aiDance)
+SIM.physics.setupUserPhysics( aiDanceTorch)
 
