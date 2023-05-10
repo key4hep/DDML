@@ -1,7 +1,7 @@
 #include "DDML/TorchInference.h"
 #include <cassert>
 
-#define DEBUGPRINT 1
+#define DEBUGPRINT 0
 
 namespace ddml {
 
@@ -78,10 +78,10 @@ namespace ddml {
     //std::cout << "**" << outTensor << std::endl;
     //std::vector<float> output( outTensor.data_ptr<float>(), outTensor.data_ptr<float>() + outTensor.numel() );
 
-    for (auto out : std::vector<float>(outTensor.data_ptr<float>(), outTensor.data_ptr<float>() +outTensor.numel())) {
-
-            output.push_back(out);
+    for(int i = 0, N=output.size() ; i < N ; ++i){
+      output[i] = *(outTensor.data_ptr<float>() + i ) ;
     }
+
  
   }
 } // namespace

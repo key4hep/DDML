@@ -419,6 +419,6 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-SIM.physics.setupUserPhysics( aiDance)
-#SIM.physics.setupUserPhysics( aiDanceTorch)
+#SIM.physics.setupUserPhysics( aiDance)
+SIM.physics.setupUserPhysics( aiDanceTorch)
 
