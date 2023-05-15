@@ -43,7 +43,7 @@ namespace ddml {
      */
     
     virtual void prepareInput(G4FastTrack const& aFastTrack,
-			      std::vector<float>& input,
+			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) ;
 
 
@@ -64,7 +64,7 @@ namespace ddml {
     int _latentSize = 100 ;
     float _cellSizeX = 5. ;
     float _cellSizeY = 5. ;
-
+    TensorDimVecs _tensDims = { {1, 100, 1 , 1 ,1}, {1, 1 , 1 , 1 ,1} } ;
   };
 
 } // namespace

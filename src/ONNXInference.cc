@@ -111,7 +111,7 @@ namespace ddml {
 
 
   /// run the inference model
-  void ONNXInference::runInference(const std::vector<float>& input,
+  void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
 				   std::vector<float>& output ) {
 
     if( ! _isInitialized ){
@@ -119,35 +119,23 @@ namespace ddml {
       _isInitialized = true ;
     }
 
-
-    // --- batch_size = 1 
-    // --- noise = torch.FloatTensor(batch_size, 100, 1, 1, 1).uniform_(-1, 1).detach() 
-    // --- gen_labels = np.random.uniform(10, 100, batch_size)
-    // --- gen_labels = torch.FloatTensor(gen_labels)
-    // --- gen_labels = gen_labels.view(batch_size, 1, 1, 1, 1).detach()
-  
-
     // create input tensor object from data values
-    std::vector<int64_t> dimsG = { 1, 100, 1 , 1 ,1 };
 
-    Ort::Value Input_noise_tensor =
-      Ort::Value::CreateTensor<float>(fInfo, const_cast<float*>(input.data()), 100 , dimsG.data(), dimsG.size());
-
-    assert(Input_noise_tensor.IsTensor());
-
-    std::vector<int64_t> dimsE = { 1, 1 , 1 , 1 ,1 };
-
-    Ort::Value Input_energy_tensor =
-      Ort::Value::CreateTensor<float>(fInfo, const_cast<float*>(&input[100]) , 1 , dimsE.data(), dimsE.size());
-
-    assert(Input_energy_tensor.IsTensor());
-
-    if(DEBUGPRINT) std::cout << " ONNXInference::runInference: Input_energy_tensor : " <<  input[100]  << std::endl ;
-
+    assert( inputs.size() == tensDims.size() ) ;
 
     std::vector<Ort::Value> ort_inputs;
-    ort_inputs.push_back(std::move(Input_noise_tensor));
-    ort_inputs.push_back(std::move(Input_energy_tensor));
+
+    size_t nIn = inputs.size() ;
+    for(unsigned i=0, N = inputs.size(); i<N ; ++i ){
+
+      Ort::Value tensor =
+	Ort::Value::CreateTensor<float>(fInfo, const_cast<float*>( inputs[i].data()),
+					inputs[i].size(), tensDims[i].data(), tensDims[i].size());
+
+      assert(tensor.IsTensor());
+
+      ort_inputs.push_back( std::move(tensor) );
+    }
 
     // run the inference session
     std::vector<Ort::Value> ort_outputs =

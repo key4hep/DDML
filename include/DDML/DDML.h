@@ -12,6 +12,13 @@
 
 namespace ddml {
 
+  /// vector of input vectors
+  typedef std::vector< std::vector< float > > InputVecs ;
+
+  /// vector of vectors with input tensor dimensions
+  typedef std::vector< std::vector<int64_t> > TensorDimVecs ;
+
+
 /** The basic space point structure for fast ML showers
  *  with cartesian position, energy and time;
  */

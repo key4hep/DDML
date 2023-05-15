@@ -12,10 +12,10 @@ namespace ddml {
 
 
   void RegularGridGANModel::prepareInput(G4FastTrack const& aFastTrack,
-					 std::vector<float>& input,
+					 InputVecs& inputs, TensorDimVecs& tensDims,
 					 std::vector<float>& output ) {
 
-
+    tensDims = _tensDims ;
 
     G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
 
@@ -33,16 +33,20 @@ namespace ddml {
     
     // the input for this model is the latent space and the energy conditioning
     
-    input.resize( _latentSize + 1 );
+    if( inputs.size() != 2 )
+      inputs.resize(2) ;
+ 
+    inputs[0].resize( _latentSize );
+    inputs[1].resize( 1 );
 
     for(int i = 0; i < _latentSize; ++i)
     {
-      input[i] = CLHEP::RandFlat::shoot(-1., 1.);
+      inputs[0][i] = CLHEP::RandFlat::shoot(-1., 1.);
 
       //    genVector[i] = CLHEP::RandGauss::shoot(0., 1.);
     }
 
-    input[ _latentSize ] = energy / CLHEP::GeV ;;
+    inputs[1][0] = energy / CLHEP::GeV ;;
 
     // ... later ...
     // input[ _latentSize + 1 ] = angle ;
