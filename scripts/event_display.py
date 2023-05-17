@@ -300,7 +300,7 @@ algList.append(MyCEDViewer)
 from Configurables import ApplicationMgr
 ApplicationMgr( TopAlg = algList,
                 EvtSel = 'NONE',
-                EvtMax   = 10,
+                EvtMax   = 100, #10,
                 ExtSvc = [evtsvc],
                 OutputLevel=INFO
               )

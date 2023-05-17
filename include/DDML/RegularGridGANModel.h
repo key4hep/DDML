@@ -58,9 +58,19 @@ namespace ddml {
   private:
 
     /// model properties for plugin
+
+    /*
+    // These grid sizes were used for the GAN
     int _nCellsX = 30 ; 
     int _nCellsY = 30 ; 
     int _nCellsZ = 30 ; 
+    */
+
+    // These grid sizes were used for the angular BIBAE
+    int _nCellsX = 30;
+    int _nCellsY = 60;
+    int _nCellsZ = 30;
+
     int _latentSize = 100 ;
     float _cellSizeX = 5. ;
     float _cellSizeY = 5. ;
