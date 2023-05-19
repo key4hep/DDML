@@ -389,7 +389,7 @@ def aiDanceTorch(kernel):
    model.Enable = True
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
-   model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
+   model.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # only trigger BIB-AE for more than 10 GeV (lower training threshold)
    model.ModelPath = '../models/BIBAE_Full_PP_cut.pt'  #BIBAE_Full.pt'   #"../models/GAN_Native_jit.pt" #"../models/GAN_SCRIPT_cpu_T1_13.pt" #"../models/francisca_gan_jit.pt"
    model.OptimizeFlag = 1
    model.IntraOpNumThreads = 1
@@ -405,7 +405,7 @@ def aiDanceTorch(kernel):
    model1.Enable = True
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
-   model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
+   model1.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # only trigger BIB-AE for more than 10 GeV (lower training threshold)
    model1.ModelPath = '../models/BIBAE_Full_PP_cut.pt' #BIBAE_Full.pt'  #"../models/GAN_Native_jit.pt" #"../models/GAN_SCRIPT_cpu_T1_13.pt" #"../models/francisca_gan_jit.pt"
    model1.OptimizeFlag = 1
    model1.IntraOpNumThreads = 1

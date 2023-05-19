@@ -75,6 +75,17 @@ namespace ddml {
     float _cellSizeX = 5. ;
     float _cellSizeY = 5. ;
 
+
+    // Define incident cell in the regular grid for centering
+    // One-angle BIBAE: center: 15,12
+    int _centerCellX = _nCellsX/2 ; // center of grid in X
+    int _centerCellY = 12. ;
+
+    /*
+    // Simple GAN: center: 15, 15
+    int _centerCellX = _nCellsX/2;
+    int _centerCellY = _nCellsY/2;
+    */
   };
 
 } // namespace
