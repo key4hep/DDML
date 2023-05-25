@@ -1,10 +1,15 @@
 #ifndef TorchInference_H
 #define TorchInference_H
 
+
 #include "DDML/InferenceInterface.h"
 #include <DDG4/Geant4Action.h>
 
+#undef ClassDef
 #include <torch/script.h>
+#define ClassDef(name,id)                            \
+   _ClassDefOutline_(name,id,virtual,)               \
+   static int DeclFileLine() { return __LINE__; }
 
 #include <memory>                              // for unique_ptr
 #include <vector>                              // for vector
@@ -36,8 +41,16 @@ namespace ddml {
     virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
 			      std::vector<float>& output ) ;
 
+    /// setter for the model path, so that is accessible through python bindings.
+    void setModelPath(const std::string &modelPath) {
+          TorchInference::modelPath = modelPath;
+      }
 
-  
+    /// getter for tensor options used in python to cpp test suite
+    const torch::TensorOptions &getMOptions() const {
+      return m_options;
+    }
+
   private:
     torch::jit::script::Module fModule;
     torch::TensorOptions m_options{};

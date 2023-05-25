@@ -82,6 +82,15 @@ if(Torch_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/TorchInference.h)
 endif()
 
-#install(FILES
-#  ${headers}
-#  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES
+  ${headers}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+ROOT_GENERATE_DICTIONARY(ROOT_dict ${headers} MODULE ${PROJECT_NAME} LINKDEF ${PROJECT_SOURCE_DIR}/include/DDML/LinkDef.h)
+
+install(FILES
+#        ${CMAKE_CURRENT_BINARY_DIR}/libDDML.so
+#        ${CMAKE_CURRENT_BINARY_DIR}/libDDML.rootmap
+        ${CMAKE_CURRENT_BINARY_DIR}/libDDML_rdict.pcm
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        )

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "DDML/TorchInference.h"
 #include <cassert>
 
@@ -21,15 +22,15 @@ namespace ddml {
 
 
   void TorchInference::initialize(){
-
+    std::cout << "Model Path: " << modelPath << std::endl;
     fModule = torch::jit::load( modelPath );
     fModule.to(torch::kCPU);
     fModule.eval();
-    
+
     m_options = torch::TensorOptions()
       .dtype(torch::kFloat32)
       .device(torch::kCPU);
-      
+
   }
 
 
@@ -41,6 +42,12 @@ namespace ddml {
       initialize() ;
       _isInitialized = true ;
     }
+
+    // --- batch_size = 1
+    // --- noise = torch.FloatTensor(batch_size, 100, 1, 1, 1).uniform_(-1, 1).detach()
+    // --- gen_labels = np.random.uniform(10, 100, batch_size)
+    // --- gen_labels = torch.FloatTensor(gen_labels)
+    // --- gen_labels = gen_labels.view(batch_size, 1, 1, 1, 1).detach()
 
     if(DEBUGPRINT){
       std::cout << " ----- TorchInference::runInference \n"
@@ -57,6 +64,18 @@ namespace ddml {
 	std::cout << " " << iv.size() << ", " ;
 
       std::cout << std::endl ;
+
+     // create tensors with correct shape for model
+    std::vector<float> latent(100) ;
+    for(unsigned i=0 ; i < 100 ; ++i )
+      latent[i] = inputs[i] ;
+
+    torch::Tensor genTensor = torch::tensor( latent , m_options).view( dimsG ) ; //{1, 100, 1, 1, 1});
+    torch::Tensor ETensor = torch::tensor( inputs[100], m_options).view( dimsE ); //{1, 1, 1, 1, 1});
+
+    if(DEBUGPRINT) {
+      std::cout << " genTensor : " <<  genTensor  << std::endl ;
+      std::cout << " ETensor : " << ETensor << std::endl ;
 
     }
    
