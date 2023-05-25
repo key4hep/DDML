@@ -1,0 +1,3 @@
+[submodule "SimpleGAN"]
+	path = models/simplegan
+	url = git@gitlab.desy.de:ilcsoft/simplegan.git
