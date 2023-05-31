@@ -389,7 +389,7 @@ def aiDanceTorch(kernel):
    seq.adopt(sensitives)
 
    #-----------------
-   model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelTorchModel/ShowerModel'))
+   model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch'))
 
 ##   # Mandatory model parameters
    model.RegionName = 'EcalBarrelRegion'
@@ -401,11 +401,12 @@ def aiDanceTorch(kernel):
    model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
    model.ModelPath = "../models/francisca_gan_jit.pt"
    model.OptimizeFlag = 1
+   model.IntraOpNumThreads = 1
 
    model.enableUI()
    seq.adopt(model)
    #-------------------
-   model1 = DetectorConstruction(kernel, str('RegularGridGANEndcapTorchModel/ShowerModel'))
+   model1 = DetectorConstruction(kernel, str('RegularGridGANEndcapTorchModel/EndcapModelTorch'))
 
 ##   # Mandatory model parameters
    model1.RegionName = 'EcalEndcapRegion'
@@ -415,7 +416,8 @@ def aiDanceTorch(kernel):
    model1.ApplicableParticles = {'e+','e-','gamma'}
    model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
    model1.ModelPath = "../models/francisca_gan_jit.pt"
-   model.OptimizeFlag = 1
+   model1.OptimizeFlag = 1
+   model1.IntraOpNumThreads = 1
 
    model1.enableUI()
    seq.adopt(model1)
@@ -430,6 +432,5 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-SIM.physics.setupUserPhysics( aiDance)
-#SIM.physics.setupUserPhysics( aiDanceTorch)
-
+# SIM.physics.setupUserPhysics( aiDance)
+SIM.physics.setupUserPhysics( aiDanceTorch)

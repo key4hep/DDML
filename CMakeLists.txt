@@ -51,6 +51,8 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
+option(INSTRUMENT_MODEL "Instrument the steps of the showerModel call" OFF)
+
 #---------------------------------------------------
 # external packages
 

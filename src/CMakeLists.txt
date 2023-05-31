@@ -20,6 +20,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 
+if(INSTRUMENT_MODEL)
+  target_link_libraries(${PROJECT_NAME} PUBLIC podio::podioRootIO)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC
+    DDML_INSTRUMENT_MODEL_SHOWER=1
+  )
+endif()
+
 if(OnnxRuntime_FOUND)
   target_sources(${PROJECT_NAME} PRIVATE
     ONNXInference.cc
