@@ -50,7 +50,9 @@ namespace ddml {
   protected:
     ML_MODEL fastsimML ;
 
-    std::vector<float> _input, _output ;
+    InputVecs _input ;
+    TensorDimVecs _dimVecs ;
+    std::vector<float> _output ;
     std::vector<ddml::SpacePointVec> _spacepoints ;
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
@@ -137,7 +139,8 @@ namespace ddml {
       podio::UserDataCollection<uint64_t> nHits;
 #endif
 
-      _input.clear() ;
+      for( auto& invec : _input ) invec.clear() ;
+
       _output.clear() ;
       for( auto& layerSPs : _spacepoints )
 	layerSPs.clear() ;

@@ -116,3 +116,32 @@ ddsim --steeringFile ddsim_steer.py --compactFile /usr/local/ilcsoft/HEAD/lcgeo/
 python /usr/local/ilcsoft/HEAD/CEDViewer/HEAD/bin/ced2go -d gear_ILD_l5_o1_v02.xml dummyOutput.slcio
 ```
 
+
+
+## timing observations 
+
+On MacBook Pro (Retina, 15-inch, Mid 2015), 2.2 GHz Quad-Core Intel Core i7 -
+built with 'Release'.
+
+
+
+- ONNX runtime, 20 GeV photons - 100 events
+
+Geant4Kernel     INFO  ++ Terminate Geant4 and delete associated actions.
+DDSim            INFO DDSim            INFO  Total Time:   74.60 s (User), 1.22 s (System)
+DDSim            INFO DDSim            INFO  StartUp Time: 17.71 s, Event Processing: 56.89 s (0.57 s/Event) 
+
+real	0m49.943s
+user	1m15.019s
+sys	0m1.374s
+
+
+- Torch runtime, 20 GeV photons - 100 events
+
+Geant4Kernel     INFO  ++ Terminate Geant4 and delete associated actions.
+DDSim            INFO DDSim            INFO  Total Time:   64.38 s (User), 2.82 s (System)
+DDSim            INFO DDSim            INFO  StartUp Time: 18.10 s, Event Processing: 46.28 s (0.46 s/Event) 
+
+real	0m36.555s
+user	1m4.798s
+sys	0m2.964s

@@ -5,7 +5,7 @@
 # --- the particle gun
 /gps/pos/centre 0 0 0
 /gps/particle  gamma
-#/gps/particle  e-
+#/gps/particle  pi-
 /gps/energy    20 GeV
 
 # for SimpleCalo

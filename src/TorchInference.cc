@@ -1,4 +1,5 @@
 #include "DDML/TorchInference.h"
+#include <cassert>
 
 #define DEBUGPRINT 0
 
@@ -33,45 +34,62 @@ namespace ddml {
 
 
 /// run the inference model 
-  void TorchInference::runInference(const std::vector<float>& input,
+  void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
 				   std::vector<float>& output ) {
 
     if( ! _isInitialized ){
       initialize() ;
       _isInitialized = true ;
     }
-      
-    // --- batch_size = 1 
-    // --- noise = torch.FloatTensor(batch_size, 100, 1, 1, 1).uniform_(-1, 1).detach() 
-    // --- gen_labels = np.random.uniform(10, 100, batch_size)
-    // --- gen_labels = torch.FloatTensor(gen_labels)
-    // --- gen_labels = gen_labels.view(batch_size, 1, 1, 1, 1).detach()
-  
 
-    // create input tensor object from data values
-    std::vector<int64_t> dimsG = { 1, 100, 1 , 1 ,1 };
-    std::vector<int64_t> dimsE = { 1, 1 , 1 , 1 ,1 };
+    if(DEBUGPRINT){
+      std::cout << " ----- TorchInference::runInference \n"
+		<< "    # inputs = " << inputs.size() << " : " ;
 
-     // create tensors with correct shape for model
-    std::vector<float> latent(100) ;
-    for(unsigned i=0 ; i < 100 ; ++i )
-      latent[i] = input[i] ;
-	  
-    torch::Tensor genTensor = torch::tensor( latent , m_options).view( dimsG ) ; //{1, 100, 1, 1, 1});
-    torch::Tensor ETensor = torch::tensor( input[100], m_options).view( dimsE ); //{1, 1, 1, 1, 1});
-    
-    if(DEBUGPRINT) std::cout << " Input_energy_tensor : " <<  input[100]  << std::endl ;
+      for(auto iv : inputs )
+	std::cout << " " << iv.size() << ", " ;
+
+      std::cout << std::endl ;
+
+      std::cout << "    # dims = " << tensDims.size() << " : " ;
+
+      for(auto iv : tensDims )
+	std::cout << " " << iv.size() << ", " ;
+
+      std::cout << std::endl ;
+
+    }
    
-    at::Tensor outTensor = fModule.forward({genTensor, ETensor}).toTensor();//.contiguous();
+    assert( inputs.size() == tensDims.size() ) ;
+
+    std::vector<at::IValue> tensors ;
+
+    size_t nIn = inputs.size() ;
+    for(unsigned i=0,N = inputs.size(); i<N ; ++i ){
+
+      torch::Tensor inTens = torch::tensor( inputs[i] , m_options).view( tensDims[i] ) ;
+      tensors.emplace_back( inTens ) ;
+
+      if(DEBUGPRINT) {
+	std::cout << " inTensor " << i << " : " <<  inTens  << std::endl ;
+      }
+      
+    }
+
+
+    at::Tensor outTensor = fModule.forward( tensors  ).toTensor();//.contiguous();
+
+    if(DEBUGPRINT) {
+      std::cout << " outTensor : " <<  outTensor  << std::endl ;
+    }
 
     //torch.flatten(outTensor);
     //std::cout << "**" << outTensor << std::endl;
     //std::vector<float> output( outTensor.data_ptr<float>(), outTensor.data_ptr<float>() + outTensor.numel() );
 
-    for (auto out : std::vector<float>(outTensor.data_ptr<float>(), outTensor.data_ptr<float>() +outTensor.numel())) {
-
-            output.push_back(out);
+    for(int i = 0, N=output.size() ; i < N ; ++i){
+      output[i] = *(outTensor.data_ptr<float>() + i ) ;
     }
- 
+
   }
 } // namespace
