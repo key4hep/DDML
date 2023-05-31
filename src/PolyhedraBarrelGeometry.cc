@@ -87,7 +87,8 @@ namespace ddml {
 
     // find the first layer that will have signals as sometimes particles are create in the calorimeter !
     int firstLayer = 0 ;
-    int nLayer = spacepoints.size() ;
+    int nLayer = _caloLayerDistances.size() ;
+
     for(int l= 0; l < nLayer ; ++l ){ 
       double r = _caloLayerDistances[l] ;
       firstLayer = l ;
@@ -96,6 +97,12 @@ namespace ddml {
       if( lambda > 0.)
 	break ;
     }
+
+    nLayer -= firstLayer ; // only populate existing calo layers
+
+    // and remove other layers
+    for(unsigned k=nLayer ; k< spacepoints.size() ; ++k )
+      spacepoints[k].clear() ;
 
     for(int l= 0; l < nLayer ; ++l ){ 
       
@@ -116,13 +123,14 @@ namespace ddml {
 			   posC.z() + sp.Y
 	  ) ;
 
-	// rotate back to original phi sector
+        // rotate back to original phi sector
 	auto global = rotPos * pos ;
 
 	sp.X = global.x() ;
 	sp.Y = global.y() ;
 	sp.Z = global.z() ;
 	
+
       }
     }
   }
