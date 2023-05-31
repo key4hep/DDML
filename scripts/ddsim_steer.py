@@ -24,7 +24,7 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 10
+SIM.numberOfEvents = 100
 ## Outputfile from the simulation,only lcio output is supported
 SIM.outputFile = "dummyOutput.slcio"
 ## Physics list to use in simulation
@@ -285,6 +285,8 @@ SIM.random.type = None
 
 def aiDance(kernel):
    ild = True
+   par04 = True
+
    if ild == True :
       ml_barrel_name = 'EcalBarrel'
       ml_barrel_symmetry = 8
@@ -293,6 +295,15 @@ def aiDance(kernel):
       ml_barrel_name = 'ECalBarrel'
       ml_barrel_symmetry = 12
       ml_endcap_name = 'ECalEndcap'
+
+   if par04 == True :
+      ml_file = "../models/Generator.onnx"
+      ml_model = "Par04ExampleVAEPolyhedraBarrelONNXModel/ShowerModel"
+      ml_model1 = "Par04ExampleVAEEndcapONNXModel/ShowerModel"
+   else :
+      ml_file = "../models/francisca_gan.onnx"
+      ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
+      ml_model1 = "RegularGridGANEndcapONNXModel/ShowerModel"
 
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -310,7 +321,7 @@ def aiDance(kernel):
    seq.adopt(sensitives)
 
    #-----------------
-   model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelONNXModel/ShowerModel'))
+   model = DetectorConstruction(kernel, str( ml_model ) )
 
 ##   # Mandatory model parameters
    model.RegionName = 'EcalBarrelRegion'
@@ -320,13 +331,13 @@ def aiDance(kernel):
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
    model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
-   model.ModelPath = "../models/francisca_gan.onnx"
+   model.ModelPath = ml_file
    model.OptimizeFlag = 1
 
    model.enableUI()
    seq.adopt(model)
    #-------------------
-   model1 = DetectorConstruction(kernel, str('RegularGridGANEndcapONNXModel/ShowerModel'))
+   model1 = DetectorConstruction(kernel, str(ml_model1))
 
 ##   # Mandatory model parameters
    model1.RegionName = 'EcalEndcapRegion'
@@ -335,7 +346,7 @@ def aiDance(kernel):
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
    model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
-   model1.ModelPath = "../models/francisca_gan.onnx"
+   model1.ModelPath = ml_file
    model.OptimizeFlag = 1
 
    model1.enableUI()
@@ -419,6 +430,6 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-#SIM.physics.setupUserPhysics( aiDance)
-SIM.physics.setupUserPhysics( aiDanceTorch)
+SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics( aiDanceTorch)
 

@@ -13,7 +13,7 @@
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
-
+#include "DDML/Par04ExampleVAE.h"
 
 namespace ddml {
 
@@ -31,6 +31,20 @@ namespace ddml {
 				   ddml::EndcapGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridGANEndcapONNXModel ;
+
+  /// Par04 example
+  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
+				   ddml::Par04ExampleVAE,
+				   ddml::PolyhedraBarrelGeometry,
+				   Geant4FastHitMakerGlobal> >
+  Par04ExampleVAEPolyhedraBarrelONNXModel ;
+
+  /// a concrete model for regular grid GANs applied to the endcap calorimeter with ONNX
+  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
+				   ddml::Par04ExampleVAE,
+				   ddml::EndcapGeometry,
+				   Geant4FastHitMakerGlobal> >
+  Par04ExampleVAEEndcapONNXModel ;
 #endif
 
 #ifdef DDML_USE_TORCH_INFERENCE
@@ -55,6 +69,8 @@ namespace ddml {
 #ifdef DDML_USE_ONNX_INFERENCE
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelONNXModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEPolyhedraBarrelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEEndcapONNXModel)
 #endif
 
 #ifdef DDML_USE_TORCH_INFERENCE
