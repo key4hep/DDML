@@ -10,6 +10,7 @@ Prerequisites:
 - iLCSoft (or key4hep):
 	- DD4hep, Geant4, podio, EDM4hep, LCIO, ...
 - ONNXRuntime
+- libTorch.so/dylib
 
 - init software environment, e.g.:
 

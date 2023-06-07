@@ -149,12 +149,12 @@ namespace ddml {
       prepareInputTime.push_back(
           run_void_member_timed(fastsimML.model,
                                 &ML_MODEL::MLModelT::prepareInput, track,
-                                _input, _output)
+                                _input, _dimVecs, _output)
               .count());
       runInferenceTime.push_back(
           run_void_member_timed(fastsimML.inference,
                                 &ML_MODEL::InferenceT::runInference, _input,
-                                _output)
+				_dimVecs, _output)
               .count());
       convertOutputTime.push_back(
           run_void_member_timed(fastsimML.model,
@@ -171,8 +171,8 @@ namespace ddml {
           _output.begin(), _output.end(), 0u,
           [](const auto sum, const auto v) { return sum + (v != 0); }));
 #else
-      fastsimML.model.prepareInput( track, _input , _output ) ;
-      fastsimML.inference.runInference(_input, _output ) ;
+      fastsimML.model.prepareInput( track, _input, _dimVecs, _output ) ;
+      fastsimML.inference.runInference(_input, _dimVecs, _output ) ;
       fastsimML.model.convertOutput( track, _output , _spacepoints) ;
       fastsimML.geometry.localToGlobal( track, _spacepoints ) ;
 #endif

@@ -12,6 +12,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${Geant4_LIBRARIES}
   EDM4HEP::edm4hep
   podio::podio
+  podio::podioDict
   DD4hep::DDCore
   DD4hep::DDG4
   )

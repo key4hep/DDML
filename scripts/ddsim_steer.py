@@ -26,7 +26,9 @@ SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
 SIM.numberOfEvents = 100
 ## Outputfile from the simulation,only lcio output is supported
+#SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
 SIM.outputFile = "dummyOutput.slcio"
+
 ## Physics list to use in simulation
 SIM.physicsList = None
 ## Verbosity use integers from 1(most) to 7(least) verbose
@@ -432,5 +434,5 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-# SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics( aiDance)
 SIM.physics.setupUserPhysics( aiDanceTorch)

@@ -5,7 +5,7 @@
 #include "CLHEP/Random/RandGauss.h"     // for RandGauss
 #include "CLHEP/Random/RandFlat.h"     // for RandGauss
 
-#define DEBUGPRINT 1
+#define DEBUGPRINT 0
 
 namespace ddml {
 
