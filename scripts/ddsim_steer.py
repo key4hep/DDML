@@ -287,7 +287,8 @@ SIM.random.type = None
 
 def aiDance(kernel):
    ild = True
-   par04 = True
+   par04 = False
+   old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
    if ild == True :
       ml_barrel_name = 'EcalBarrel'
@@ -309,18 +310,21 @@ def aiDance(kernel):
 
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
-   geant4 = Geant4(kernel)
-   
-   seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
-   act.DebugMaterials = True
-   act.DebugElements = False
-   act.DebugVolumes = True
-   act.DebugShapes = True
 
-   # Apply sensitive detectors
-   sensitives = DetectorConstruction(kernel, str('Geant4DetectorSensitivesConstruction/ConstructSD'))
-   sensitives.enableUI()
-   seq.adopt(sensitives)
+   geant4 = Geant4(kernel)
+   seq = geant4.detectorConstruction()
+
+   if old_DD4hep :  # this is now done in DD4hepSimulations.py, i.e. in ddsim 
+      seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
+      act.DebugMaterials = True
+      act.DebugElements = False
+      act.DebugVolumes = True
+      act.DebugShapes = True
+      # Apply sensitive detectors
+      sensitives = DetectorConstruction(kernel, str('Geant4DetectorSensitivesConstruction/ConstructSD'))
+      sensitives.enableUI()
+      seq.adopt(sensitives)
+
 
    #-----------------
    model = DetectorConstruction(kernel, str( ml_model ) )
@@ -366,7 +370,8 @@ def aiDance(kernel):
 
 def aiDanceTorch(kernel):
    ild = True
-   if ild == True :
+
+   if ild == True:
       ml_barrel_name = 'EcalBarrel'
       ml_barrel_symmetry = 8
       ml_endcap_name = 'EcalEndcap'
@@ -434,5 +439,5 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-#SIM.physics.setupUserPhysics( aiDance)
-SIM.physics.setupUserPhysics( aiDanceTorch)
+SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics( aiDanceTorch)
