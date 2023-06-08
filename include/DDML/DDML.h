@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <cstdint>
 
 /** Some basic helper classes and utilities for DDML.
  *
