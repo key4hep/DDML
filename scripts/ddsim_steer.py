@@ -298,16 +298,7 @@ def aiDance(kernel):
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
    geant4 = Geant4(kernel)
    
-   seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
-   act.DebugMaterials = True
-   act.DebugElements = False
-   act.DebugVolumes = True
-   act.DebugShapes = True
-
-   # Apply sensitive detectors
-   sensitives = DetectorConstruction(kernel, str('Geant4DetectorSensitivesConstruction/ConstructSD'))
-   sensitives.enableUI()
-   seq.adopt(sensitives)
+   seq = geant4.detectorConstruction()
 
    #-----------------
    model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelONNXModel/BarrelModelOnnx'))
@@ -367,17 +358,7 @@ def aiDanceTorch(kernel):
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
    geant4 = Geant4(kernel)
-   
-   seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
-   act.DebugMaterials = True
-   act.DebugElements = False
-   act.DebugVolumes = True
-   act.DebugShapes = True
-
-   # Apply sensitive detectors
-   sensitives = DetectorConstruction(kernel, str('Geant4DetectorSensitivesConstruction/ConstructSD'))
-   sensitives.enableUI()
-   seq.adopt(sensitives)
+   seq = geant4.detectorConstruction()
 
    #-----------------
    model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch'))
