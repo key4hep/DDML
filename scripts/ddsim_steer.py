@@ -370,6 +370,7 @@ def aiDance(kernel):
 
 def aiDanceTorch(kernel):
    ild = True
+   BIBAE = True
    old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
    if ild == True:
@@ -380,6 +381,15 @@ def aiDanceTorch(kernel):
       ml_barrel_name = 'ECalBarrel'
       ml_barrel_symmetry = 12
       ml_endcap_name = 'ECalEndcap'
+
+   if BIBAE == True:
+      ml_file  = "../models/BIBAE_Full_PP_cut.pt"
+      ml_model = "RegularGridBIBAEPolyhedraBarrelTorchModel/BarrelModelTorch"
+      ml_model1 = "RegularGridBIBAEEndcapTorchModel/EndcapModelTorch"
+   else:
+      ml_file = "../models/francisca_gan_jit.pt"
+      ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"
+      ml_model_1 = "RegularGridGANEndcapTorchModel/EndcapModelTorch"
 
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -400,7 +410,7 @@ def aiDanceTorch(kernel):
       seq.adopt(sensitives)
 
    #-----------------
-   model = DetectorConstruction(kernel, str('RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch'))
+   model = DetectorConstruction(kernel, str(ml_model))
 
 ##   # Mandatory model parameters
    model.RegionName = 'EcalBarrelRegion'
@@ -409,15 +419,15 @@ def aiDanceTorch(kernel):
    model.Enable = True
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
-   model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
-   model.ModelPath = "../models/francisca_gan_jit.pt"
+   model.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # trigger on lower training threshold
+   model.ModelPath = ml_file
    model.OptimizeFlag = 1
    model.IntraOpNumThreads = 1
 
    model.enableUI()
    seq.adopt(model)
    #-------------------
-   model1 = DetectorConstruction(kernel, str('RegularGridGANEndcapTorchModel/EndcapModelTorch'))
+   model1 = DetectorConstruction(kernel, str(ml_model_1))
 
 ##   # Mandatory model parameters
    model1.RegionName = 'EcalEndcapRegion'
@@ -425,8 +435,8 @@ def aiDanceTorch(kernel):
    model1.Enable = True
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
-   model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
-   model1.ModelPath = "../models/francisca_gan_jit.pt"
+   model1.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # trigger on lower training threshold
+   model1.ModelPath = ml_file
    model1.OptimizeFlag = 1
    model1.IntraOpNumThreads = 1
 

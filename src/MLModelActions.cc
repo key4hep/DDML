@@ -1,6 +1,7 @@
 #ifdef DDML_USE_TORCH_INFERENCE
 // -- includes this before any ROOT stuff - as it defines a struct ClassDef that is otherwise overwritten by Rtypes.h
 #include "DDML/TorchInference.h"
+#include "DDML/TorchInference_BIBAE.h"
 #endif
 
 #include "DDML/FastMLShower.h"
@@ -10,6 +11,7 @@
 #endif
 
 #include "DDML/RegularGridGANModel.h"
+#include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
@@ -61,6 +63,21 @@ namespace ddml {
 				   ddml::EndcapGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridGANEndcapTorchModel ;
+
+  /// Model for BIBAE regular grid inference in the barrel calorimeter with Torch
+  typedef FastMLShower<FastMLModel<ddml::TorchInference,
+          ddml::RegularGridBIBAEModel,
+          ddml::PolyhedraBarrelGeometry,
+				   Geant4FastHitMakerGlobal> >
+  RegularGridBIBAEPolyhedraBarrelTorchModel ;
+
+  /// Model for BIBAE regular grid inference in the endcap calorimeter with Torch
+  typedef FastMLShower<FastMLModel<ddml::TorchInference,
+				   ddml::RegularGridBIBAEModel,
+				   ddml::EndcapGeometry,
+				   Geant4FastHitMakerGlobal> >
+  RegularGridBIBAEEndcapTorchModel ;
+
 #endif
 }
 
@@ -76,4 +93,6 @@ DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEEndcapONNXModel)
 #ifdef DDML_USE_TORCH_INFERENCE
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml,RegularGridBIBAEPolyhedraBarrelTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml,RegularGridBIBAEEndcapTorchModel)
 #endif
