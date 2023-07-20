@@ -1,0 +1,29 @@
+image: ghcr.io/key4hep/key4hep-images/ubuntu22:latest
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "PythonBindings"
+
+stages:
+  - build
+  - test
+
+build-job:
+  stage: build
+  tags:
+    - cvmfs
+
+  script:
+#    - source /cvmfs/sw-nightlies.hsf.org/key4hep/releases/2023-07-04/x86_64-ubuntu22.04-gcc11.3.0-opt/key4hep-stack/2023-07-03-okrjlh/setup.sh
+    - source setup_env_nightly.sh
+    - pwd
+    - mkdir cmake-build
+    - cd cmake-build
+    - cmake ..
+    - make -j install
+
+test-job:
+  stage: test
+  script:
+    - cd ../tests
+    - python test.py
