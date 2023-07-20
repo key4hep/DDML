@@ -46,7 +46,7 @@ namespace ddml {
           TorchInference::modelPath = modelPath;
       }
 
-    /// getter for tensor options used in python to cpp test suite
+    /// getter for tensor options used in python test suite
     const torch::TensorOptions &getMOptions() const {
       return m_options;
     }

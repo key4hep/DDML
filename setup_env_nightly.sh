@@ -5,7 +5,8 @@
 #
 #
 
-source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
+#source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
+source /cvmfs/sw-nightlies.hsf.org/key4hep/releases/2023-07-04/x86_64-ubuntu22.04-gcc11.3.0-opt/key4hep-stack/2023-07-03-okrjlh/setup.sh
 
 TORCH_PATH=$(dirname $(python -c 'import torch; print(f"{torch.__file__}")'))
 export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${TORCH_PATH}/share/cmake
