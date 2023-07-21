@@ -385,7 +385,7 @@ def aiDanceTorch(kernel):
    if BIBAE == True:
       ml_file  = "../models/BIBAE_Full_PP_cut.pt"
       ml_model = "RegularGridBIBAEPolyhedraBarrelTorchModel/BarrelModelTorch"
-      ml_model1 = "RegularGridBIBAEEndcapTorchModel/EndcapModelTorch"
+      ml_model_1 = "RegularGridBIBAEEndcapTorchModel/EndcapModelTorch"
    else:
       ml_file = "../models/francisca_gan_jit.pt"
       ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"

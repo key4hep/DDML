@@ -1,7 +1,6 @@
 #ifdef DDML_USE_TORCH_INFERENCE
 // -- includes this before any ROOT stuff - as it defines a struct ClassDef that is otherwise overwritten by Rtypes.h
 #include "DDML/TorchInference.h"
-#include "DDML/TorchInference_BIBAE.h"
 #endif
 
 #include "DDML/FastMLShower.h"
@@ -66,8 +65,8 @@ namespace ddml {
 
   /// Model for BIBAE regular grid inference in the barrel calorimeter with Torch
   typedef FastMLShower<FastMLModel<ddml::TorchInference,
-          ddml::RegularGridBIBAEModel,
-          ddml::PolyhedraBarrelGeometry,
+           ddml::RegularGridBIBAEModel,
+           ddml::PolyhedraBarrelGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridBIBAEPolyhedraBarrelTorchModel ;
 

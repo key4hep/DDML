@@ -42,8 +42,12 @@ namespace ddml {
      *  angles.)
      */
     
+    //virtual void prepareInput(G4FastTrack const& aFastTrack,
+		//	      std::vector<float>& inputs, TensorDimVecs& tensDims,
+		//	      std::vector<float>& output ) ;
+
     virtual void prepareInput(G4FastTrack const& aFastTrack,
-			      std::vector<float>& input,
+			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) ;
 
 
@@ -70,8 +74,7 @@ namespace ddml {
     int _nCellsX = 30;
     int _nCellsY = 60;
     int _nCellsZ = 30;
-
-    int _latentSize = 100 ;
+    int _latentSize = 3;
     float _cellSizeX = 5. ;
     float _cellSizeY = 5. ;
 
@@ -80,6 +83,8 @@ namespace ddml {
     // One-angle BIBAE: center: 15,12
     int _centerCellX = _nCellsX/2 ; // center of grid in X
     int _centerCellY = 12. ;
+    //TensorDimVecs _tensDims = { {1, 1}, {1, 1}};
+    TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,2} };
 
     /*
     // Simple GAN: center: 15, 15
