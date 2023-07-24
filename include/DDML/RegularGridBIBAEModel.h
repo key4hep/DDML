@@ -70,7 +70,6 @@ namespace ddml {
     // One-angle BIBAE: center: 15,12
     int _centerCellX = _nCellsX/2 ; // center of grid in X
     int _centerCellY = 12. ;
-    //TensorDimVecs _tensDims = { {1, 1}, {1, 1}};
     TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,2} };
 
     /*
