@@ -65,8 +65,8 @@ namespace ddml {
 
   /// Model for BIBAE regular grid inference in the barrel calorimeter with Torch
   typedef FastMLShower<FastMLModel<ddml::TorchInference,
-           ddml::RegularGridBIBAEModel,
-           ddml::PolyhedraBarrelGeometry,
+                                   ddml::RegularGridBIBAEModel,
+                                   ddml::PolyhedraBarrelGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridBIBAEPolyhedraBarrelTorchModel ;
 
