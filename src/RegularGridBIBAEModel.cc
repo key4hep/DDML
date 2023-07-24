@@ -45,14 +45,6 @@ namespace ddml {
     inputs[2][0] = ( inputs[0][0] )/100. ;
     inputs[2][1] = ( inputs[1][0] )/ (90.*(M_PI/180.)) ;
     
-    // can't include this here
-    /*
-    torch::Tensor Cond = torch::cat({ inputs[0][0], inputs[1][0] }, 1);
-
-
-    inputs[2][0] = Cond;
-    */
-
 
     if(DEBUGPRINT) std::cout << " Input_energy_tensor : " <<   inputs[0][0]*100. << std::endl ;
 
