@@ -41,11 +41,6 @@ namespace ddml {
      *  based on the current FastTrack (e.g. extract kinetic energy and incident
      *  angles.)
      */
-    
-    //virtual void prepareInput(G4FastTrack const& aFastTrack,
-		//	      std::vector<float>& inputs, TensorDimVecs& tensDims,
-		//	      std::vector<float>& output ) ;
-
     virtual void prepareInput(G4FastTrack const& aFastTrack,
 			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) ;
