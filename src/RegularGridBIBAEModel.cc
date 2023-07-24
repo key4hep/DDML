@@ -11,10 +11,6 @@
 
 namespace ddml {
 
-    //void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack,
-     //     std::vector<float>& inputs, TensorDimVecs& tensDims,
-      //    std::vector<float>& output ) {
-
     void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack,
 			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) {
