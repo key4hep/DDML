@@ -71,12 +71,6 @@ namespace ddml {
     int _centerCellX = _nCellsX/2 ; // center of grid in X
     int _centerCellY = 12. ;
     TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,2} };
-
-    /*
-    // Simple GAN: center: 15, 15
-    int _centerCellX = _nCellsX/2;
-    int _centerCellY = _nCellsY/2;
-    */
   };
 
 } // namespace
