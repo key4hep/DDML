@@ -48,29 +48,6 @@ namespace ddml {
 
     if(DEBUGPRINT) std::cout << " Input_energy_tensor : " <<   inputs[0][0]*100. << std::endl ;
 
-
-    /*
-
-    // the input for this model is the latent space and the energy conditioning
-
-        inputs.resize( _latentSize + 1 );
-
-    for(int i = 0; i < _latentSize; ++i)
-
-    {
-      inputs[i] = CLHEP::RandFlat::shoot(-1., 1.);
-
-      //    genVector[i] = CLHEP::RandGauss::shoot(0., 1.);
-    }
-
-    inputs[ _latentSize ] = energy / CLHEP::GeV ;;
-
-    // ... later ...
-
-    // input[ _latentSize + 1 ] = angle ;
-    */
-    
-
     // ----  resize output vector
 
     int outputSize = _nCellsX * _nCellsY * _nCellsZ ;
