@@ -31,32 +31,6 @@ namespace ddml {
       std::cout << "  RegularGridBIBAEModel::prepareInput   pos0 = " << position
 		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV << std::endl ;
 
-    /*
-    // create input tensor objects from data values
-    std::vector<int64_t> dims_CondE = {1, 1};
-    std::vector<int64_t> dims_CondTheta = {1,1};
-    */
-
-    /*
-    // for now, fake showers with angle 89.0 degrees (avoid edge of training space)
-    std::vector<int64_t> Theta_vec(1, 1);
-    for(unsigned i=0; i<1; ++i ){
-      Theta_vec[i] = 89.*(M_PI/180.);
-    }
-
-    // Input[100] is currently the incident energy in GeV
-
-    std::vector<int64_t> E_vec(1, 1);
-    E_vec[0] = energy / CLHEP::GeV;
-    */
-
-    
-    /*
-    torch::Tensor ETensor = torch::tensor( E_vec, m_options ).view( dims_CondE );
-    torch::Tensor ThetaTensor = torch::tensor( Theta_vec, m_options ).view( dims_CondTheta );
-
-    torch::Tensor CondTensor = torch::cat({ ETensor/100., ThetaTensor/(90.*(M_PI/180.)) }, 1);
-    */
 
     // the input for the BIB-AE is one energy and an angle (plus cond tensor)
     inputs.resize(_latentSize);
