@@ -44,7 +44,6 @@ endif()
 if(Torch_FOUND)
   target_sources(${PROJECT_NAME} PRIVATE
     TorchInference.cc
-    #TorchInference_BIBAE.cc
     )
   target_link_libraries(${PROJECT_NAME} PUBLIC
     torch
