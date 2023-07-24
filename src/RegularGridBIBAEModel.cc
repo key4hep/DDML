@@ -76,8 +76,6 @@ void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
 	  if( output[ iHit ] > 0. ){
 
 	    ddml::SpacePoint sp(
-	      //( i - int(_nCellsX/2) + 0.5 ) * _cellSizeX ,
-	      //( j - int(_nCellsY/2) + 0.5 ) * _cellSizeY ,
         ( i - int(_centerCellX) + 0.5 ) * _cellSizeX ,
         ( j - int(_centerCellY) + 0.5 ) * _cellSizeY ,
 
