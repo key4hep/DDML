@@ -80,7 +80,6 @@ endif()
 
 if(Torch_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/TorchInference.h)
-  #list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/TorchInference_BIBAE.h)
 endif()
 
 #install(FILES
