@@ -28,7 +28,7 @@ build-job:
 
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/install/
+      - install/
     expire_in: 1 day
 
 test-job:
@@ -39,5 +39,7 @@ test-job:
     - python test.py
   artifacts:
     paths:
-      $CI_PROJECT_DIR/tests/
+      - tests/
     expire_in: 1 week
+  dependencies:
+    - build-job
