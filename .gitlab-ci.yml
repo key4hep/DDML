@@ -1,5 +1,9 @@
 image: ghcr.io/key4hep/key4hep-images/ubuntu22:latest
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+
 workflow:
   rules:
     - if: $CI_COMMIT_BRANCH == "PythonBindings"
@@ -22,8 +26,18 @@ build-job:
     - cmake ..
     - make -j install
 
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/install/
+    expire_in: 1 day
+
 test-job:
   stage: test
   script:
-    - cd ../tests
+    - source setup_env_nightly.sh
+    - cd tests
     - python test.py
+  artifacts:
+    paths:
+      $CI_PROJECT_DIR/tests/
+    expire_in: 1 week
