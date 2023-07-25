@@ -2,7 +2,8 @@ image: ghcr.io/key4hep/key4hep-images/ubuntu22:latest
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  GIT_SUBMODULE_FORCE_HTTPS: "true"
+  GIT_SUBMODULE_FORCE_HTTPS: "true" # This doesn't work with our current gitlab runner version (14.7.0) as it's introduced in 15.11. Have to resort to relative submodule path which breaks in case the project is forked.
+  CI_DEBUG_TRACE: "true"
 
 workflow:
   rules:
