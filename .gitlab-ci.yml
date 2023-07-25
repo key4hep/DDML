@@ -29,6 +29,7 @@ build-job:
 
   artifacts:
     paths:
+      - cmake-build/src/
       - install/
     expire_in: 1 day
 
@@ -37,6 +38,8 @@ test-job:
   tags:
     - cvmfs
   script:
+    - ls
+    - ls cmake-build/src
     - source setup_env_nightly.sh
     - cd tests
     - python test.py
