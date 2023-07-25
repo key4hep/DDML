@@ -2,9 +2,6 @@
 
 #include <G4FastTrack.hh>                // for G4FastTrack
 
-#include "CLHEP/Random/RandGauss.h"     // for RandGauss
-#include "CLHEP/Random/RandFlat.h"     // for RandGauss
-
 //#include <torch/script.h>
 
 #define DEBUGPRINT 1
