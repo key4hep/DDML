@@ -5,6 +5,7 @@ set(sources
   PolyhedraBarrelGeometry.cc
   RegularGridGANModel.cc
   Par04ExampleVAE.cc
+  RegularGridBIBAEModel.cc
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
@@ -62,6 +63,7 @@ dd4hep_instantiate_package(${PROJECT_NAME})
 set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridGANModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/Par04ExampleVAE.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
