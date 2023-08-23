@@ -114,6 +114,11 @@ namespace ddml {
     auto posR = rotNeg * position ;
     auto dirR = rotNeg * direction ;
 
+    const bool correctForAngles = false ; //FIXME: make parameter
+
+    if( ! correctForAngles )
+      dirR = { 1., 0. , 0.  } ;  // position layers w/ impact normal to the plane
+
     if( DEBUGPRINT ) 
       std::cout << "  PolyhedraBarrelGeometry::localToGlobal -  position " << position << " - direction " << direction
 		<< " phiSec: " << phiSec

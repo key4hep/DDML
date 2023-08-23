@@ -75,6 +75,11 @@ namespace ddml {
     
     float signZ = ( position.z() > 0. ?  1.0 : -1.0 ) ;
 
+    const bool correctForAngles = false ; //FIXME: make parameter
+
+    if( ! correctForAngles )
+      direction = { 0., 0. , signZ * 1.0  } ;  // position layers w/ impact normal to the plane
+
     // find the first layer that will have signals as sometimes particles are create in the calorimeter !
     int firstLayer = 0 ;
     int nLayer = _caloLayerDistances.size() ;

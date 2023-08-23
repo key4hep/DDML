@@ -20,14 +20,15 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-    // here we could use position and direction to compute additional
-    // conditioning variables, such as incident angles ...
-    // for now assume simple BIBAE with 90 deg incident
-
+    // compute local incident anngles
+    double theta = acos( localDir.z() ) ;
+    double phi = atan2( localDir.x() , localDir.y() ) ;
 
     if( DEBUGPRINT ) 
       std::cout << "  RegularGridBIBAEModel::prepareInput   pos0 = " << position
-		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV << std::endl ;
+		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV
+		<< " theta = " << theta
+		<< std::endl ;
 
 
     // the input for the BIB-AE is one energy and an angle (plus cond tensor)
@@ -39,7 +40,7 @@ namespace ddml {
 
     // For now, assume batch size one, and just assign values
     inputs[0][0] = energy / CLHEP::GeV ;//E_vec[0]/100.;
-    inputs[1][0] = 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
+    inputs[1][0] = M_PI/2. - theta ; // 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
     inputs[2][0] = ( inputs[0][0] )/100. ;
     inputs[2][1] = ( inputs[1][0] )/ (90.*(M_PI/180.)) ;
     
