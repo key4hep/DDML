@@ -12,6 +12,7 @@ namespace ddml {
 
 
   void RegularGridGANModel::prepareInput(G4FastTrack const& aFastTrack,
+					 G4ThreeVector const& localDir,
 					 InputVecs& inputs, TensorDimVecs& tensDims,
 					 std::vector<float>& output ) {
 

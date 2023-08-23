@@ -12,8 +12,9 @@ namespace ddml {
 
 
   void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack,
-					 InputVecs& inputs, TensorDimVecs& tensDims,
-					 std::vector<float>& output ) {
+				     G4ThreeVector const& localDir,
+				     InputVecs& inputs, TensorDimVecs& tensDims,
+				     std::vector<float>& output ) {
 
     tensDims = _tensDims ;
 

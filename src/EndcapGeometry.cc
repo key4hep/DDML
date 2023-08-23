@@ -30,6 +30,30 @@ namespace ddml {
     }
   }
 
+  G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack){
+
+    G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
+    G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
+
+    // now transform this direction into a right handed coordinate system that has the z-axis pointing into the calo
+
+    G4ThreeVector localDir( direction )  ;
+
+    if (position.z() < 0 )
+      localDir = { - direction.x() , direction.y() , - direction.z() } ;
+
+    if( DEBUGPRINT ) {
+      G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
+
+      std::cout << "  EndcapGeometry::localDirection " <<  " pos0 = " << position
+		<< " - dir = " << direction << " - E = "
+		<< " - localDir = " << localDir
+		<< energy << std::endl ;
+    }
+
+    return localDir ;
+  }
+
 
   void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack,
 					      std::vector<SpacePointVec>& spacepoints ) {

@@ -31,12 +31,21 @@ namespace ddml {
       plugin->declareProperty("Detector" , this->_detector ) ;
       plugin->declareProperty("Symmetry" , this->_nSymmetry ) ;
     }
-  
+
+
+    /** compute local direction in coordinate system that has the z-axis pointing into the calorimeter,
+     *  normal to the layers
+     */
+    G4ThreeVector localDirection(G4FastTrack const& aFastTrack) ;
+
     /** convert the local spacepoints to global spacepoints
      */
     virtual void localToGlobal(G4FastTrack const& aFastTrack,
 			       std::vector<SpacePointVec>& spacepoints ) ;
-    
+
+  protected:
+    /// local helper
+    int phiSector(G4ThreeVector const& position) ;
     
   private:
     std::vector<float> _caloLayerDistances ={} ;

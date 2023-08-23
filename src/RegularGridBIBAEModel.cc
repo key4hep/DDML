@@ -9,6 +9,7 @@
 namespace ddml {
 
     void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack,
+			      G4ThreeVector const& localDir,
 			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) {
 
@@ -91,6 +92,3 @@ void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
     
   }
 }
-
-
-  
