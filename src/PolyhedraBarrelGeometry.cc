@@ -83,6 +83,9 @@ namespace ddml {
 		<< " - dir = " << direction << " - E = "
 		<< " - localDir = " << localDir
 		<< energy << std::endl ;
+      std::cout << "  PolyhedraBarrelGeometry::localDirection  - phi = " << atan2( localDir.y() , localDir.x() ) / M_PI * 180.
+		<< "   theta : " << acos( localDir.z() ) / M_PI * 180.
+		<< std::endl ;
     }
 
     return localDir ;
@@ -158,9 +161,11 @@ namespace ddml {
 	auto& sp = spacepoints[l][i] ;
 	
 	/// actual local to global:  add intersection point of layer and use global x coordinate as depth in calorimeter
+	// take coordinate transform into account:   z=-x' (see localDirection() )
+ 
 	G4ThreeVector pos( float( _caloLayerDistances[l] ),    // == posC.z() 
-			   posC.y() + sp.X ,
-			   posC.z() + sp.Y
+			   posC.y() + sp.Y ,
+			   posC.z() - sp.X
 	  ) ;
 
         // rotate back to original phi sector

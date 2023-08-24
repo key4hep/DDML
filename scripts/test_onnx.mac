@@ -9,7 +9,7 @@
 /gps/energy    20 GeV
 
 # for SimpleCalo
-#/gps/direction  0. 0. 1.
+#/gps/direction  0. 0.5 0.5
 
 # for ILD barrel
 /gps/ang/type iso
@@ -20,5 +20,5 @@
 #/gps/direction  0.1 -0.8 .1
 
 
-/run/beamOn 10
+/run/beamOn 100
 

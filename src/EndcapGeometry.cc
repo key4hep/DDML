@@ -39,6 +39,8 @@ namespace ddml {
 
     G4ThreeVector localDir( direction )  ;
 
+    // in the positive endcap the global is the correct local coordinate system
+    //    on the other side it has to be rotated around the y-axis by pi
     if (position.z() < 0 )
       localDir = { - direction.x() , direction.y() , - direction.z() } ;
 
@@ -112,7 +114,8 @@ namespace ddml {
 	
 	auto& sp = spacepoints[l][i] ;
 	
-	sp.X += posC.x()  ;
+	// take the rotation by pi around y on the negative side into account
+	sp.X = posC.x() + signZ*sp.X  ;
 	sp.Y += posC.y()  ;
 	sp.Z =  zL ; // =  posC.z()
 	

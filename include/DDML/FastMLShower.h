@@ -160,7 +160,7 @@ namespace ddml {
               .count());
       convertOutputTime.push_back(
           run_void_member_timed(fastsimML.model,
-                                &ML_MODEL::MLModelT::convertOutput, track,
+                                &ML_MODEL::MLModelT::convertOutput, track, localDir,
                                 _output, _spacepoints)
               .count());
       localToGlobalTime.push_back(
@@ -175,7 +175,7 @@ namespace ddml {
 #else
       fastsimML.model.prepareInput( track, localDir, _input, _dimVecs, _output ) ;
       fastsimML.inference.runInference(_input, _dimVecs, _output ) ;
-      fastsimML.model.convertOutput( track, _output , _spacepoints) ;
+      fastsimML.model.convertOutput( track, localDir, _output , _spacepoints) ;
       fastsimML.geometry.localToGlobal( track, _spacepoints ) ;
 #endif
       // now deposit energies in the detector using calculated global positions

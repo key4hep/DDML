@@ -20,9 +20,9 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-    // compute local incident anngles
+    // compute local incident angles
     double theta = acos( localDir.z() ) ;
-    double phi = atan2( localDir.x() , localDir.y() ) ;
+//    double phi = atan2( localDir.y() , localDir.x() ) ;
 
     if( DEBUGPRINT ) 
       std::cout << "  RegularGridBIBAEModel::prepareInput   pos0 = " << position
@@ -56,8 +56,13 @@ namespace ddml {
 
   
 void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
-					                                const std::vector<float>& output,
-					                                std::vector<SpacePointVec>& spacepoints ){
+					  G4ThreeVector const& localDir,
+					  const std::vector<float>& output,
+					  std::vector<SpacePointVec>& spacepoints ){
+
+    // compute local incident anngles
+
+    double phi = atan2( localDir.y() , localDir.x() ) ;
 
     int nLayer = _nCellsZ ; // number of layers is z dimension
     
@@ -74,10 +79,14 @@ void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
 
 	  if( output[ iHit ] > 0. ){
 
-	    ddml::SpacePoint sp(
-        ( i - int(_centerCellX) + 0.5 ) * _cellSizeX ,
-        ( j - int(_centerCellY) + 0.5 ) * _cellSizeY ,
+	    // in the current BIB-AE x and y are switched, i.e. the angle is changed along y
+	    double y = ( i - int(_centerCellX) + 0.5 ) * _cellSizeX ;
+	    double x = ( j - int(_centerCellY) + 0.5 ) * _cellSizeY ;
 
+	    // rotate the individual layers corresponding to the local azimuth angle phi
+	    ddml::SpacePoint sp(
+	      x * cos(phi) - y * sin(phi) ,
+	      x * sin(phi) + y * cos(phi) ,
 	      0.,
 	      output[ iHit ] ,
 	      0.

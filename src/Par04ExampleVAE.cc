@@ -70,8 +70,9 @@ namespace ddml {
 
 
   void Par04ExampleVAE::convertOutput(G4FastTrack const& /*aFastTrack*/,
-					  const std::vector<float>& output,
-					  std::vector<SpacePointVec>& spacepoints ){
+				      G4ThreeVector const& localDir,
+				      const std::vector<float>& output,
+				      std::vector<SpacePointVec>& spacepoints ){
 
     int nLayer = _nCellsZ ; // number of layers is z dimension
     

@@ -38,6 +38,7 @@ namespace ddml {
      *  with the origin at the entry point into the calorimeter.
      */
     virtual void convertOutput(G4FastTrack const& aFastTrack,
+			       G4ThreeVector const& localDir,
 			       const std::vector<float>& output,
 			       std::vector<SpacePointVec>& spacepoints ) = 0;
     
