@@ -29,7 +29,7 @@ namespace ddml {
     void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
 
       plugin->declareProperty("Detector" , this->_detector ) ;
-
+      plugin->declareProperty("CorrectForAngles" , this->_correctForAngles ) ;
     }
   
     /** compute local direction in coordinate system that has the z-axis pointing into the calorimeter,
@@ -49,6 +49,7 @@ namespace ddml {
 
     /// model properties for plugin
     std::string _detector = { "EcalEndcap" } ;
+    bool _correctForAngles = false  ;
   };
 
 } // namespace

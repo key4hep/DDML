@@ -20,9 +20,8 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-    // compute local incident angles
+    // compute local incident angle
     double theta = acos( localDir.z() ) ;
-//    double phi = atan2( localDir.y() , localDir.x() ) ;
 
     if( DEBUGPRINT ) 
       std::cout << "  RegularGridBIBAEModel::prepareInput   pos0 = " << position

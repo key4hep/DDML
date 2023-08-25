@@ -287,7 +287,7 @@ SIM.random.type = None
 
 def aiDance(kernel):
    ild = True
-   par04 = False
+   par04 = True #False
    old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
    if ild == True :
@@ -307,6 +307,8 @@ def aiDance(kernel):
       ml_file = "../models/francisca_gan.onnx"
       ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
       ml_model1 = "RegularGridGANEndcapONNXModel/ShowerModel"
+
+   ml_correct_angles = True
 
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -334,6 +336,7 @@ def aiDance(kernel):
    model.Detector= ml_barrel_name
    model.Symmetry = ml_barrel_symmetry
    model.Enable = True
+   model.CorrectForAngles = ml_correct_angles
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
    model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
@@ -349,6 +352,7 @@ def aiDance(kernel):
    model1.RegionName = 'EcalEndcapRegion'
    model1.Detector= ml_endcap_name
    model1.Enable = True
+   model1.CorrectForAngles = ml_correct_angles
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
    model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
@@ -386,10 +390,12 @@ def aiDanceTorch(kernel):
       ml_file  = "../models/BIBAE_Full_PP_cut.pt"
       ml_model = "RegularGridBIBAEPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridBIBAEEndcapTorchModel/EndcapModelTorch"
+      ml_correct_angles = False
    else:
       ml_file = "../models/francisca_gan_jit.pt"
       ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridGANEndcapTorchModel/EndcapModelTorch"
+      ml_correct_angles = True
 
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -417,6 +423,7 @@ def aiDanceTorch(kernel):
    model.Detector= ml_barrel_name
    model.Symmetry = ml_barrel_symmetry
    model.Enable = True
+   model.CorrectForAngles = ml_correct_angles
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
    model.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # trigger on lower training threshold
@@ -433,6 +440,7 @@ def aiDanceTorch(kernel):
    model1.RegionName = 'EcalEndcapRegion'
    model1.Detector= ml_endcap_name
    model1.Enable = True
+   model1.CorrectForAngles = ml_correct_angles
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
    model1.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # trigger on lower training threshold
@@ -453,5 +461,5 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-#SIM.physics.setupUserPhysics( aiDance)
-SIM.physics.setupUserPhysics( aiDanceTorch)
+SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics( aiDanceTorch)

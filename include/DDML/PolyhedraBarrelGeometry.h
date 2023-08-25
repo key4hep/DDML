@@ -30,6 +30,7 @@ namespace ddml {
 
       plugin->declareProperty("Detector" , this->_detector ) ;
       plugin->declareProperty("Symmetry" , this->_nSymmetry ) ;
+      plugin->declareProperty("CorrectForAngles" , this->_correctForAngles ) ;
     }
 
 
@@ -54,6 +55,7 @@ namespace ddml {
     /// model properties for plugin
     std::string _detector = { "EcalBarrel" } ;
     int _nSymmetry = 8 ;
+    bool _correctForAngles = false  ;
   };
 
 } // namespace
