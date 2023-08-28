@@ -30,7 +30,7 @@ namespace ddml {
     }
   }
 
-  G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack){
+  G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack) const {
 
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
@@ -58,7 +58,7 @@ namespace ddml {
 
 
   void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack,
-					      std::vector<SpacePointVec>& spacepoints ) {
+					      std::vector<SpacePointVec>& spacepoints ) const  {
 
     G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
     

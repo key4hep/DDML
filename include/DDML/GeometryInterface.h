@@ -27,12 +27,12 @@ namespace ddml {
     /** compute local direction in coordinate system that has the z-axis pointing into the calorimeter,
      *  normal to the layers
      */
-    virtual G4ThreeVector localDirection(G4FastTrack const& aFastTrack) = 0;
+    virtual G4ThreeVector localDirection(G4FastTrack const& aFastTrack) const = 0;
 
     /** convert the local spacepoints to global spacepoints inside sensitive volumes
      */
     virtual void localToGlobal(G4FastTrack const& aFastTrack,
-			       std::vector<SpacePointVec>& spacepoints ) = 0;
+			       std::vector<SpacePointVec>& spacepoints ) const = 0;
     
     
   };

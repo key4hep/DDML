@@ -28,7 +28,7 @@ namespace ddml {
     }
   }
 
-  int PolyhedraBarrelGeometry::phiSector(G4ThreeVector const& position){
+  int PolyhedraBarrelGeometry::phiSector(G4ThreeVector const& position) const {
 
     // compute phi sector, e.g. 0-7 for octagonal barrel
     //         2
@@ -53,7 +53,7 @@ namespace ddml {
     return phiSec ;
   }
 
-  G4ThreeVector PolyhedraBarrelGeometry::localDirection(G4FastTrack const& aFastTrack){
+  G4ThreeVector PolyhedraBarrelGeometry::localDirection(G4FastTrack const& aFastTrack) const {
 
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
@@ -87,7 +87,7 @@ namespace ddml {
   }
 
   void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
-					      std::vector<SpacePointVec>& spacepoints ) {
+					      std::vector<SpacePointVec>& spacepoints ) const  {
 
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
