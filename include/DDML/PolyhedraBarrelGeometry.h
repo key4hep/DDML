@@ -18,7 +18,9 @@ namespace ddml {
   class PolyhedraBarrelGeometry : public GeometryInterface {
     
   public:
-    PolyhedraBarrelGeometry(){} ;
+    PolyhedraBarrelGeometry(){
+      initialize() ;
+    } ;
     
     virtual ~PolyhedraBarrelGeometry(){};
     
@@ -50,7 +52,6 @@ namespace ddml {
     
   private:
     std::vector<float> _caloLayerDistances ={} ;
-    bool _isInitialized = false ;
 
     /// model properties for plugin
     std::string _detector = { "EcalBarrel" } ;

@@ -30,11 +30,6 @@ namespace ddml {
 
   int PolyhedraBarrelGeometry::phiSector(G4ThreeVector const& position){
 
-    if( ! _isInitialized ){
-      initialize() ;
-      _isInitialized = true ;
-    }
-    
     // compute phi sector, e.g. 0-7 for octagonal barrel
     //         2
     //        --
