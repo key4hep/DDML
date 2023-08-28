@@ -145,10 +145,12 @@ namespace ddml {
       for( auto& layerSPs : _spacepoints )
 	layerSPs.clear() ;
 
+      G4ThreeVector localDir = fastsimML.geometry.localDirection( track );
+
 #if DDML_INSTRUMENT_MODEL_SHOWER
       prepareInputTime.push_back(
           run_void_member_timed(fastsimML.model,
-                                &ML_MODEL::MLModelT::prepareInput, track,
+                                &ML_MODEL::MLModelT::prepareInput, track, localDir,
                                 _input, _dimVecs, _output)
               .count());
       runInferenceTime.push_back(
@@ -158,7 +160,7 @@ namespace ddml {
               .count());
       convertOutputTime.push_back(
           run_void_member_timed(fastsimML.model,
-                                &ML_MODEL::MLModelT::convertOutput, track,
+                                &ML_MODEL::MLModelT::convertOutput, track, localDir,
                                 _output, _spacepoints)
               .count());
       localToGlobalTime.push_back(
@@ -171,9 +173,9 @@ namespace ddml {
           _output.begin(), _output.end(), 0u,
           [](const auto sum, const auto v) { return sum + (v != 0); }));
 #else
-      fastsimML.model.prepareInput( track, _input, _dimVecs, _output ) ;
+      fastsimML.model.prepareInput( track, localDir, _input, _dimVecs, _output ) ;
       fastsimML.inference.runInference(_input, _dimVecs, _output ) ;
-      fastsimML.model.convertOutput( track, _output , _spacepoints) ;
+      fastsimML.model.convertOutput( track, localDir, _output , _spacepoints) ;
       fastsimML.geometry.localToGlobal( track, _spacepoints ) ;
 #endif
       // now deposit energies in the detector using calculated global positions

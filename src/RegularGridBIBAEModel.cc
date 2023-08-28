@@ -9,6 +9,7 @@
 namespace ddml {
 
     void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack,
+			      G4ThreeVector const& localDir,
 			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) {
 
@@ -19,14 +20,14 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-    // here we could use position and direction to compute additional
-    // conditioning variables, such as incident angles ...
-    // for now assume simple BIBAE with 90 deg incident
-
+    // compute local incident angle
+    double theta = acos( localDir.z() ) ;
 
     if( DEBUGPRINT ) 
       std::cout << "  RegularGridBIBAEModel::prepareInput   pos0 = " << position
-		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV << std::endl ;
+		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV
+		<< " theta = " << theta
+		<< std::endl ;
 
 
     // the input for the BIB-AE is one energy and an angle (plus cond tensor)
@@ -38,7 +39,7 @@ namespace ddml {
 
     // For now, assume batch size one, and just assign values
     inputs[0][0] = energy / CLHEP::GeV ;//E_vec[0]/100.;
-    inputs[1][0] = 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
+    inputs[1][0] = M_PI/2. - theta ; // 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
     inputs[2][0] = ( inputs[0][0] )/100. ;
     inputs[2][1] = ( inputs[1][0] )/ (90.*(M_PI/180.)) ;
     
@@ -54,8 +55,13 @@ namespace ddml {
 
   
 void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
-					                                const std::vector<float>& output,
-					                                std::vector<SpacePointVec>& spacepoints ){
+					  G4ThreeVector const& localDir,
+					  const std::vector<float>& output,
+					  std::vector<SpacePointVec>& spacepoints ){
+
+    // compute local incident anngles
+
+    double phi = atan2( localDir.y() , localDir.x() ) ;
 
     int nLayer = _nCellsZ ; // number of layers is z dimension
     
@@ -72,10 +78,14 @@ void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
 
 	  if( output[ iHit ] > 0. ){
 
-	    ddml::SpacePoint sp(
-        ( i - int(_centerCellX) + 0.5 ) * _cellSizeX ,
-        ( j - int(_centerCellY) + 0.5 ) * _cellSizeY ,
+	    // in the current BIB-AE x and y are switched, i.e. the angle is changed along y
+	    double y = ( i - int(_centerCellX) + 0.5 ) * _cellSizeX ;
+	    double x = ( j - int(_centerCellY) + 0.5 ) * _cellSizeY ;
 
+	    // rotate the individual layers corresponding to the local azimuth angle phi
+	    ddml::SpacePoint sp(
+	      x * cos(phi) - y * sin(phi) ,
+	      x * sin(phi) + y * cos(phi) ,
 	      0.,
 	      output[ iHit ] ,
 	      0.
@@ -91,6 +101,3 @@ void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/,
     
   }
 }
-
-
-  

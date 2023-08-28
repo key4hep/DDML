@@ -30,14 +30,35 @@ namespace ddml {
     }
   }
 
+  G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack) const {
+
+    G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
+    G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
+
+    // now transform this direction into a right handed coordinate system that has the z-axis pointing into the calo
+
+    G4ThreeVector localDir( direction )  ;
+
+    // in the positive endcap the global is the correct local coordinate system
+    //    on the other side it has to be rotated around the y-axis by pi
+    if (position.z() < 0 )
+      localDir = { - direction.x() , direction.y() , - direction.z() } ;
+
+    if( DEBUGPRINT ) {
+      G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
+
+      std::cout << "  EndcapGeometry::localDirection " <<  " pos0 = " << position
+		<< " - dir = " << direction << " - E = "
+		<< " - localDir = " << localDir
+		<< energy << std::endl ;
+    }
+
+    return localDir ;
+  }
+
 
   void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack,
-					      std::vector<SpacePointVec>& spacepoints ) {
-
-    if( ! _isInitialized ){
-      initialize() ;
-      _isInitialized = true ;
-    }
+					      std::vector<SpacePointVec>& spacepoints ) const  {
 
     G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
     
@@ -50,6 +71,9 @@ namespace ddml {
     
     
     float signZ = ( position.z() > 0. ?  1.0 : -1.0 ) ;
+
+    if( ! _correctForAngles )
+      direction = { 0., 0. , signZ * 1.0  } ;  // position layers w/ impact normal to the plane
 
     // find the first layer that will have signals as sometimes particles are create in the calorimeter !
     int firstLayer = 0 ;
@@ -83,7 +107,8 @@ namespace ddml {
 	
 	auto& sp = spacepoints[l][i] ;
 	
-	sp.X += posC.x()  ;
+	// take the rotation by pi around y on the negative side into account
+	sp.X = posC.x() + signZ*sp.X  ;
 	sp.Y += posC.y()  ;
 	sp.Z =  zL ; // =  posC.z()
 	

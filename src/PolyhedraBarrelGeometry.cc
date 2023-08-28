@@ -8,7 +8,7 @@
 #include "DDRec/DetectorData.h"
 
 
-#define DEBUGPRINT 0
+#define DEBUGPRINT 1
 
 namespace ddml {
 
@@ -28,29 +28,13 @@ namespace ddml {
     }
   }
 
-  void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
-					      std::vector<SpacePointVec>& spacepoints ) {
+  int PolyhedraBarrelGeometry::phiSector(G4ThreeVector const& position) const {
 
-    if( ! _isInitialized ){
-      initialize() ;
-      _isInitialized = true ;
-    }
-
-    G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
-    
-    G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
-    G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
-    
-    if( DEBUGPRINT ) 
-      std::cout << "  PolyhedraBarrelGeometry::localToGlobal  - symmetry = " << _nSymmetry <<  " pos0 = " << position
-		<< " - dir = " << direction << " - E = " << energy << std::endl ;
-    
-    
     // compute phi sector, e.g. 0-7 for octagonal barrel
     //         2
     //        --
     //    3 /    \ 1
-    //   4  |     | 0
+    //   4 |      | 0
     //    5 \    / 7
     //        --
     //        6
@@ -66,24 +50,76 @@ namespace ddml {
     else
       phiSec = (phiSec+1) / 2. ;
     
-    
+    return phiSec ;
+  }
+
+  G4ThreeVector PolyhedraBarrelGeometry::localDirection(G4FastTrack const& aFastTrack) const {
+
+    G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
+    G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
+
+    int phiSec = phiSector( position );
+
     // --- rotate position and direction to phi sector 0  (calo plane parallel to y-axis at positive x )
-    
+
     G4RotationMatrix rotNeg ;
     rotNeg.rotateZ( - phiSec * 2. * M_PI/_nSymmetry );
-    
+
+    // new direction in global coordinates
+    auto dirR = rotNeg * direction ;
+
+    // now transform this direction into a right handed coordinate system that has the z-axis pointing into the calo
+    G4ThreeVector localDir( - dirR.z() , dirR.y() , dirR.x() );
+
+    if( DEBUGPRINT ) {
+      G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
+
+      std::cout << "  PolyhedraBarrelGeometry::localDirection  - symmetry = " << _nSymmetry <<  " pos0 = " << position
+		<< " - dir = " << direction << " - E = "
+		<< " - localDir = " << localDir
+		<< energy << std::endl ;
+      std::cout << "  PolyhedraBarrelGeometry::localDirection  - phi = " << atan2( localDir.y() , localDir.x() ) / M_PI * 180.
+		<< "   theta : " << acos( localDir.z() ) / M_PI * 180.
+		<< std::endl ;
+    }
+
+    return localDir ;
+  }
+
+  void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
+					      std::vector<SpacePointVec>& spacepoints ) const  {
+
+    G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
+    G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
+
+    int phiSec = phiSector( position );
+
+    if( DEBUGPRINT ) {
+      G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
+
+      std::cout << "  PolyhedraBarrelGeometry::localToGlobal  - symmetry = " << _nSymmetry <<  " pos0 = " << position
+		<< " - dir = " << direction << " - E = " << energy << std::endl ;
+    }
+
+    // --- rotate position and direction to phi sector 0  (calo plane parallel to y-axis at positive x )
+
+    G4RotationMatrix rotNeg ;
+    rotNeg.rotateZ( - phiSec * 2. * M_PI/_nSymmetry );
+
     G4RotationMatrix rotPos ;
     rotPos.rotateZ( + phiSec * 2. * M_PI/_nSymmetry );
-    
+
     auto posR = rotNeg * position ;
     auto dirR = rotNeg * direction ;
 
+    if( ! _correctForAngles )
+      dirR = { 1., 0. , 0.  } ;  // position layers w/ impact normal to the plane
+
     if( DEBUGPRINT ) 
       std::cout << "  PolyhedraBarrelGeometry::localToGlobal -  position " << position << " - direction " << direction
-		<< " phi " << phi <<   " phiSec: " << phiSec
+		<< " phiSec: " << phiSec
 		<< " posR " << posR << " dirR " << dirR 
 		<< std::endl ;
-    
 
     // find the first layer that will have signals as sometimes particles are create in the calorimeter !
     int firstLayer = 0 ;
@@ -118,9 +154,11 @@ namespace ddml {
 	auto& sp = spacepoints[l][i] ;
 	
 	/// actual local to global:  add intersection point of layer and use global x coordinate as depth in calorimeter
+	// take coordinate transform into account:   z=-x' (see localDirection() )
+ 
 	G4ThreeVector pos( float( _caloLayerDistances[l] ),    // == posC.z() 
-			   posC.y() + sp.X ,
-			   posC.z() + sp.Y
+			   posC.y() + sp.Y ,
+			   posC.z() - sp.X
 	  ) ;
 
         // rotate back to original phi sector

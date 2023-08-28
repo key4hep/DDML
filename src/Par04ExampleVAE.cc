@@ -12,8 +12,9 @@ namespace ddml {
 
 
   void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack,
-					 InputVecs& inputs, TensorDimVecs& tensDims,
-					 std::vector<float>& output ) {
+				     G4ThreeVector const& localDir,
+				     InputVecs& inputs, TensorDimVecs& tensDims,
+				     std::vector<float>& output ) {
 
     tensDims = _tensDims ;
 
@@ -22,14 +23,15 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-    // here we could use position and direction to compute additional
-    // conditioning variables, such as incident angles ...
-    // for now assume simple GAN with 90 deg incident
     
+    // compute local incident angle
+    double theta = acos( localDir.z() ) ;
+
     if( DEBUGPRINT ) 
       std::cout << "  Par04ExampleVAE::prepareInput   pos0 = " << position
-		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV << std::endl ;
-    
+		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV
+		<< " theta = " << theta * 180. / M_PI
+		<< std::endl ;
     
     // the input for this model is the latent space and the energy conditioning
     
@@ -46,10 +48,10 @@ namespace ddml {
     /// Maximum particle energy value (in MeV) in the training range
     float fMaxEnergy = 1024000.0;
     /// Maximum particle angle (in degrees) in the training range
-    float fMaxAngle = 90.0;
+    float fMaxAngle = M_PI / 2. ; //90.0 deg ;
     
     inputs[0][_latentSize ]     = (energy /CLHEP::MeV) / fMaxEnergy ;
-    inputs[0][_latentSize + 1 ] = 1. ; //( direction.theta() /CLHEP::deg) / fMaxAngle ;
+    inputs[0][_latentSize + 1 ] = theta / fMaxAngle ;
     inputs[0][_latentSize + 2 ] = 0 ;
     inputs[0][_latentSize + 3 ] = 1 ;
 
@@ -69,8 +71,9 @@ namespace ddml {
 
 
   void Par04ExampleVAE::convertOutput(G4FastTrack const& /*aFastTrack*/,
-					  const std::vector<float>& output,
-					  std::vector<SpacePointVec>& spacepoints ){
+				      G4ThreeVector const& localDir,
+				      const std::vector<float>& output,
+				      std::vector<SpacePointVec>& spacepoints ){
 
     int nLayer = _nCellsZ ; // number of layers is z dimension
     
@@ -88,9 +91,9 @@ namespace ddml {
 
       for(int j=0; j<_nCellsPhi; ++j){
 
-	float phi = (j+0.5) * 2.*CLHEP::pi / _nCellsPhi ;
-	float x = rho * cos( phi ) ;
-	float y = rho * sin( phi ) ;
+	float phiCell = (j+0.5) * 2.*CLHEP::pi / _nCellsPhi ;
+	float x = rho * cos( phiCell ) ;
+	float y = rho * sin( phiCell ) ;
 	
 	for(int l=0 ; l < nLayer ; ++l){
 

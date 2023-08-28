@@ -18,7 +18,9 @@ namespace ddml {
   class EndcapGeometry : public GeometryInterface {
     
   public:
-    EndcapGeometry(){} ;
+    EndcapGeometry(){
+      initialize() ;
+    } ;
 
     /// initialize the plugin - after properties have been set
     void initialize() ;
@@ -29,21 +31,26 @@ namespace ddml {
     void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
 
       plugin->declareProperty("Detector" , this->_detector ) ;
-
+      plugin->declareProperty("CorrectForAngles" , this->_correctForAngles ) ;
     }
   
+    /** compute local direction in coordinate system that has the z-axis pointing into the calorimeter,
+     *  normal to the layers
+     */
+    G4ThreeVector localDirection(G4FastTrack const& aFastTrack)  const ;
+
     /** convert the local spacepoints to global spacepoints
      */
     virtual void localToGlobal(G4FastTrack const& aFastTrack,
-			       std::vector<SpacePointVec>& spacepoints ) ;
+			       std::vector<SpacePointVec>& spacepoints ) const  ;
     
     
   private:
     std::vector<float> _caloLayerDistances ={} ;
-    bool _isInitialized = false ;
 
     /// model properties for plugin
     std::string _detector = { "EcalEndcap" } ;
+    bool _correctForAngles = false  ;
   };
 
 } // namespace

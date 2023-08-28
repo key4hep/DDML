@@ -18,7 +18,9 @@ namespace ddml {
   class PolyhedraBarrelGeometry : public GeometryInterface {
     
   public:
-    PolyhedraBarrelGeometry(){} ;
+    PolyhedraBarrelGeometry(){
+      initialize() ;
+    } ;
     
     virtual ~PolyhedraBarrelGeometry(){};
     
@@ -30,21 +32,31 @@ namespace ddml {
 
       plugin->declareProperty("Detector" , this->_detector ) ;
       plugin->declareProperty("Symmetry" , this->_nSymmetry ) ;
+      plugin->declareProperty("CorrectForAngles" , this->_correctForAngles ) ;
     }
-  
+
+
+    /** compute local direction in coordinate system that has the z-axis pointing into the calorimeter,
+     *  normal to the layers
+     */
+    G4ThreeVector localDirection(G4FastTrack const& aFastTrack) const  ;
+
     /** convert the local spacepoints to global spacepoints
      */
     virtual void localToGlobal(G4FastTrack const& aFastTrack,
-			       std::vector<SpacePointVec>& spacepoints ) ;
-    
+			       std::vector<SpacePointVec>& spacepoints ) const  ;
+
+  protected:
+    /// local helper
+    int phiSector(G4ThreeVector const& position) const  ;
     
   private:
     std::vector<float> _caloLayerDistances ={} ;
-    bool _isInitialized = false ;
 
     /// model properties for plugin
     std::string _detector = { "EcalBarrel" } ;
     int _nSymmetry = 8 ;
+    bool _correctForAngles = false  ;
   };
 
 } // namespace

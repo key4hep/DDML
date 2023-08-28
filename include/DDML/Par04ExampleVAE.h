@@ -43,6 +43,7 @@ namespace ddml {
      */
     
     virtual void prepareInput(G4FastTrack const& aFastTrack,
+			      G4ThreeVector const& localDir,
 			      InputVecs& inputs, TensorDimVecs& tensDims,
 			      std::vector<float>& output ) ;
 
@@ -50,6 +51,7 @@ namespace ddml {
     /** create a vector of spacepoints per layer interpreting the model output  
      */
     virtual void convertOutput(G4FastTrack const& aFastTrack,
+			       G4ThreeVector const& localDir,
 			       const std::vector<float>& output,
 			       std::vector<SpacePointVec>& spacepoints ) ;
 
