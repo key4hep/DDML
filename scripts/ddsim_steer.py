@@ -375,6 +375,7 @@ def aiDance(kernel):
 def aiDanceTorch(kernel):
    ild = True
    BIBAE = True
+   Two_Angle = True
    old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
    if ild == True:
@@ -386,16 +387,22 @@ def aiDanceTorch(kernel):
       ml_barrel_symmetry = 12
       ml_endcap_name = 'ECalEndcap'
 
-   if BIBAE == True:
+   if BIBAE == True and Two_Angle == False:
       ml_file  = "../models/BIBAE_Full_PP_cut.pt"
       ml_model = "RegularGridBIBAEPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridBIBAEEndcapTorchModel/EndcapModelTorch"
+      ml_correct_angles = False
+   if BIBAE == True and Two_Angle == True:
+      ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
+      ml_model = "RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel/BarrelModelTorch"
+      ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
       ml_correct_angles = False
    else:
       ml_file = "../models/francisca_gan_jit.pt"
       ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridGANEndcapTorchModel/EndcapModelTorch"
       ml_correct_angles = True
+   
 
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -461,5 +468,5 @@ def aiDanceTorch(kernel):
    phys.adopt(ph)
    phys.dump()
 
-SIM.physics.setupUserPhysics( aiDance)
-#SIM.physics.setupUserPhysics( aiDanceTorch)
+#SIM.physics.setupUserPhysics( aiDance)
+SIM.physics.setupUserPhysics( aiDanceTorch)

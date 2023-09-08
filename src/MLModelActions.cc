@@ -11,6 +11,7 @@
 
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridBIBAEModel.h"
+#include "DDML/RegularGridTwoAngleBIBAEModel.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
@@ -76,6 +77,21 @@ namespace ddml {
 				   ddml::EndcapGeometry,
 				   Geant4FastHitMakerGlobal> >
   RegularGridBIBAEEndcapTorchModel ;
+
+  /// Model for two angle BIBAE regular grid inference in the barrel calorimeter with Torch
+  typedef FastMLShower<FastMLModel<ddml::TorchInference,
+          ddml::RegularGridTwoAngleBIBAEModel,
+          ddml::PolyhedraBarrelGeometry,
+				   Geant4FastHitMakerGlobal> >
+  RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel ;
+
+  /// Model for two angle BIBAE regular grid inference in the endcap calorimter with Torch
+  typedef FastMLShower<FastMLModel<ddml::TorchInference,
+				   ddml::RegularGridTwoAngleBIBAEModel,
+				   ddml::EndcapGeometry,
+				   Geant4FastHitMakerGlobal> >
+  RegularGridTwoAngleBIBAEModelEndcapTorchModel ;
+
 
 #endif
 }
