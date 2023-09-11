@@ -82,7 +82,7 @@ namespace ddml {
   typedef FastMLShower<FastMLModel<ddml::TorchInference,
           ddml::RegularGridTwoAngleBIBAEModel,
           ddml::PolyhedraBarrelGeometry,
-				   Geant4FastHitMakerGlobal> >
+				  Geant4FastHitMakerGlobal> >
   RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel ;
 
   /// Model for two angle BIBAE regular grid inference in the endcap calorimter with Torch
@@ -110,4 +110,6 @@ DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridBIBAEPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridBIBAEEndcapTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml,RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml,RegularGridTwoAngleBIBAEModelEndcapTorchModel)
 #endif

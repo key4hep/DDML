@@ -392,7 +392,7 @@ def aiDanceTorch(kernel):
       ml_model = "RegularGridBIBAEPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridBIBAEEndcapTorchModel/EndcapModelTorch"
       ml_correct_angles = False
-   if BIBAE == True and Two_Angle == True:
+   elif BIBAE == True and Two_Angle == True:
       ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
       ml_model = "RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"

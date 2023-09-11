@@ -75,15 +75,14 @@ namespace ddml {
     int _centerCellY = 12. ;
 
     // Function to compute incident cell in regular grid from input phi and theta angles
-    std::vector<double> getIncidentCell (double theta, double phi) ;
+    std::vector<double> getIncidentCell(const double& theta, const double& phi) ;
 
-    std::vector<double> isect_line_plane_3Vec ( double p0_x, double p0_y, double p0_z, double p1_x, double p1_y, double p1_z, 
-                                                double p_co_x, double p_co_y, double p_co_z, double p_no_x, double p_no_y, double p_no_z,
-                                                double epsilon );
+    std::vector<double> isect_line_plane_3Vec(const double& p0_x, const double& p0_y, const double& p0_z, const double& p1_x, const double& p1_y, const double& p1_z, 
+                                                const double& p_co_x, const double& p_co_y, const double& p_co_z, const double& p_no_x, const double& p_no_y, const double& p_no_z);
 
     
 
-    TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,1} {1,3} };
+    TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,1}, {1,3} };
   };
 
 } // namespace
