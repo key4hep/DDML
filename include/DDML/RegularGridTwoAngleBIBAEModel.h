@@ -80,7 +80,11 @@ namespace ddml {
     std::vector<double> isect_line_plane_3Vec(const double& p0_x, const double& p0_y, const double& p0_z, const double& p1_x, const double& p1_y, const double& p1_z, 
                                                 const double& p_co_x, const double& p_co_y, const double& p_co_z, const double& p_no_x, const double& p_no_y, const double& p_no_z);
 
-    
+    struct Vector3d{double x; double y; double z;};
+
+    Vector3d crossProduct(const Vector3d& v1, const Vector3d& v2);
+
+    Vector3d normalize(const Vector3d& v);
 
     TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,1}, {1,3} };
   };
