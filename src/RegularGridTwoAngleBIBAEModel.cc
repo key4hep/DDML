@@ -20,48 +20,34 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-
-    // This is correct in training position in the barrel
-    // compute local incident angle
+    // compute local incident angles
     double theta = acos( localDir.x() ) ;
 
-    // Map conditioning variables to local coordinates in quadrant from training
-    double theta_cond = M_PI - theta; //=  M_PI/2. - theta;
-
-    // compute local incident angles
-
     double phi = atan2( localDir.y() , localDir.x() ) ;
 
+    double theta_cond;
     double phi_cond;
-
-    phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
     
-    // USE THIS ONE
+    // Compute conditioning angles based on octant in phi (45 degree segment)
+    // Depending on segment, X and Y are flipped
     
      if ( M_PI/4 >= phi && phi>=0 ){
       theta_cond = acos( localDir.x() ) ;
       phi_cond = atan2( localDir.z(), localDir.y() );
-      //phi_cond = M_PI/2 - atan2( localDir.z(), localDir.y() );
     } 
     else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-      //theta_cond = theta ;
-      //phi_cond = atan2( localDir.z(), localDir.y() );
       theta_cond = acos( localDir.y() ) ;
       phi_cond = atan2( localDir.z(), localDir.x() );
     }
     else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-      //theta_cond = M_PI - theta ;
-      //phi_cond =  atan2( localDir.z(), localDir.y() );
       theta_cond = acos( localDir.y() ) ;
       phi_cond = M_PI - atan2( localDir.z(), localDir.x() );
     }
     else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-      //phi_cond = atan2( localDir.z(), localDir.y() ) - M_PI/2;
       theta_cond = M_PI - acos( localDir.x() ) ;
       phi_cond = atan2( localDir.z(), localDir.y() );
     }
     else if ( 0. > phi && phi >= -M_PI/4 ){
-      //phi_cond = M_PI/2 + atan2( localDir.z(), localDir.y() );
       theta_cond = acos( localDir.x() ) ;
       phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
     }
@@ -78,76 +64,6 @@ namespace ddml {
       phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
     }
     
-
-
-    // ------------------------------- This is the previous iteration!!! ----------------------
-    /*
-    // compute local incident angle
-    double theta = acos( localDir.z() ) ;
-
-    // Map conditioning variables to local coordinates in quadrant from training
-    double theta_cond = M_PI/2. - theta;
-
-    // compute local incident angles
-
-    double phi = atan2( localDir.y() , localDir.x() ) ;
-
-    double phi_cond;
-
-     if ( M_PI/4 >= phi && phi>=0 ){
-      phi_cond = M_PI/2 - atan2( localDir.y(), localDir.x() );
-    } 
-    else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-      phi_cond = M_PI/2 - atan2( localDir.x(), localDir.y() );
-    }
-    else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-      phi_cond = M_PI - atan2( localDir.y(), localDir.x() );
-    }
-    else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-      phi_cond = atan2( localDir.y(), localDir.x() ) - M_PI/2;
-    }
-    else if ( 0. > phi && phi >= -M_PI/4 ){
-      phi_cond = M_PI/2 + atan2( localDir.y(), localDir.x() );
-    }
-    else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
-      phi_cond = - atan2( localDir.y(), localDir.x() );
-    }
-    else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
-      phi_cond = M_PI + atan2( localDir.y(), localDir.x() );
-    }
-    else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
-      phi_cond = -(M_PI/2 + atan2( localDir.y(), localDir.x() ));
-    }
-    */
-    // -----------------------------------------------------------
-    
-    // In forward barrel
-    //double phi_cond = atan2( localDir.z(), localDir.y() ); // The British coordinate system (local coordinates in ILD barrel)
-
-    // In endcap
-    //double phi_cond = M_PI/2 - atan2( localDir.x(), localDir.z() );
-
-    //if (phi_cond > M_PI/2){
-    // phi_cond = M_PI - phi_cond;
-    //}
-
-
-
-    //double phi_cond;
-    /*
-    if (phi <= M_PI/2 && phi >= 0){// (phi < M_PI/2){
-      phi_cond = phi;
-    }
-    else if (phi > M_PI/2 && phi <= M_PI){ //(phi > M_PI/2 && phi < M_PI){
-      phi_cond = M_PI - phi;
-    }
-    else if (phi < 0 && phi >= - M_PI/2){ // (phi > M_PI && phi < (3/2)*M_PI){
-      phi_cond =  -phi; //phi - M_PI;
-    }
-    else if (phi < - M_PI/2){ // (phi > (3/2)*M_PI && phi < 2*M_PI) {
-      phi_cond = M_PI + phi; // 2*M_PI - phi;
-    }
-    */
 
     if( DEBUGPRINT ){
       std::cout << "  RegularGridTwoAngleBIBAEModel::prepareInput   pos0 = " << position
@@ -175,7 +91,7 @@ namespace ddml {
     // For now, assume batch size one, and just assign values
     inputs[0][0] = energy / CLHEP::GeV ;//E_vec[0]/100.;
     inputs[1][0] = theta_cond ; // 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
-    inputs[2][0] = phi_cond; // Need to apply some reflection onto training qudrant here!   
+    inputs[2][0] = phi_cond;  
     inputs[3][0] = ( inputs[0][0] ) / 126. ;
     inputs[3][1] = ( inputs[1][0] ) / (95.*(M_PI/180.)) ;
     inputs[3][2] = ( inputs[2][0] ) / (95.*(M_PI/180.)) ;
@@ -203,106 +119,34 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 					  const std::vector<float>& output,
 					  std::vector<SpacePointVec>& spacepoints ){
 
-
-
-
-    // ----------------------- This is the previous iteration ----------------
-    /*
-    // compute local incident angles
-    double theta = acos( localDir.z() ) ;
-    double phi = atan2( localDir.y() , localDir.x() ) ;
-
-
     int nLayer = _nCellsZ ; // number of layers is z dimension
 
-    // Map conditioning variables to local coordinates in quadrant from training
-    double theta_cond = M_PI/2. - theta;
-
-    // Initial quadrant (i.e. in generated quadrant of barrel)
-    //double phi_cond = atan2( localDir.z(), localDir.y() ); 
-
-    // In endcap
-    //double phi_cond = M_PI/2 - atan2( localDir.x(), localDir.z() );
-    //double phi_cond = M_PI/2 - atan2( localDir.x(), localDir.y() );
-
-    double phi_cond;
-
-    //if (phi_cond > M_PI/2){
-    //  phi_cond = M_PI - phi_cond;
-    //}
-    if ( M_PI/4 >= phi && phi>=0 ){
-      phi_cond = M_PI/2 - atan2( localDir.y(), localDir.x() );
-    } 
-    else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-      phi_cond = M_PI/2 - atan2( localDir.x(), localDir.y() );
-    }
-    else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-      phi_cond = M_PI - atan2( localDir.y(), localDir.x() );
-    }
-    else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-      phi_cond = atan2( localDir.y(), localDir.x() ) - M_PI/2;
-    }
-    else if ( 0. > phi && phi >= -M_PI/4 ){
-      phi_cond = M_PI/2 + atan2( localDir.y(), localDir.x() );
-    }
-    else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
-      phi_cond = - atan2( localDir.y(), localDir.x() );
-    }
-    else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
-      phi_cond = M_PI + atan2( localDir.y(), localDir.x() );
-    }
-    else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
-      phi_cond = -(M_PI/2 + atan2( localDir.y(), localDir.x() ));
-    }
-    */
-
-    // -----------------------------------------------------------
-
-
-    int nLayer = _nCellsZ ; // number of layers is z dimension
-
-    // This is correct in training position in the barrel
     // compute local incident angles
     double theta = acos( localDir.x() ) ;
-
-    // Map conditioning variables to local coordinates in quadrant from training
-    double theta_cond = M_PI - theta ;//= M_PI/2. - theta;
-
-    // compute local incident angles
-
     double phi = atan2( localDir.y() , localDir.x() ) ;
-
+    
+    double theta_cond;
     double phi_cond;
 
-    phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
-
-    // USING THIS!!!!
     
      if ( M_PI/4 >= phi && phi>=0 ){
       theta_cond = acos( localDir.x() ) ;
       phi_cond = atan2( localDir.z(), localDir.y() );
-      //phi_cond = M_PI/2 - atan2( localDir.z(), localDir.y() );
     } 
     else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-      //theta_cond = theta ;
-      //phi_cond = atan2( localDir.z(), localDir.y() );
       theta_cond = acos( localDir.y() ) ;
       phi_cond = atan2( localDir.z(), localDir.x() );
 
     }
     else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-      //theta_cond = M_PI - theta ;
-      //phi_cond =  atan2( localDir.z(), localDir.y() );
       theta_cond = acos( localDir.y() ) ;
       phi_cond = M_PI - atan2( localDir.z(), localDir.x() );
     }
     else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-      //phi_cond = atan2( localDir.z(), localDir.y() ) - M_PI/2;
       theta_cond = M_PI - acos( localDir.x() ) ;
       phi_cond = atan2( localDir.z(), localDir.y() );
     }
     else if ( 0. > phi && phi >= -M_PI/4 ){
-      //phi_cond = M_PI/2 + atan2( localDir.z(), localDir.y() );
       theta_cond = acos( localDir.x() ) ;
       phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
     }
@@ -319,23 +163,6 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
       phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
     }
     
-
-    /*
-    double phi_cond;
-
-    if (phi <= M_PI/2 && phi >= 0){// (phi < M_PI/2){
-      phi_cond = phi;
-    }
-    else if (phi > M_PI/2 && phi <= M_PI){ //(phi > M_PI/2 && phi < M_PI){
-      phi_cond = M_PI - phi;
-    }
-    else if (phi < 0 && phi >= - M_PI/2){ // (phi > M_PI && phi < (3/2)*M_PI){
-      phi_cond =  -phi; //phi - M_PI;
-    }
-    else if (phi < - M_PI/2){ // (phi > (3/2)*M_PI && phi < 2*M_PI) {
-      phi_cond = M_PI + phi; // 2*M_PI - phi;
-    }
-    */
 
     std::vector<double>  Incident_position = getIncidentCell(theta_cond, phi_cond);
     
@@ -356,127 +183,33 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 	  if( output[ iHit ] > 0. ){
 
 	    // in the current BIB-AE x and y are switched, i.e. the angle is changed along y
-	    // does this return the center of the given cell (i.e + 0.5?)?
-      // double y = ( i - int(_centerCellX) + 0.5 ) * _cellSizeX ;
-	    // double x = ( j - int(_centerCellY) + 0.5 ) * _cellSizeY ;
-
       // Allow for non-integer incident position in grid
-      //double y = ( i - centerCellX ) * _cellSizeX ;
-	    //double x = ( j - centerCellY ) * _cellSizeY ;
-
       double y = ( i - centerCellX + 0.5 ) * _cellSizeX ;
 	    double x = ( j - centerCellY + 0.5 ) * _cellSizeY ;
 
-      //double y = ( i - centerCellX ) * _cellSizeX ;
-	    //double x = ( j - centerCellY ) * _cellSizeY ;
 
       double y_out;
       double x_out;
-    
-    /*
-      // Now have to rotate flight direction of photon in the Regular grid onto the local cooridnate system
-      // Create unit vectors for regular grid
-      double px = cos( phi_cond ) * sin( theta_cond );
-      double py = sin( phi_cond ) * sin( theta_cond );
-      double pz = cos( theta_cond );
 
-      // Rotate one vector to another with:
-      // R(u, phi) = I cos phi + uu^{T} (1-cos phi) + u^ sin phi
-
-      Vector3d sourceVector = {-pz, py, px}; // The vector to be aligned (i.e. in the reg. grid)
-      Vector3d targetVector = {localDir.x(), localDir.y(), localDir.z()};
-
-      // Calculate the rotation axis
-    Vector3d rotationAxis = crossProduct(sourceVector, targetVector);
-    double angle = std::acos(sourceVector.x * targetVector.x +
-                             sourceVector.y * targetVector.y +
-                             sourceVector.z * targetVector.z);
-
-    // Calculate the rotated vector
-    Vector3d rotatedVector;
-    rotatedVector.x = x * std::cos(angle) +
-                      rotationAxis.x * std::sin(angle) +
-                      rotationAxis.x * (1 - std::cos(angle)) * x;
-    rotatedVector.y = y * std::cos(angle) +
-                      rotationAxis.y * std::sin(angle) +
-                      rotationAxis.y * (1 - std::cos(angle)) * y;
-    rotatedVector.z = sourceVector.z * std::cos(angle) +
-                      rotationAxis.z * std::sin(angle) +
-                      rotationAxis.z * (1 - std::cos(angle)) * sourceVector.z;
-
-    std::cout << "Source Vector: (" << sourceVector.x << ", " << sourceVector.y << ", " << sourceVector.z << ")\n";
-    std::cout << "Target Vector: (" << targetVector.x << ", " << targetVector.y << ", " << targetVector.z << ")\n";
-    std::cout << "Rotated Vector: (" << rotatedVector.x << ", " << rotatedVector.y << ", " << rotatedVector.z << ")\n";
-
-    */
-   
-     /* 
-    // Output transformations according to the quadrant in which phi lands
-      if (phi <= M_PI/2 && phi >= 0){
-        y_out = x; //y;
-        x_out = y; //x;
-      }
-      else if (phi > M_PI/2 && phi <= M_PI){
-        // Reflection in line y = 0
-        y_out = y;
-        x_out = -x;
-      }
-      else if (phi < 0 && phi >= - M_PI/2){
-        // Reflection in line y = - x
-        y_out = -x;
-        x_out = -y;
-      }
-      else if (phi < - M_PI/2){
-        // Reflection in line x = 0
-        y_out = -y;
-        x_out = x;
-      }
-
-    */
-
-      /* attempt 3
-      // Output transformations according to the quadrant in which phi lands
-      if (phi <= M_PI/2 && phi >= 0){
-        y_out = x; //y;
-        x_out = y; //x;
-      }
-      else if (phi > M_PI/2 && phi <= M_PI){
-        // Reflection in line y = 0
-        y_out = y;
-        x_out = -x;
-      }
-      else if (phi < 0 && phi >= - M_PI/2){
-        // Reflection in line y = - x
-        y_out = -x;
-        x_out = -y;
-      }
-      else if (phi < - M_PI/2){
-        // Reflection in line x = 0
-        y_out = -y;
-        x_out = x;
-      }
-      */
-
-           // attempt 5
       // Output transformations according to the quadrant in which phi lands
       if ( M_PI/4 >= phi && phi>=0 ){
-        y_out = y;//-y; //y; //x; //y;
-        x_out = x;//-x; //x; //y; //x;
+        y_out = y;
+        x_out = x;
       }
       else if ( M_PI/2 >= phi && phi > M_PI/4 ){
         // Reflection in y = x
-        y_out = x;//y;//x; //x; //y;
-        x_out = y;//x;//y; //y; //x;
+        y_out = x;
+        x_out = y;
       }
       else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
         // Reflection in line y = 0
-        y_out = x; //y;//x;
-        x_out = -y; //-x;//-y;
+        y_out = x;
+        x_out = -y;
       }
       else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
         // Reflection in line y = 0
-        y_out = y; //x;
-        x_out = -x; //-y;
+        y_out = y;
+        x_out = -x;
     }
     else if ( 0. > phi && phi >= -M_PI/4 ){
         // Relection in line x = 0
@@ -494,97 +227,12 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
     else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
       y_out = -y;
       x_out = -x;
-    }
-      /*
-      else if (phi <= M_PI/2 && phi > M_PI/4){
-        y_out = y;
-        x_out = x; /// why does this not sun in local coords?????
-      }
+    }  
 
-      else if (phi > M_PI/2 && phi <= M_PI){
-        // Reflection in line y = 0
-        y_out = y;
-        x_out = -x;
-      }
-      else if (phi < 0 && phi >= - M_PI/2){
-        // Reflection in line y = - x
-        y_out = -x;
-        x_out = -y;
-      }
-      else if (phi < - M_PI/2){
-        // Reflection in line x = 0
-        y_out = -y;
-        x_out = x;
-      }
-      */
-
-      /*
-      // attempt 4
-      // Output transformations according to the quadrant in which phi lands
-      if (phi <= M_PI/4 && phi >= 0){
-        y_out = x; //y;
-        x_out = y; //x;
-      }
-      else if (phi <= M_PI/2 && phi > M_PI/4){
-        y_out = y;
-        x_out = x; /// why does this not sun in local coords?????
-      }
-
-      else if (phi > M_PI/2 && phi <= M_PI){
-        // Reflection in line y = 0
-        y_out = y;
-        x_out = -x;
-      }
-      else if (phi < 0 && phi >= - M_PI/2){
-        // Reflection in line y = - x
-        y_out = -x;
-        x_out = -y;
-      }
-      else if (phi < - M_PI/2){
-        // Reflection in line x = 0
-        y_out = -y;
-        x_out = x;
-      }
-      */
-
-     /*
-      // Attempt 2: if x and y are swapped?
-
-       if (phi <= M_PI/2 && phi >= 0){
-        y_out = -y;//y;
-        x_out = x;//x;
-      }
-      else if (phi > M_PI/2 && phi <= M_PI){
-        // Reflection in line y = 0
-        y_out = -y;
-        x_out = x;
-      }
-      else if (phi < 0 && phi >= - M_PI/2){
-        // Reflection in line y = - x
-        y_out = -x;
-        x_out = -y;
-      }
-      else if (phi < - M_PI/2){
-        // Reflection in line x = 0
-        y_out = y;
-        x_out = -x;
-      }
-    */
-    
-
-	    // rotate the individual layers corresponding to the local azimuth angle phi
-	    /*
-      ddml::SpacePoint sp(
-	      x_out * cos(phi) - y_out * sin(phi) ,
-	      x_out * sin(phi) + y_out * cos(phi) ,
-	      0.,
-	      output[ iHit ] ,
-	      0.
-	      ) ;
-      */
+    // output space points
      ddml::SpacePoint sp(
-	      x_out, //x_out, //rotatedVector.x ,
-	      y_out, //y_out, //rotatedVector.y  ,
+	      x_out,
+	      y_out, 
 	      0.,
 	      output[ iHit ] ,
 	      0.
@@ -638,9 +286,11 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
       double pos_X = intersect[0];
       double pos_Y = intersect[2];
 
-      std::cout << "X position of intersection: " << pos_X << std::endl;
+      if(DEBUGPRINT) {
+        std::cout << "X position of intersection: " << pos_X << std::endl;
 
-      std::cout << "Y position of intersection: " << pos_Y << std::endl;
+        std::cout << "Y position of intersection: " << pos_Y << std::endl;
+      }
 
       // equivalent of np.arange(-77, 78, 5.088333)
       std::vector<double> binX;
@@ -662,11 +312,15 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 
       for (size_t i=0; i <  binX.size(); ++i){        
           
-          std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell binX[i]: " <<  binX[i] <<
-              " binX[i+1]: "  << " i: "  << i <<std::endl;
+          if(DEBUGPRINT) {
+            std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell binX[i]: " <<  binX[i] <<
+                " binX[i+1]: "  << " i: "  << i <<std::endl;
+          }
 
           if ( i+1 > binX.size()){ 
-            std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell incident position not found in grid X!" << std::endl;
+            if(DEBUGPRINT) {
+              std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell incident position not found in grid X!" << std::endl;
+            }
           }
           
           else if ( binX[i] <= pos_X && pos_X < binX[i+1] ){
@@ -679,7 +333,10 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 
               gridX= static_cast<double>(i) + frac;
 
-              std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell gridX " <<  gridX <<std::endl;
+
+              if(DEBUGPRINT) {
+                std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell gridX " <<  gridX <<std::endl;
+              }
 
               i = binX.size(); //break;
 
@@ -693,11 +350,17 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
       // Y
       for (size_t j=0; j < binY.size(); ++j){        
           
-      std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell binY[j]: " <<  binY[j] <<
-              " binY[j+1]: "  << " j: "  << j <<std::endl;
+        if(DEBUGPRINT) {
+          std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell binY[j]: " <<  binY[j] <<
+                " binY[j+1]: "  << " j: "  << j <<std::endl;
+        }
 
           if ( j+1 > binY.size()){ 
-            std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell incident position not found in grid Y!" << std::endl;
+            
+            if(DEBUGPRINT) {
+              std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell incident position not found in grid Y!" << std::endl;
+            }
+
           }
           
           else if ( binY[j] <= pos_Y && pos_Y < binY[j+1] ){
@@ -708,7 +371,9 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 
               gridY = static_cast<double>(j) + frac;
 
-              std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell gridY " <<  gridY <<std::endl;
+              if(DEBUGPRINT) {
+                std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell gridY " <<  gridY <<std::endl;
+              }
 
               j = binY.size(); //break;
           }
