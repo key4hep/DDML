@@ -11,8 +11,13 @@ namespace ddml {
  *  Assumes a regular cartesian grid output with (x,y) defining the calorimeter planes and z the depth
  *  of the calorimeter.
  * 
- *  @author F.Gaede, DESY
- *  @date Mar 2023
+ * Based on RegularGridGANModel.
+ * 
+ * For BIBAE with single angle and energy conditioning.
+ * Allow for non-central incident cell in grid. 
+ * 
+ *  @author P.McKeown, DESY
+ *  @date Apr. 2023
  */
   
   class RegularGridBIBAEModel : public ModelInterface {

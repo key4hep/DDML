@@ -16,6 +16,9 @@
 #include "DDML/EndcapGeometry.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/Par04ExampleVAE.h"
+#include "DDML/EndcapTriggerTwoAngleBIBAE.h"
+#include "DDML/OctogonalBarrelTrigger.h"
+#include "DDML/TriggerInterface.h"
 
 namespace ddml {
 
@@ -82,14 +85,16 @@ namespace ddml {
   typedef FastMLShower<FastMLModel<ddml::TorchInference,
           ddml::RegularGridTwoAngleBIBAEModel,
           ddml::PolyhedraBarrelGeometry,
-				  Geant4FastHitMakerGlobal> >
+				  Geant4FastHitMakerGlobal,
+          ddml::OctogonalBarrelTrigger> > // add ML trigger
   RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel ;
 
   /// Model for two angle BIBAE regular grid inference in the endcap calorimter with Torch
   typedef FastMLShower<FastMLModel<ddml::TorchInference,
 				   ddml::RegularGridTwoAngleBIBAEModel,
 				   ddml::EndcapGeometry,
-				   Geant4FastHitMakerGlobal> >
+				   Geant4FastHitMakerGlobal,
+           ddml::EndcapTriggerTwoAngleBIBAE> > // add ML trigger
   RegularGridTwoAngleBIBAEModelEndcapTorchModel ;
 
 
