@@ -1,0 +1,33 @@
+#
+#  photon_geo_check.mac
+#  example script to run inference on a GAN w/ ONNX runtime
+
+# --- the particle gun
+/gps/particle  gamma
+#/gps/particle  pi-
+/gps/energy   15 GeV #10 GeV #20 GeV #50 GeV
+/gps/pos/centre 0.00 181.0 -20.90 # right at surface of calorieter face
+
+# for SimpleCalo
+/gps/direction  0 1 0
+
+# for ILD barrel
+
+#/gps/ang/mintheta 60. deg #15. deg 
+#/gps/ang/maxtheta 60 deg #165. deg 
+
+#/gps/ang/type iso
+#/gps/ang/mintheta 15. deg 
+#/gps/ang/maxtheta 165. deg #165. deg 
+#/gps/ang/mintheta 15. deg 
+#/gps/ang/mintheta 145. deg #15. deg 
+#/gps/ang/maxtheta 165 deg #165. deg 
+
+
+#/gps/ang/mintheta 45. deg 
+#/gps/ang/maxtheta 135. deg 
+#/gps/direction  0.1 -0.8 .1
+
+
+/run/beamOn 2000 #10 #100
+
