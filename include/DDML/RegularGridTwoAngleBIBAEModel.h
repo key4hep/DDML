@@ -73,6 +73,9 @@ namespace ddml {
     float _cellSizeX = 5.088333;  //5. ;
     float _cellSizeY = 5.088333;  //5. ;
 
+    /// Number of subcells in each of the X-Y dimensions in the plane of the calorimter face. If _nSubcells == 1, then cell size is used directly
+    /// Increased granularity is _nSubcells^2
+    int _nSubcells = 6;
 
     // Define incident cell in the regular grid for centering
     // One-angle BIBAE: center: 15,12
