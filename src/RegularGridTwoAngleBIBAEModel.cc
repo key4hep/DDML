@@ -175,77 +175,148 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 
     for(int l=0 ; l < nLayer ; ++l){
 
+      // reserving an upper limit on the size of the vector- not reached unless all hits above threshold
       spacepoints[l].reserve( _nCellsX * _nCellsY * _nSubcells * _nSubcells) ;
+
+      if(DEBUGPRINT) {
+      std::cout << " RegularGridTwoAngleBIBAEModel:convertOutput, sp reserve size : " <<   _nCellsX * _nCellsY * _nSubcells * _nSubcells << std::endl ;
+    } 
+
       
       for(int i=0; i<_nCellsX; ++i){
         for(int j=0; j<_nCellsY; ++j){
 
           if( output[ iHit ] > 0. ){
 
-          for(int k_x=0; k_x<_nSubcells; ++k_x){
-            for(int k_y=0; k_y<_nSubcells; ++k_y){
+            // Apply splitting if hits are above assigned threshold
+            if( output[ iHit ] > _split_threshold ){
+
+              for(int k_x=0; k_x<_nSubcells; ++k_x){
+                for(int k_y=0; k_y<_nSubcells; ++k_y){
 
 
-              // in the current BIB-AE x and y are switched, i.e. the angle is changed along y
-              // Allow for non-integer incident position in grid
-              double y = ( i - centerCellX ) * (_cellSizeX) + ( k_x + 0.5 )*(_cellSizeX/_nSubcells);
-              double x = ( j - centerCellY ) * (_cellSizeY) + ( k_y + 0.5 )*(_cellSizeY/_nSubcells);
+                  // in the current BIB-AE x and y are switched, i.e. the angle is changed along y
+                  // Allow for non-integer incident position in grid
+                  double y = ( i - centerCellX ) * (_cellSizeX) + ( k_x + 0.5 )*(_cellSizeX/_nSubcells);
+                  double x = ( j - centerCellY ) * (_cellSizeY) + ( k_y + 0.5 )*(_cellSizeY/_nSubcells);
 
 
-              double y_out;
-              double x_out;
+                  double y_out;
+                  double x_out;
 
-              // Output transformations according to the quadrant in which phi lands
-              if ( M_PI/4 >= phi && phi>=0 ){
-                y_out = y;
-                x_out = x;
+                  // Output transformations according to the quadrant in which phi lands
+                  if ( M_PI/4 >= phi && phi>=0 ){
+                    y_out = y;
+                    x_out = x;
+                  }
+                  else if ( M_PI/2 >= phi && phi > M_PI/4 ){
+                    // Reflection in y = x
+                    y_out = x;
+                    x_out = y;
+                  }
+                  else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
+                    // Reflection in line y = 0
+                    y_out = x;
+                    x_out = -y;
+                  }
+                  else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
+                    // Reflection in line y = 0
+                    y_out = y;
+                    x_out = -x;
+                  }
+                  else if ( 0. > phi && phi >= -M_PI/4 ){
+                      // Relection in line x = 0
+                      y_out = -y;
+                      x_out = x;
+                  }
+                  else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
+                      y_out = -x;
+                      x_out = y;
+                  }
+                  else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
+                    y_out = -x;
+                    x_out = -y;
+                  }
+                  else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
+                    y_out = -y;
+                    x_out = -x;
+                  }  
+
+                  // output space points
+                  ddml::SpacePoint sp(
+                      x_out,
+                      y_out, 
+                      0.,
+                      output[ iHit ] / (_nSubcells*_nSubcells), // split energy by area of sub-cells
+                      0.
+                      ) ;
+                    
+                    spacepoints[l].emplace_back( sp ) ;
+                  }
+                }
               }
-              else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-                // Reflection in y = x
-                y_out = x;
-                x_out = y;
-              }
-              else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-                // Reflection in line y = 0
-                y_out = x;
-                x_out = -y;
-              }
-              else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-                // Reflection in line y = 0
-                y_out = y;
-                x_out = -x;
-              }
-              else if ( 0. > phi && phi >= -M_PI/4 ){
-                  // Relection in line x = 0
-                  y_out = -y;
-                  x_out = x;
-              }
-              else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
+
+              // Otherwise (i.e. below threshold) treat as cell-level spacepoint
+              else{
+                  // in the current BIB-AE x and y are switched, i.e. the angle is changed along y
+                  // Allow for non-integer incident position in grid
+                  double y = ( i - centerCellX + 0.5 ) * _cellSizeX ;
+                  double x = ( j - centerCellY + 0.5 ) * _cellSizeY ;
+
+
+                  double y_out;
+                  double x_out;
+
+                  // Output transformations according to the quadrant in which phi lands
+                  if ( M_PI/4 >= phi && phi>=0 ){
+                    y_out = y;
+                    x_out = x;
+                  }
+                  else if ( M_PI/2 >= phi && phi > M_PI/4 ){
+                    // Reflection in y = x
+                    y_out = x;
+                    x_out = y;
+                  }
+                  else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
+                    // Reflection in line y = 0
+                    y_out = x;
+                    x_out = -y;
+                  }
+                  else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
+                    // Reflection in line y = 0
+                    y_out = y;
+                    x_out = -x;
+                }
+                else if ( 0. > phi && phi >= -M_PI/4 ){
+                    // Relection in line x = 0
+                    y_out = -y;
+                    x_out = x;
+                }
+                else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
+                    y_out = -x;
+                    x_out = y;
+                }
+                else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
                   y_out = -x;
-                  x_out = y;
-              }
-              else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
-                y_out = -x;
-                x_out = -y;
-              }
-              else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
-                y_out = -y;
-                x_out = -x;
-              }  
+                  x_out = -y;
+                }
+                else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
+                  y_out = -y;
+                  x_out = -x;
+                }  
 
-              // output space points
-              ddml::SpacePoint sp(
-                  x_out,
-                  y_out, 
-                  0.,
-                  output[ iHit ] / (_nSubcells*_nSubcells), // split energy by area of sub-cells
-                  0.
-                  ) ;
-                
-                spacepoints[l].emplace_back( sp ) ;
+                // output space points
+                ddml::SpacePoint sp(
+                    x_out,
+                    y_out, 
+                    0.,
+                    output[ iHit ] ,
+                    0.
+                    ) ;
+                  
+                  spacepoints[l].emplace_back( sp ) ;
+
               }
-            }
-        
           }
           ++iHit ;
         }

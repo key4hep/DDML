@@ -75,7 +75,10 @@ namespace ddml {
 
     /// Number of subcells in each of the X-Y dimensions in the plane of the calorimter face. If _nSubcells == 1, then cell size is used directly
     /// Increased granularity is _nSubcells^2
-    int _nSubcells = 6;
+    int _nSubcells = 6; //8; //6;
+
+    /// Threshold above which cells are split. If hit energy is less than threshold, it is treated as a cell
+    double _split_threshold = 0.1575 * 1.5 * 1e-3; // currently set threshold at 1.5 MIP for ILD ECAL
 
     // Define incident cell in the regular grid for centering
     // One-angle BIBAE: center: 15,12
