@@ -16,23 +16,32 @@ SIM.compactFile = ""
 ## Lorentz boost for the crossing angle, in radian!
 SIM.crossingAngleBoost = 7.e-3*rad
 SIM.enableDetailedShowerMode = True
-SIM.enableG4GPS = True
+SIM.enableG4GPS = False #True
 SIM.enableG4Gun = False
 SIM.enableGun = False
 ## InputFiles for simulation .stdhep, .slcio, .HEPEvt, .hepevt, .hepmc, .pairs files are supported
-SIM.inputFiles = []
+SIM.inputFiles = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/gen-E5050A-theta9090A-phi9090-p1.slcio' #[]
+#SIM.inputFiles = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/gen-E1010A-theta9090A-phi9090-p1.slcio'
 ## Macro file to execute for runType 'run' or 'vis'
-SIM.macroFile = "./photon_geo_check.mac"
+SIM.macroFile = None #"./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 2000 #100
+SIM.numberOfEvents = 2000 #10000
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/DDML_data_G4/sim-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio' #"dummyOutput.slcio"
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/DDML_data_G4/sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio'
 
-# BIBAE
-#SIM.outputFile = "/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Single_photon_timing_BIBAE/Single_photon_timing_check_BIBAE_5GeV.slcio"
+# simulation with BIBAE
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/BIBAE_DDML/BIBAE_sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio'
 
-# BIBAE 6by6 split
-SIM.outputFile = "/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/BIBAE_DDML_6by6_split_position2/BIBAE_6by6_split_poisition_2_sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio"
+# simulation with BIBAE using 6by6 split
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/BIBAE_DDML_6by6_split/BIBAE_6by6_split_sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio'
+
+#simulation with BIBAE using 8by8 split
+SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/BIBAE_DDML_8by8_split/BIBAE_8by8_split_sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio'
+
+#simulation with BIBAE using 6by6 split with threshold of 1.5 MIP
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Version_G4_check/BIBAE_DDML_6by6_split_thresh_1p5MIP/BIBAE_6by6_split_thresh_1p5MIP_sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio'
 
 ## Physics list to use in simulation
 SIM.physicsList = None
@@ -280,7 +289,7 @@ SIM.random.enableEventSeed = False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = None
+SIM.random.seed = '12345' #None
 SIM.random.type = None
 
 #---------------------------------------------
@@ -438,7 +447,7 @@ def aiDanceTorch(kernel):
    model.CorrectForAngles = ml_correct_angles
    # Energy boundaries are optional: Units are GeV
    model.ApplicableParticles = {'e+','e-','gamma'}
-   model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV} # trigger on lower training threshold
+   model.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # trigger on lower training threshold
    model.ModelPath = ml_file
    model.OptimizeFlag = 1
    model.IntraOpNumThreads = 1
@@ -455,7 +464,7 @@ def aiDanceTorch(kernel):
    model1.CorrectForAngles = ml_correct_angles
    # Energy boundaries are optional: Units are GeV
    model1.ApplicableParticles = {'e+','e-','gamma'}
-   model1.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV} # trigger on lower training threshold
+   model1.Etrigger = {'e+': 10. * GeV, 'e-': 10. * GeV, 'gamma': 10. * GeV} # trigger on lower training threshold
    model1.ModelPath = ml_file
    model1.OptimizeFlag = 1
    model1.IntraOpNumThreads = 1

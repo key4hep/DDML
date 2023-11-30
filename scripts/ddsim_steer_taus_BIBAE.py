@@ -29,7 +29,15 @@ SIM.numberOfEvents = 10000
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
 #SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Tau_pi0_BIBAE_files/BIBAE_tau_pi0_250-SetA_2f_leptonic_eL_pR.slcio' #"dummyOutput.slcio"
-SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Tau_pi0_BIBAE_files/BIBAE_tau_pi0_twophotons_trigger_250-SetA_2f_leptonic_eL_pR_file_61.slcio'
+
+### Original seed path
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Tau_pi0_BIBAE_files/BIBAE_tau_pi0_twophotons_trigger_250-SetA_2f_leptonic_eL_pR_file_61.slcio'
+
+#### Second seed path
+#SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Tau_pi0_BIBAE_files/BIBAE_tau_pi0_twophotons_trigger_250-SetA_2f_leptonic_eL_pR_file_61_SEED_2.slcio'
+
+#### Third seed path
+SIM.outputFile = '/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Tau_pi0_BIBAE_files/BIBAE_tau_pi0_twophotons_trigger_250-SetA_2f_leptonic_eL_pR_file_61_SEED_3.slcio'
 
 ## Physics list to use in simulation
 SIM.physicsList = None
@@ -277,7 +285,16 @@ SIM.random.enableEventSeed = False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = '12345' #None
+
+#### Original seed
+#SIM.random.seed = '12345' #None
+
+#### Second seed
+#SIM.random.seed = '72943'
+
+#### Third seed
+SIM.random.seed = '98156'
+
 SIM.random.type = None
 
 #---------------------------------------------
