@@ -24,7 +24,7 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 100
+SIM.numberOfEvents = 10 #100
 ## Outputfile from the simulation,only lcio output is supported
 # SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
 SIM.outputFile = "dummyOutput.slcio"
@@ -295,9 +295,10 @@ SIM.random.type = None
 
 
 def aiDance(kernel):
-    ild = True
-    par04 = True  # False
-    old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
+   ild = True #False #True
+   par04 = True #False
+   par04ParrallelWorld = False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
+   old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -308,16 +309,23 @@ def aiDance(kernel):
         ml_barrel_symmetry = 12
         ml_endcap_name = "ECalEndcap"
 
-    if par04 == True:
-        ml_file = "../models/Generator.onnx"
-        ml_model = "Par04ExampleVAEPolyhedraBarrelONNXModel/ShowerModel"
-        ml_model1 = "Par04ExampleVAEEndcapONNXModel/ShowerModel"
-    else:
-        ml_file = "../models/francisca_gan.onnx"
-        ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
-        ml_model1 = "RegularGridGANEndcapONNXModel/ShowerModel"
+   if par04 == True :
+      ml_file = "../models/Generator.onnx"
+      ml_model = "Par04ExampleVAEPolyhedraBarrelONNXModel/ShowerModel"
+      ml_model1 = "Par04ExampleVAEEndcapONNXModel/ShowerModel"
+   elif par04 == True and par04ParrallelWorld == True:
+      ml_file = "../models/Generator.onnx"
+      ml_model = "Par04CylindrialScoringMeshVAEBarrelParallelONNXModel/ShowerModel"
+      ml_model1 = "Par04CylindrialScoringMeshVAEEndcapParallelONNXModel/ShowerModel"
+   else :
+      ml_file = "../models/francisca_gan.onnx"
+      ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
+      ml_model1 = "RegularGridGANEndcapONNXModel/ShowerModel"
 
-    ml_correct_angles = True
+
+   
+
+   ml_correct_angles = False #True ---- set false for Parallel world geometry, since mesh is aligned with incident particle direction
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
     from DDG4 import DetectorConstruction, Geant4, PhysicsList
