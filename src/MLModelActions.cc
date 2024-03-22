@@ -14,8 +14,10 @@
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/EndcapGeometry.h"
+#include "DDML/PolyhedraBarrelGeometryParallelWorld.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/Par04ExampleVAE.h"
+#include "DDML/Par04CylindrialScoringMeshVAE.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/OctogonalBarrelTrigger.h"
 #include "DDML/TriggerInterface.h"
@@ -50,6 +52,22 @@ namespace ddml {
 				   ddml::EndcapGeometry,
 				   Geant4FastHitMakerGlobal> >
   Par04ExampleVAEEndcapONNXModel ;
+
+
+  /// Cylindrical Mesh Parallel World Geometry
+  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
+          ddml::Par04CylindrialScoringMeshVAE,
+          ddml::PolyhedraBarrelGeometryParallelWorld,
+          Geant4FastHitMakerGlobal> >
+  Par04CylindrialScoringMeshVAEBarrelParallelONNXModel;
+
+// Endcap copy Par04Example- update once barrel checked!
+  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
+				  ddml::Par04CylindrialScoringMeshVAE,
+				  ddml::EndcapGeometry,
+				  Geant4FastHitMakerGlobal> >
+  Par04CylindrialScoringMeshVAEEndcapParallelONNXModel ;
+
 #endif
 
 #ifdef DDML_USE_TORCH_INFERENCE
@@ -108,6 +126,8 @@ DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelONNXModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapONNXModel)
 DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEPolyhedraBarrelONNXModel)
 DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEEndcapONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml,Par04CylindrialScoringMeshVAEBarrelParallelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml,Par04CylindrialScoringMeshVAEEndcapParallelONNXModel)
 #endif
 
 #ifdef DDML_USE_TORCH_INFERENCE

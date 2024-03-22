@@ -3,8 +3,10 @@ set(sources
   Geant4FastHitMakerGlobal.cc
   MLModelActions.cc
   PolyhedraBarrelGeometry.cc
+  PolyhedraBarrelGeometryParallelWorld.cc
   RegularGridGANModel.cc
   Par04ExampleVAE.cc
+  Par04CylindrialScoringMeshVAE.cc
   RegularGridBIBAEModel.cc
   RegularGridTwoAngleBIBAEModel.cc
   OctogonalBarrelTrigger.cc
@@ -66,9 +68,11 @@ dd4hep_instantiate_package(${PROJECT_NAME})
 set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridGANModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/Par04ExampleVAE.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/Par04CylindrialScoringMeshVAE.cc
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridTwoAngleBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometryParallelWorld.cc
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/GeometryInterface.h
