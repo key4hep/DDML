@@ -56,10 +56,17 @@ namespace ddml {
   private:
     std::vector<float> _caloLayerDistances ={} ;
 
+    // These variables are HARCODED! Should move to python steering file
     /// model properties for plugin
-    std::string _detector = { "EcalBarrel" } ;
-    int _nSymmetry = 8 ;
+    //std::string _detector = { "EcalBarrel" } ;
+    //int _nSymmetry = 8 ;
+    //bool _correctForAngles = false  ;
+
+    std::string _detector = { "ECalBarrel" } ;
+    int _nSymmetry = 12 ;
     bool _correctForAngles = false  ;
+
+    int _nCellsZ = 45; // number of cells in mesh in z' direction (along particle flight path)
   };
 
 } // namespace

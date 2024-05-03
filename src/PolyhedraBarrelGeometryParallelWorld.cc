@@ -18,6 +18,8 @@ namespace ddml {
     auto det = theDetector.detector( _detector ) ;
     auto* cal = det.extension<dd4hep::rec::LayeredCalorimeterData>() ;
 
+    std::cout << " PolyhedraBarrelGeometryParallelWorld: detector is " << _detector << std::endl ;
+
     /*
     if( cal){
       for( auto l : cal->layers ){
@@ -172,6 +174,8 @@ namespace ddml {
           ) ;
       */
 
+      // Without layer structure in spacepoint vector
+      /*
       for(int i=0, N=spacepoints.size(); i<N ; ++i){
 
           auto& sp = spacepoints[i][0];
@@ -191,9 +195,32 @@ namespace ddml {
         sp.X = global.x() ;
         sp.Y = global.y() ;
         sp.Z = global.z() ;
-	
+	      
+    }
+    */
 
-      
+    for(int l= 0; l < _nCellsZ ; ++l ){ 
+      for(int i=0, N=spacepoints[l].size(); i<N ; ++i) {
+    
+          auto& sp = spacepoints[l][i] ;
+
+            /// PARALLEL WORLD LOCAL TO GLOBAL
+            // In this case, don''t use any information about the sensitive positions,
+            // but rather only about the position of the envelope (i.e. surface of the calorimeter face)
+            G4ThreeVector pos( posR.x() + sp.Z,
+                posR.y() + sp.Y,
+                posR.z() - sp.X
+              );
+
+
+          // rotate back to original phi sector
+          auto global = rotPos * pos ;
+
+          sp.X = global.x() ;
+          sp.Y = global.y() ;
+          sp.Z = global.z() ;
+          
+      }
     }
   }
 }

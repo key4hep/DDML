@@ -1,5 +1,6 @@
 set(sources
   EndcapGeometry.cc
+  EndcapGeometryParallelWorld.cc
   Geant4FastHitMakerGlobal.cc
   MLModelActions.cc
   PolyhedraBarrelGeometry.cc
@@ -68,17 +69,18 @@ dd4hep_instantiate_package(${PROJECT_NAME})
 set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridGANModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/Par04ExampleVAE.h
-  ${PROJECT_SOURCE_DIR}/include/DDML/Par04CylindrialScoringMeshVAE.cc
+  ${PROJECT_SOURCE_DIR}/include/DDML/Par04CylindrialScoringMeshVAE.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridTwoAngleBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
-  ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometryParallelWorld.cc
+  ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometryParallelWorld.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/GeometryInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/Geant4FastHitMakerGlobal.h
   ${PROJECT_SOURCE_DIR}/include/DDML/FastMLShower.h
   ${PROJECT_SOURCE_DIR}/include/DDML/EndcapGeometry.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/EndcapGeometryParallelWorld.h
   ${PROJECT_SOURCE_DIR}/include/DDML/EndcapTriggerTwoAngleBIBAE.h
   ${PROJECT_SOURCE_DIR}/include/DDML/OctogonalBarrelTrigger.h
   ${PROJECT_SOURCE_DIR}/include/DDML/TriggerInterface.h
