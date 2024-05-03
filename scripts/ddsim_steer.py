@@ -14,8 +14,8 @@ SIM = DD4hepSimulation()
 ## The compact XML file
 SIM.compactFile = ""
 ## Lorentz boost for the crossing angle, in radian!
-SIM.crossingAngleBoost = 7.0e-3 * rad
-SIM.enableDetailedShowerMode = True
+SIM.crossingAngleBoost = 7.e-3*rad ### Need to check this for FCC!
+SIM.enableDetailedShowerMode = False #True
 SIM.enableG4GPS = True
 SIM.enableG4Gun = False
 SIM.enableGun = False
@@ -26,8 +26,8 @@ SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
 SIM.numberOfEvents = 10 #100
 ## Outputfile from the simulation,only lcio output is supported
-# SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "dummyOutput.slcio"
+#SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
+SIM.outputFile = "CLD_dummyOutput_ML.slcio" #"dummyOutput.slcio"
 
 ## Physics list to use in simulation
 SIM.physicsList = None
@@ -295,25 +295,25 @@ SIM.random.type = None
 
 
 def aiDance(kernel):
-   ild = True #False #True
-   par04 = True #False
-   par04ParrallelWorld = False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
+   ild =  False #True #True #False #True
+   par04 = False #True #False
+   par04ParrallelWorld = True #False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
    old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
-    if ild == True:
-        ml_barrel_name = "EcalBarrel"
-        ml_barrel_symmetry = 8
-        ml_endcap_name = "EcalEndcap"
-    else:
-        ml_barrel_name = "ECalBarrel"
-        ml_barrel_symmetry = 12
-        ml_endcap_name = "ECalEndcap"
+   if ild == True :
+      ml_barrel_name = 'EcalBarrel'
+      ml_barrel_symmetry = 8
+      ml_endcap_name = 'EcalEndcap'
+   else :
+      ml_barrel_name = 'ECalBarrel'
+      ml_barrel_symmetry = 12
+      ml_endcap_name = 'ECalEndcap'
 
    if par04 == True :
       ml_file = "../models/Generator.onnx"
       ml_model = "Par04ExampleVAEPolyhedraBarrelONNXModel/ShowerModel"
       ml_model1 = "Par04ExampleVAEEndcapONNXModel/ShowerModel"
-   elif par04 == True and par04ParrallelWorld == True:
+   elif par04ParrallelWorld == True:
       ml_file = "../models/Generator.onnx"
       ml_model = "Par04CylindrialScoringMeshVAEBarrelParallelONNXModel/ShowerModel"
       ml_model1 = "Par04CylindrialScoringMeshVAEEndcapParallelONNXModel/ShowerModel"
@@ -371,7 +371,7 @@ def aiDance(kernel):
     ##   # Mandatory model parameters
     model1.RegionName = "EcalEndcapRegion"
     model1.Detector = ml_endcap_name
-    model1.Enable = True
+    model1.Enable = True    ####### JUST TESTING BARREL FOR NOW!!!! ########
     model1.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     model1.ApplicableParticles = {"e+", "e-", "gamma"}

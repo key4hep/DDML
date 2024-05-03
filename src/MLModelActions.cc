@@ -16,6 +16,7 @@
 
 #include "DDML/EndcapGeometry.h"
 #include "DDML/PolyhedraBarrelGeometryParallelWorld.h"
+#include "DDML/EndcapGeometryParallelWorld.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/Par04CylindrialScoringMeshVAE.h"
@@ -67,7 +68,7 @@ typedef FastMLShower<
 // Endcap copy Par04Example- update once barrel checked!
   typedef FastMLShower<FastMLModel<ddml::ONNXInference,
 				  ddml::Par04CylindrialScoringMeshVAE,
-				  ddml::EndcapGeometry,
+				  ddml::EndcapGeometryParallelWorld,
 				  Geant4FastHitMakerGlobal> >
   Par04CylindrialScoringMeshVAEEndcapParallelONNXModel ;
 

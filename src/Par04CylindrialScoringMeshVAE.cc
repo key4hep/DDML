@@ -63,7 +63,8 @@ namespace ddml {
     output.assign(outputSize, 0);
   }
   
-
+ // ORIGINAL IMPLEMENTATION 
+/*
 void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const& aFastTrack,
             G4ThreeVector const& localDir,
             const std::vector<float>& output,
@@ -98,8 +99,10 @@ void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const& aFastTrack,
 
       rotMatrix.rotateZ(particlePhi);
       rotMatrix.rotateX(particleTheta);
-
+      
       G4RotationMatrix rotMatrixInv = CLHEP::inverseOf(rotMatrix);
+
+      */
 
       /*
       int cpt = 0;
@@ -179,6 +182,7 @@ void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const& aFastTrack,
    // For using local coordinate convention of DDML, with addtional sensitive asignment
    // based on closest active layer
     // Local conversion of model output to space points.
+    /*
     int iHit = 0;
     for (G4int iCellR = 0; iCellR < fMeshNumber.x(); iCellR++)
     {
@@ -234,7 +238,57 @@ void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const& aFastTrack,
       }
       iHit++;
     }
+  */
     
+void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const& aFastTrack,
+            G4ThreeVector const& localDir,
+            const std::vector<float>& output,
+            std::vector<SpacePointVec>& spacepoints ){
+  
+    int nLayer = _nCellsZ ; // number of layers is z dimension
+    
+    spacepoints.resize( nLayer ) ; 
+
+    for(int l=0 ; l < nLayer ; ++l){
+      spacepoints[l].reserve( _nCellsRho * _nCellsPhi ) ;
+    }
+
+    int iHit = 0 ;
+
+    for(int i=0; i<_nCellsRho; ++i){
+      
+      float rho = (i+0.5) * _cellSizeRho ;
+
+      for(int j=0; j<_nCellsPhi; ++j){
+
+	float phiCell = (j+0.5) * 2.*CLHEP::pi / _nCellsPhi ;
+	float x = rho * cos( phiCell ) ;
+	float y = rho * sin( phiCell ) ;
+	
+
+	for(int l=0 ; l < nLayer ; ++l){
+
+    float z = (l+0.5)*_cellSizeZ;
+
+	  if( output[ iHit ] > 0. ){
+
+	    ddml::SpacePoint sp(
+	      x,
+	      y,
+	      z,
+	      output[ iHit ] * _initialEnergy ,  // model output is in fraction of initial E
+	      0.
+	      ) ;
+	    
+	    spacepoints[l].emplace_back( sp ) ;
+	  }
+	
+	  ++iHit ;
+	}
+      }
+    }
+  }
+
 
 /*
 void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const& aFastTrack,
