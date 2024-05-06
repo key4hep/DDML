@@ -72,6 +72,8 @@ namespace ddml {
     
     float signZ = ( position.z() > 0. ?  1.0 : -1.0 ) ;
 
+  /*
+
     if( ! _correctForAngles )
       direction = { 0., 0. , signZ * 1.0  } ;  // position layers w/ impact normal to the plane
 
@@ -114,5 +116,38 @@ namespace ddml {
 	
       }
     }
+
+  */
+
+  for(int l= 0; l < _nCellsZ ; ++l ){ 
+      
+      //double zL = signZ * _caloLayerDistances[ l + firstLayer ] ;
+      
+      /*
+      // lamda for intersection of particle direction and calo plane in phi sector 0
+      double lambda = ( zL - position.z() ) / direction.z() ;
+      
+      G4ThreeVector posC = position + lambda * direction ;
+      */
+      
+      for(int i=0, N=spacepoints[l].size(); i<N ; ++i) {
+	
+        auto& sp = spacepoints[l][i] ;
+        
+        /*
+        // take the rotation by pi around y on the negative side into account
+        sp.X = posC.x() + signZ*sp.X  ;
+        sp.Y += posC.y()  ;
+        sp.Z =  zL ; // =  posC.z()
+        */
+
+        // take the rotation by pi around y on the negative side into account
+        sp.X = position.x() + signZ*sp.X  ;
+        sp.Y += position.y()  ;
+        sp.Z =  position.z() ; // =  posC.z()
+	
+      }
+    }
+
   }
 }

@@ -27,7 +27,7 @@ SIM.macroFile = "./test_onnx.mac"
 SIM.numberOfEvents = 10 #100
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "CLD_dummyOutput_ML.slcio" #"dummyOutput.slcio"
+SIM.outputFile = "CLD_dummyOutput_ML_Rot2.slcio" #"dummyOutput.slcio"
 
 ## Physics list to use in simulation
 SIM.physicsList = None
