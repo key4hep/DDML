@@ -288,8 +288,9 @@ SIM.random.type = None
 def aiDance(kernel):
    ild =  False #True #True #False #True
    par04 = False #True #False
-   par04ParrallelWorld = True #False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
+   par04ParrallelWorld = False #False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
    old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
+   CLD = True
 
    print(ild)
 
@@ -310,6 +311,12 @@ def aiDance(kernel):
       ml_file = "../models/Generator.onnx"
       ml_model = "Par04CylindrialScoringMeshVAEBarrelParallelONNXModel/ShowerModel"
       ml_model1 = "Par04CylindrialScoringMeshVAEEndcapParallelONNXModel/ShowerModel"
+   elif CLD == True:
+      # ml_file = "../models/whole_any_nograd.onnx"
+      ml_file = "../models/whole_any_nograd_opset13.onnx"
+      ml_model = "FCCeeCLDGeometryBarrelParallelONNXModel/ShowerModel"
+      ml_model1 = "FCCeeCLDGeometryBarrelParallelONNXModel/ShowerModel"
+   
    else :
       ml_file = "../models/francisca_gan.onnx"
       ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
@@ -383,10 +390,11 @@ def aiDance(kernel):
    phys.dump()
 
 def aiDanceTorch(kernel):
-   ild = True
-   BIBAE = True
-   Two_Angle = True
+   ild = False
+   BIBAE = False
+   Two_Angle = False
    old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
+   CLD = True
 
    if ild == True:
       ml_barrel_name = 'EcalBarrel'
@@ -406,6 +414,12 @@ def aiDanceTorch(kernel):
       ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
       ml_model = "RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel/BarrelModelTorch"
       ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
+      ml_correct_angles = False
+   elif CLD == True:
+      ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
+      # ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
+      ml_model = "FCCeeCLDGeometryBarrelParallelTorchModel/BarrelModelTorch"
+      ml_model_1 = "FCCeeCLDGeometryEndcapParallelTorchModel/EndcapModelTorch"
       ml_correct_angles = False
    else:
       ml_file = "../models/francisca_gan_jit.pt"
@@ -479,4 +493,4 @@ def aiDanceTorch(kernel):
    phys.dump()
 
 SIM.physics.setupUserPhysics( aiDance)
-#SIM.physics.setupUserPhysics( aiDanceTorch)
+# SIM.physics.setupUserPhysics( aiDanceTorch)

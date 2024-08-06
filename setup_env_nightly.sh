@@ -7,9 +7,9 @@
 
 #source /cvmfs/sw-nightlies.hsf.org/key4hep/releases/2023-09-26/x86_64-ubuntu22.04-gcc11.3.0-opt/key4hep-stack/2023-09-25-3nhzry/setup.sh
 
-source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
+#source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
 
-#source /cvmfs/sw.hsf.org/key4hep/setup.sh
+source /cvmfs/sw.hsf.org/key4hep/setup.sh
 
 #source /cvmfs/sw-nightlies.hsf.org/key4hep/releases/2023-09-01/x86_64-ubuntu22.04-gcc11.3.0-opt/key4hep-stack/2023-08-31-xhbtnu/setup.sh
 
