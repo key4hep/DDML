@@ -36,7 +36,7 @@ namespace ddml {
  
     inputs[0].resize( _latentSize );
 
-    inputs[0][0]     = (energy /CLHEP::MeV);
+    inputs[0][0] = 50;
     inputs[0][1] = 0 ;
     inputs[0][2] = 1.57 ;    
 
