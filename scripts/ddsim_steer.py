@@ -27,7 +27,8 @@ SIM.macroFile = "./test_onnx.mac"
 SIM.numberOfEvents = 10 #100
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "CLD_dummyOutput_ML_Rot2.slcio" #"dummyOutput.slcio"
+# SIM.outputFile = "CLD_dummyOutput_ML_Rot2.slcio" #"dummyOutput.slcio"
+SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
 
 ## Physics list to use in simulation
 SIM.physicsList = None
@@ -431,7 +432,8 @@ def aiDanceTorch(kernel):
         ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
    elif CLD == True:
-      ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
+      ml_file = "../models/nocuda.pt"
+      # ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
       # ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
       ml_model = "FCCeeCLDGeometryBarrelParallelTorchModel/BarrelModelTorch"
       ml_model_1 = "FCCeeCLDGeometryEndcapParallelTorchModel/EndcapModelTorch"
