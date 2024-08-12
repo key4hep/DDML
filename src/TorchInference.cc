@@ -20,12 +20,15 @@ void TorchInference::initialize() {
   m_jitModule = torch::jit::load(m_modelPath);
   m_jitModule.to(torch::kCPU);
   m_jitModule.eval();
+  torch::NoGradGuard no_grad;
 
   m_options = torch::TensorOptions().dtype(torch::kFloat32).device(torch::kCPU);
 }
 
 /// run the inference model
 void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
+  
+  torch::NoGradGuard no_grad;
   if (!m_isInitialized) {
     initialize();
     m_isInitialized = true;
@@ -77,5 +80,6 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
   for (int i = 0, N = output.size(); i < N; ++i) {
     output[i] = *(outTensor.data_ptr<float>() + i);
   }
+
 }
 } // namespace ddml
