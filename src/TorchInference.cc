@@ -25,6 +25,7 @@ namespace ddml {
     fModule = torch::jit::load( modelPath );
     fModule.to(torch::kCPU);
     fModule.eval();
+    torch::NoGradGuard no_grad;
     
     m_options = torch::TensorOptions()
       .dtype(torch::kFloat32)
@@ -37,6 +38,7 @@ namespace ddml {
   void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
 				   std::vector<float>& output ) {
 
+    torch::NoGradGuard no_grad;
     if( ! _isInitialized ){
       initialize() ;
       _isInitialized = true ;
