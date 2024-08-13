@@ -1,2 +1,7 @@
 /install/
 /build/
+*.h5
+*.root
+*.slcio
+*.tga
+*.log
