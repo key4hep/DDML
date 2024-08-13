@@ -27,8 +27,8 @@ SIM.macroFile = "./test_onnx.mac"
 SIM.numberOfEvents = 10 #100
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-# SIM.outputFile = "CLD_dummyOutput_ML_Rot2.slcio" #"dummyOutput.slcio"
-SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
+SIM.outputFile = "CLD_fast_notracker_edm4hep.root" #"dummyOutput.slcio"
+# SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
 
 ## Physics list to use in simulation
 SIM.physicsList = None
@@ -471,7 +471,10 @@ def aiDanceTorch(kernel):
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
-    model.RegionName = "EcalBarrelRegion"
+    if ild == True:
+        model.RegionName = "EcalBarrelRegion"
+    else:
+        model.RegionName = "ECalBarrelRegion"
     model.Detector = ml_barrel_name
     model.Symmetry = ml_barrel_symmetry
     model.Enable = True
@@ -493,7 +496,10 @@ def aiDanceTorch(kernel):
     model1 = DetectorConstruction(kernel, str(ml_model_1))
 
     ##   # Mandatory model parameters
-    model1.RegionName = "EcalEndcapRegion"
+    if ild == True:
+        model1.RegionName = "EcalEndcapRegion"
+    else:
+        model1.RegionName = "ECalEndcapRegion"
     model1.Detector = ml_endcap_name
     model1.Enable = True
     model1.CorrectForAngles = ml_correct_angles

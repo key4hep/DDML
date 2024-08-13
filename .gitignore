@@ -1,5 +1,9 @@
 /install/
 /build/
-
+*.h5
+*.root
+*.slcio
+*.tga
+*.log
 # model binary files
 models/*.pt
