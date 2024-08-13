@@ -18,7 +18,7 @@ namespace ddml {
 
     
     tensDims = _tensDims ;
-    G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
+    G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy()/1000; //MeV -> GeV
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
@@ -26,9 +26,6 @@ namespace ddml {
     // compute local incident angle
     double theta = acos( localDir.z() ) ;
 
-    if( DEBUGPRINT ) 
-    std::cout << "  FCCeeCLDGeometry::prepareInput   [energy, phi, theta] = " << std::endl ;
-    
     // the input for this model is [energy, phi, theta]
 
     if( inputs.size() != 1 )
@@ -36,9 +33,9 @@ namespace ddml {
  
     inputs[0].resize( _latentSize );
 
-    inputs[0][0] = 50;
-    inputs[0][1] = 0 ;
-    inputs[0][2] = 1.57 ;    
+    inputs[0][0] = energy;
+    inputs[0][1] = atan2( direction.y() , direction.x() ) ; //global direction in radius not degree
+    inputs[0][2] = acos( direction.z() ) ;    //same
 
     // inputs.resize(_latentSize);
     // inputs[0].resize(1);   // Energy
@@ -46,7 +43,21 @@ namespace ddml {
     // inputs[2].resize(1);   // Theta
 
  
+     // if( DEBUGPRINT ) 
+    std::cout << "  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " << std::endl ;
+    std::cout << " inputs   [energy, phi, theta] = "<< inputs[0][0] <<"," << inputs[0][1]<< "," << inputs[0][2] << std::endl ;
+    // std::cout << "local theta angle" << localDir.z() << std::endl ;
+    // std::cout << "local energy" << energy << std::endl ;
+    // std::cout << "localDir" << localDir.x() <<"," << localDir.y() <<","<< localDir.z() << std::endl ;
+    // std::cout << "direction" << direction.x() <<"," << direction.y() <<","<< direction.z() << std::endl ;
+    // std::cout << "position" << position.x() <<"," << position.y() <<","<< position.z() << std::endl ;
+    std::cout << "  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " << std::endl ;
 
+    
+    std::cout << "phi = " << atan2( localDir.y() , localDir.x() ) / M_PI * 180.
+		<< "   theta : " << acos( localDir.z() ) / M_PI * 180.
+		<< std::endl ;
+    
     // // inputs[0][0] =  energy/ CLHEP::GeV;
     // inputs[0][0] =  50;
     // inputs[1][0] =  0;
