@@ -118,10 +118,7 @@ namespace ddml {
     virtual bool check_trigger(const G4FastTrack& track)  override {
       // if( fastsimML.has_check_trigger ) return fastsimML.check_trigger(track ) ;
       // else
-      if(this->Geant4FastSimShowerModel::check_trigger(track)) {
-        return fastsimML.trigger.check_trigger(track);
-      }
-      return false;
+      return this->Geant4FastSimShowerModel::check_trigger(track);
     }
 
     /// User callback to model the particle/energy shower - details defined in ML_MODEL
@@ -209,18 +206,13 @@ namespace ddml {
     }
   };
 
-  struct AlwaysTrueTrigger {
-    bool check_trigger(const G4FastTrack&) {
-      return true;
-    }
-  };
 
   /** Template class to put together a complete ML model by specifying implementations for the Inference, the Model, the Geometry and a HitMaker.
    * 
    * @author F.Gaede, DESY
    * @date Mar 2023
    */
-  template< class Inference, class MLModel, class Geometry, class HitMaker, class Trigger=AlwaysTrueTrigger>
+  template< class Inference, class MLModel, class Geometry, class HitMaker>
   struct FastMLModel {
 
     using InferenceT = Inference;
@@ -232,8 +224,7 @@ namespace ddml {
     MLModel   model={} ;
     Geometry  geometry={} ;
     HitMaker*  hitMaker={} ;
-    Trigger trigger{};
-
+    
     FastMLModel() : hitMaker( new HitMaker ) {} 
     
     const bool has_constructGeo = false ;

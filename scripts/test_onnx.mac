@@ -6,63 +6,19 @@
 /gps/pos/centre 0 0 0
 /gps/particle  gamma
 #/gps/particle  pi-
-/gps/energy    50 GeV
+/gps/energy    20 GeV
 
 # for SimpleCalo
-/gps/direction  -0.4152 1 0 #(pi/8 + pi/4) #1 0.414213562 0 #(pi/8) #-1 2.414213562 0 #(pi/8 + 1 deg) # 0.25 0.25 0.5  #0 0.5 0.655 # ( 37 deg in theta- most you can get in endcap from IP )
-
-                # phi barrel
-                #1 0.414213562 0 #(pi/8)
-                #1 2.414213562 0 #(pi/8 + pi/4)
-                #-1 2.414213562 0 #(pi/8 + 2* pi/4)
-
-                
-                #0.23 0.23 0.5 # 33 deg in theta -> 65 cond angle
-                # Theta endcap exclusions
-
-                #Theta barrel exclusions
-                #0 0.5 0.59 #(40.28 deg) #0 0.5 0.57 #(41.26 deg) #0 0.5 0.60 #(39.8 deg)
-                #0 0.5 0.65 # Very edge of forward barrel
-
-                #Phi barrel exclusion check
-                #1 0.589045016 0 #(pi/8 + 8 deg) #1 0.565772778 0 #(pi/8 + 7 deg)  #1 0.5429557 0 #(pi/8 + 6 deg)  #1 0.589045016 0 #(pi/8 + 8 deg) #1 0.490501608 0 #(pi/8 + 4 deg) 1 0.0.445228685 0 #(pi/8 + 1.5 deg) #1 0.434812375 0 #(pi/8 + 1 deg) #1 0.393910476 0 #(pi/8 - 1 deg) #1 0.363970234 0 #(pi/8 - 2.5 deg) #1 0.414213562 0 #(pi/8) 
-                #1 0.577350269 0 #-1 -0.25 2 #0.35 0.15 0.5  #0.25 0.23 0.5 #0.2 0.4 0.50  #-0.1 -1 2 #(-pi/2 -> -3pi/4) #0.1 -1 2 #(-pi/4 -> -pi/2) #0.23 0.23 0.5 
-                #-1 0.1 2 #(3pi/4 -> pi)
-                #0.2 0.5 0.65
-                #1 -0.1 2
-                #0.2 0.5 0.6
-                #-1 -0.25 2
-                #-1 -0.25 2 #(-3pi/4 -> -pi)
-                #-0.1 -1 2 #(-pi/2 -> -3pi/4)
-                #0.25 -1 2 #(-pi/4 -> -pi/2)
-                #1 -0.1 2  #(0 -> -pi/4)
-                #-1 0.1 2 (3pi/4 -> pi)
-                #-0.2 0.9 2 (pi/2 -> 3pi/4)
-                #0.1 1 2 (pi/4 -> pi/2)
-                #1 0.1 2 # start from x axis (0 -> pi/4)
-                #0.23 0.23 0.5  #0.15 0.10 0.5 #0.35 0.15 0.5 #0.25 0.25 0.5 #0. 0.5 0.5
-
-                # Very corner of forward barrel 0.2 0.5 0.65  
-                # 0.15 0.10 0.5 broken
-                ##  0.05 0.10 0.5 works  
+#/gps/direction  0. 0.5 0.5
 
 # for ILD barrel
-
-#/gps/ang/mintheta 60. deg #15. deg 
-#/gps/ang/maxtheta 60 deg #165. deg 
-
-#/gps/ang/type iso
-#/gps/ang/mintheta 15. deg 
-#/gps/ang/maxtheta 165. deg #165. deg 
-#/gps/ang/mintheta 15. deg 
-#/gps/ang/mintheta 145. deg #15. deg 
-#/gps/ang/maxtheta 165 deg #165. deg 
-
-
+/gps/ang/type iso
+/gps/ang/mintheta 15. deg 
+/gps/ang/maxtheta 165. deg 
 #/gps/ang/mintheta 45. deg 
 #/gps/ang/maxtheta 135. deg 
 #/gps/direction  0.1 -0.8 .1
 
 
-/run/beamOn 10 #100
+/run/beamOn 100
 
