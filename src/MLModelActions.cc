@@ -11,10 +11,14 @@
 
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridBIBAEModel.h"
+#include "DDML/RegularGridTwoAngleBIBAEModel.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/Par04ExampleVAE.h"
+#include "DDML/EndcapTriggerTwoAngleBIBAE.h"
+#include "DDML/OctogonalBarrelTrigger.h"
+#include "DDML/TriggerInterface.h"
 
 namespace ddml {
 
@@ -77,6 +81,23 @@ namespace ddml {
 				   Geant4FastHitMakerGlobal> >
   RegularGridBIBAEEndcapTorchModel ;
 
+  /// Model for two angle BIBAE regular grid inference in the barrel calorimeter with Torch
+  typedef FastMLShower<FastMLModel<ddml::TorchInference,
+          ddml::RegularGridTwoAngleBIBAEModel,
+          ddml::PolyhedraBarrelGeometry,
+				  Geant4FastHitMakerGlobal,
+          ddml::OctogonalBarrelTrigger> > // add ML trigger
+  RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel ;
+
+  /// Model for two angle BIBAE regular grid inference in the endcap calorimter with Torch
+  typedef FastMLShower<FastMLModel<ddml::TorchInference,
+				   ddml::RegularGridTwoAngleBIBAEModel,
+				   ddml::EndcapGeometry,
+				   Geant4FastHitMakerGlobal,
+           ddml::EndcapTriggerTwoAngleBIBAE> > // add ML trigger
+  RegularGridTwoAngleBIBAEModelEndcapTorchModel ;
+
+
 #endif
 }
 
@@ -94,4 +115,6 @@ DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridBIBAEPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml,RegularGridBIBAEEndcapTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml,RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml,RegularGridTwoAngleBIBAEModelEndcapTorchModel)
 #endif
