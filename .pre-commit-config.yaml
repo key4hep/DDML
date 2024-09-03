@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+  - repo: local
+    hooks:
+      - id: clang-format
+        name: clang-format
+        entry: .ci/clang-format-hook
+        exclude: (tests/(datamodel|src|extra_code)/.*(h|cc)$|podioVersion.in.h)
+        types: [c++]
+        language: system

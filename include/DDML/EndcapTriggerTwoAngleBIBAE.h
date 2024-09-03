@@ -3,31 +3,29 @@
 
 #include "DDML/TriggerInterface.h"
 
-#include <G4FastTrack.hh> 
+#include <G4FastTrack.hh>
 
 namespace ddml {
 /** Class for fast sim trigger in ILD endcap
- * Applies cuts on global theta, down to 33 deg. because of BIBAE 2 angle training range
- * Straight line from IP: max theta is 37 degrees
- * All cuts tested with 126GeV photons (max training range)
- * 
+ * Applies cuts on global theta, down to 33 deg. because of BIBAE 2 angle
+ * training range Straight line from IP: max theta is 37 degrees All cuts tested
+ * with 126GeV photons (max training range)
+ *
  * @author P.McKeown, DESY
  * @date Sep. 2023
- * 
+ *
  */
 
 class EndcapTriggerTwoAngleBIBAE : public TriggerInterface {
-
 public:
-    EndcapTriggerTwoAngleBIBAE(){};
+  EndcapTriggerTwoAngleBIBAE(){};
 
-    virtual ~EndcapTriggerTwoAngleBIBAE(){};
+  virtual ~EndcapTriggerTwoAngleBIBAE(){};
 
-    // check trigger
+  // check trigger
 
-    virtual bool check_trigger(const G4FastTrack& aFastTrack);
+  virtual bool check_trigger(const G4FastTrack& aFastTrack);
 };
 
-
-}
+} // namespace ddml
 #endif
