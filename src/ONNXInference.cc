@@ -125,7 +125,6 @@ namespace ddml {
 
     std::vector<Ort::Value> ort_inputs;
 
-    size_t nIn = inputs.size() ;
     for(unsigned i=0, N = inputs.size(); i<N ; ++i ){
 
       Ort::Value tensor =

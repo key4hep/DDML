@@ -71,7 +71,7 @@ namespace ddml {
 
 
   void Par04ExampleVAE::convertOutput(G4FastTrack const& /*aFastTrack*/,
-				      G4ThreeVector const& localDir,
+				      G4ThreeVector const&,
 				      const std::vector<float>& output,
 				      std::vector<SpacePointVec>& spacepoints ){
 

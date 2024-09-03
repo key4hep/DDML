@@ -4,11 +4,52 @@
 
 #include <G4FastTrack.hh>                // for G4FastTrack
 
-//#include <torch/script.h>
+#include <stdexcept>
 
 #define DEBUGPRINT 1
 
 namespace ddml {
+
+namespace {
+/// Simple helper struct for holding condition angles
+struct ConditionAngles {
+  double theta{};
+  double phi{};
+};
+
+/// Get the angles in the coordinate system that has been used for training
+ConditionAngles getConditionAngles(G4ThreeVector const &localDir) {
+  const double phi = atan2(localDir.y(), localDir.x());
+
+  if (M_PI / 4 >= phi && phi >= 0) {
+    return {acos(localDir.x()),
+            atan2(localDir.z(), localDir.y())};
+  } else if (M_PI / 2 >= phi && phi > M_PI / 4) {
+    return {acos(localDir.y()),
+            atan2(localDir.z(), localDir.x())};
+  } else if (3 * (M_PI / 4) >= phi && phi > M_PI / 2) {
+    return {acos(localDir.y()),
+            M_PI - atan2(localDir.z(), localDir.x())};
+  } else if (M_PI >= phi && phi > 3 * (M_PI / 4)) {
+    return {M_PI - acos(localDir.x()),
+            atan2(localDir.z(), localDir.y())};
+  } else if (0. > phi && phi >= -M_PI / 4) {
+    return {acos(localDir.x()),
+            M_PI - atan2(localDir.z(), localDir.y())};
+  } else if (-M_PI / 4 > phi && phi >= -M_PI / 2) {
+    return {M_PI - acos(localDir.y()),
+            atan2(localDir.z(), localDir.x())};
+  } else if (-M_PI / 2 > phi && phi >= -3 * (M_PI / 4)) {
+    return {M_PI - acos(localDir.y()),
+            M_PI - atan2(localDir.z(), localDir.x())};
+  } else if (-3 * (M_PI / 4) > phi && phi > -M_PI) {
+    return {M_PI - acos(localDir.x()),
+            M_PI - atan2(localDir.z(), localDir.y())};
+  }
+
+  throw std::runtime_error("Cannot determine conditioning angles. This should not happen!");
+}
+} // namespace
 
     void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack,
 			      G4ThreeVector const& localDir,
@@ -22,52 +63,14 @@ namespace ddml {
     G4ThreeVector position  = aFastTrack.GetPrimaryTrack()->GetPosition();
     G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-    // compute local incident angles
-    double theta = acos( localDir.x() ) ;
 
-    double phi = atan2( localDir.y() , localDir.x() ) ;
-
-    double theta_cond;
-    double phi_cond;
-    
-    // Compute conditioning angles based on octant in phi (45 degree segment)
-    // Depending on segment, X and Y are flipped
-    
-     if ( M_PI/4 >= phi && phi>=0 ){
-      theta_cond = acos( localDir.x() ) ;
-      phi_cond = atan2( localDir.z(), localDir.y() );
-    } 
-    else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-      theta_cond = acos( localDir.y() ) ;
-      phi_cond = atan2( localDir.z(), localDir.x() );
-    }
-    else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-      theta_cond = acos( localDir.y() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.x() );
-    }
-    else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-      theta_cond = M_PI - acos( localDir.x() ) ;
-      phi_cond = atan2( localDir.z(), localDir.y() );
-    }
-    else if ( 0. > phi && phi >= -M_PI/4 ){
-      theta_cond = acos( localDir.x() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
-    }
-    else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
-      theta_cond = M_PI - acos( localDir.y() ) ;
-      phi_cond = atan2( localDir.z(), localDir.x() );
-    }
-    else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
-      theta_cond = M_PI - acos( localDir.y() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.x() );
-    }
-    else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
-      theta_cond = M_PI - acos( localDir.x() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
-    }
-    
+    const auto [theta_cond, phi_cond] = getConditionAngles(localDir);
 
     if( DEBUGPRINT ){
+      // compute local incident angles
+      double theta = acos( localDir.x() ) ;
+      double phi = atan2( localDir.y() , localDir.x() ) ;
+
       std::cout << "  RegularGridTwoAngleBIBAEModel::prepareInput   pos0 = " << position
 		<< " - dir = " << direction << " - E = " << energy / CLHEP::GeV
     << " - local dir = " << localDir
@@ -115,8 +118,7 @@ namespace ddml {
     output.assign(outputSize, 0);
   }
 
-  
-void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
+void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const&,
 					  G4ThreeVector const& localDir,
 					  const std::vector<float>& output,
 					  std::vector<SpacePointVec>& spacepoints ){
@@ -124,47 +126,9 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
     int nLayer = _nCellsZ ; // number of layers is z dimension
 
     // compute local incident angles
-    double theta = acos( localDir.x() ) ;
     double phi = atan2( localDir.y() , localDir.x() ) ;
     
-    double theta_cond;
-    double phi_cond;
-
-    
-     if ( M_PI/4 >= phi && phi>=0 ){
-      theta_cond = acos( localDir.x() ) ;
-      phi_cond = atan2( localDir.z(), localDir.y() );
-    } 
-    else if ( M_PI/2 >= phi && phi > M_PI/4 ){
-      theta_cond = acos( localDir.y() ) ;
-      phi_cond = atan2( localDir.z(), localDir.x() );
-
-    }
-    else if ( 3* (M_PI/4) >= phi && phi > M_PI/2 ){
-      theta_cond = acos( localDir.y() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.x() );
-    }
-    else if (  M_PI >= phi && phi > 3* (M_PI/4) ){
-      theta_cond = M_PI - acos( localDir.x() ) ;
-      phi_cond = atan2( localDir.z(), localDir.y() );
-    }
-    else if ( 0. > phi && phi >= -M_PI/4 ){
-      theta_cond = acos( localDir.x() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
-    }
-    else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
-      theta_cond = M_PI - acos( localDir.y() ) ;
-      phi_cond = atan2( localDir.z(), localDir.x() );
-    }
-    else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
-      theta_cond = M_PI - acos( localDir.y() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.x() );
-    }
-    else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
-      theta_cond = M_PI - acos( localDir.x() ) ;
-      phi_cond = M_PI - atan2( localDir.z(), localDir.y() );
-    }
-    
+    const auto [theta_cond, phi_cond] = getConditionAngles(localDir);
 
     std::vector<double>  Incident_position = getIncidentCell(theta_cond, phi_cond);
     
@@ -190,8 +154,8 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
 	    double x = ( j - centerCellY + 0.5 ) * _cellSizeY ;
 
 
-      double y_out;
-      double x_out;
+      double y_out = -1;
+      double x_out = -1;
 
       // Output transformations according to the quadrant in which phi lands
       if ( M_PI/4 >= phi && phi>=0 ){
@@ -212,24 +176,24 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const& aFastTrack,
         // Reflection in line y = 0
         y_out = y;
         x_out = -x;
-    }
-    else if ( 0. > phi && phi >= -M_PI/4 ){
+    } else if ( 0. > phi && phi >= -M_PI/4 ){
         // Relection in line x = 0
         y_out = -y;
         x_out = x;
-    }
-    else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
+    } else if ( -M_PI/4 > phi && phi >= -M_PI/2 ){
         y_out = -x;
         x_out = y;
-    }
-    else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
+    } else if ( -M_PI/2 > phi && phi >= -3*(M_PI/4) ){
       y_out = -x;
       x_out = -y;
-    }
-    else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
+    } else if ( -3*(M_PI/4) > phi && phi > -M_PI ){
       y_out = -y;
       x_out = -x;
-    }  
+    } else {
+      throw std::runtime_error(
+          "Cannot determine x & y because the angles seem to not point to a "
+          "quadrant. This should not happen!");
+    }
 
     // output space points
      ddml::SpacePoint sp(

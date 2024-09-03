@@ -129,9 +129,9 @@ namespace ddml {
 	
       // remove particle from further processing by G4
       step.KillPrimaryTrack();
-      step.SetPrimaryTrackPathLength(0.0);
+      step.ProposePrimaryTrackPathLength(0.0);
       G4double energy = track.GetPrimaryTrack()->GetKineticEnergy();
-      step.SetTotalEnergyDeposited(energy);
+      step.ProposeTotalEnergyDeposited(energy);
 	
 #if DDML_INSTRUMENT_MODEL_SHOWER
       podio::UserDataCollection<double> prepareInputTime;
