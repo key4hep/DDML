@@ -64,7 +64,6 @@ namespace ddml {
 
     std::vector<at::IValue> tensors ;
 
-    size_t nIn = inputs.size() ;
     for(unsigned i=0,N = inputs.size(); i<N ; ++i ){
 
       torch::Tensor inTens = torch::tensor( inputs[i] , m_options).view( tensDims[i] ) ;
