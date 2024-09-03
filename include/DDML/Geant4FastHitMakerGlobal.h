@@ -27,28 +27,28 @@
 #ifndef Geant4FastHitMakerGlobal_HH
 #define Geant4FastHitMakerGlobal_HH
 
-#include "G4TouchableHandle.hh"
-#include "G4Navigator.hh"
 #include "G4FastHit.hh"
 #include "G4FastTrack.hh"
+#include "G4Navigator.hh"
+#include "G4TouchableHandle.hh"
 
 /**
  * @brief Helper class for hit creation
- * 
+ *
  * modified from `G4FastSimHitMaker` to use global coordinates
  *
  * Helper class that can be employed in the fast simulation models.
  * It allows to deposit energy at given position (G4FastHit), provided it is
- * located within the sensitive detector that derives from 
+ * located within the sensitive detector that derives from
  * G4VFastSimSensitiveDetector base class.
  * An extended example extended/parameterisations/Par03 demonstrates how to use
- * Geant4FastHitMakerGlobal to create multiple deposits from the fast simulation model.
+ * Geant4FastHitMakerGlobal to create multiple deposits from the fast simulation
+ * model.
  *
  */
 
-class Geant4FastHitMakerGlobal
-{
- public:
+class Geant4FastHitMakerGlobal {
+public:
   Geant4FastHitMakerGlobal();
   ~Geant4FastHitMakerGlobal();
 
@@ -61,12 +61,11 @@ class Geant4FastHitMakerGlobal
   /// specified, otherwise no sensitive detector will be found (mass geometry
   /// will be checked).
   /// @param[in] aName Name of the parallel world
-  inline void SetNameOfWorldWithSD(const G4String& aName)
-  {
+  inline void SetNameOfWorldWithSD(const G4String& aName) {
     fWorldWithSdName = aName;
   };
 
- private:
+private:
   /// Touchable
   G4TouchableHandle fTouchableHandle;
   /// Navigator

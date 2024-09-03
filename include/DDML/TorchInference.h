@@ -6,51 +6,44 @@
 
 #include <torch/script.h>
 
-#include <memory>                              // for unique_ptr
-#include <vector>                              // for vector
-#include <string>                              // for string
+#include <memory> // for unique_ptr
+#include <string> // for string
+#include <vector> // for vector
 
 namespace ddml {
 
-
-/** Running the inference with ONXX - assuming a simple input and output vector 
+/** Running the inference with ONXX - assuming a simple input and output vector
  *  @author F.Gaede, DESY
  *  @date Mar 2023
  */
-  
-  class TorchInference : public InferenceInterface {
-    
-  public:
-    TorchInference();
-    
-    virtual ~TorchInference(){};
-    
-    /// declare the proerties needed for the plugin
-    void declareProperties( dd4hep::sim::Geant4Action* plugin ) ;
-  
 
-    /// initialize the model - based on defined properties
-    void initialize() ;
+class TorchInference : public InferenceInterface {
+public:
+  TorchInference();
 
-    /// run the inference model - based on input vector and resized outputvector
-    virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
-			      std::vector<float>& output ) ;
+  virtual ~TorchInference(){};
 
+  /// declare the proerties needed for the plugin
+  void declareProperties(dd4hep::sim::Geant4Action* plugin);
 
-  
-  private:
-    torch::jit::script::Module fModule;
-    torch::TensorOptions m_options{};
+  /// initialize the model - based on defined properties
+  void initialize();
 
-    bool _isInitialized = false ;
+  /// run the inference model - based on input vector and resized outputvector
+  virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output);
 
-    /// torch properties for plugin
-    std::string modelPath={} ;
-    int profileFlag=0;
-    int optimizeFlag=0;
-    int intraOpNumThreads=0;
-  
-  };
+private:
+  torch::jit::script::Module fModule;
+  torch::TensorOptions m_options{};
 
-} // namespace
+  bool _isInitialized = false;
+
+  /// torch properties for plugin
+  std::string modelPath = {};
+  int profileFlag = 0;
+  int optimizeFlag = 0;
+  int intraOpNumThreads = 0;
+};
+
+} // namespace ddml
 #endif

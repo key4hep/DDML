@@ -4,7 +4,7 @@ Package with utilities and plugins that allow to run fast simulation in Geant4 f
 within ddsim (DDG4).
 
 
-## Installation 
+## Installation
 
 Prerequisites:
 - iLCSoft (or key4hep):
@@ -49,13 +49,13 @@ index 5ff2e50..084f7ea 100644
 +  </regions>
 +
    <detectors>
- 
+
 -    <detector name="EcalBarrel" type="SEcal06_Barrel" id="ILDDetID_ECAL" readout="EcalBarrelCollection" vis="BlueVis" >
 +    <detector name="EcalBarrel" type="SEcal06_Barrel" id="ILDDetID_ECAL" readout="EcalBarrelCollection" vis="BlueVis"
 +     region="EcalBarrelRegion">
- 
+
        <comment>EM Calorimeter Barrel</comment>
- 
+
 ```
 
 - this model has to be activated in the `ddsim_steer.py` file:
@@ -65,7 +65,7 @@ def aiDance(kernel):
    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
    from DDG4 import DetectorConstruction, Geant4, PhysicsList
    geant4 = Geant4(kernel)
-   
+
    seq, act = geant4.addDetectorConstruction('Geant4DetectorGeometryConstruction/ConstructGeo')
    act.DebugMaterials = True
    act.DebugElements = False
@@ -119,7 +119,7 @@ python /usr/local/ilcsoft/HEAD/CEDViewer/HEAD/bin/ced2go -d gear_ILD_l5_o1_v02.x
 
 
 
-## timing observations 
+## timing observations
 
 On MacBook Pro (Retina, 15-inch, Mid 2015), 2.2 GHz Quad-Core Intel Core i7 -
 built with 'Release'.
@@ -130,7 +130,7 @@ built with 'Release'.
 
 Geant4Kernel     INFO  ++ Terminate Geant4 and delete associated actions.
 DDSim            INFO DDSim            INFO  Total Time:   74.60 s (User), 1.22 s (System)
-DDSim            INFO DDSim            INFO  StartUp Time: 17.71 s, Event Processing: 56.89 s (0.57 s/Event) 
+DDSim            INFO DDSim            INFO  StartUp Time: 17.71 s, Event Processing: 56.89 s (0.57 s/Event)
 
 real	0m49.943s
 user	1m15.019s
@@ -141,7 +141,7 @@ sys	0m1.374s
 
 Geant4Kernel     INFO  ++ Terminate Geant4 and delete associated actions.
 DDSim            INFO DDSim            INFO  Total Time:   64.38 s (User), 2.82 s (System)
-DDSim            INFO DDSim            INFO  StartUp Time: 18.10 s, Event Processing: 46.28 s (0.46 s/Event) 
+DDSim            INFO DDSim            INFO  StartUp Time: 18.10 s, Event Processing: 46.28 s (0.46 s/Event)
 
 real	0m36.555s
 user	1m4.798s

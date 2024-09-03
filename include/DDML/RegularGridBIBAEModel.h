@@ -1,85 +1,70 @@
 #ifndef RegularGridBIBAEModel_H
 #define RegularGridBIBAEModel_H
 
-#include "DDML/ModelInterface.h"
 #include "DDML/FastMLShower.h"
-
+#include "DDML/ModelInterface.h"
 
 namespace ddml {
 
-/** Class for running a regular grid based GAN (or GAN like) ML model for fast shower simulation.
- *  Assumes a regular cartesian grid output with (x,y) defining the calorimeter planes and z the depth
- *  of the calorimeter.
- * 
+/** Class for running a regular grid based GAN (or GAN like) ML model for fast
+ * shower simulation. Assumes a regular cartesian grid output with (x,y)
+ * defining the calorimeter planes and z the depth of the calorimeter.
+ *
  * Based on RegularGridGANModel.
- * 
+ *
  * For BIBAE with single angle and energy conditioning.
- * Allow for non-central incident cell in grid. 
- * 
+ * Allow for non-central incident cell in grid.
+ *
  *  @author P.McKeown, DESY
  *  @date Apr. 2023
  */
-  
-  class RegularGridBIBAEModel : public ModelInterface {
-    
-  public:
-    RegularGridBIBAEModel() {} ;
-    
-    virtual ~RegularGridBIBAEModel(){};
-    
-    /// declare the proerties needed for the plugin
-    void declareProperties( dd4hep::sim::Geant4Action* plugin ) {
 
-      plugin->declareProperty("NCellsX" , this->_nCellsX ) ;
-      plugin->declareProperty("NCellsY" , this->_nCellsY ) ;
-      plugin->declareProperty("NCellsZ" , this->_nCellsZ ) ;
+class RegularGridBIBAEModel : public ModelInterface {
+public:
+  RegularGridBIBAEModel(){};
 
-      plugin->declareProperty("LatentVectorSize" , this->_latentSize ) ;
+  virtual ~RegularGridBIBAEModel(){};
 
-      plugin->declareProperty("CellSizeX" , this->_cellSizeX ) ;
-      plugin->declareProperty("CellSizeY" , this->_cellSizeY ) ;
-    }
-  
+  /// declare the proerties needed for the plugin
+  void declareProperties(dd4hep::sim::Geant4Action* plugin) {
+    plugin->declareProperty("NCellsX", this->_nCellsX);
+    plugin->declareProperty("NCellsY", this->_nCellsY);
+    plugin->declareProperty("NCellsZ", this->_nCellsZ);
 
-  
-    /** prepare the input vector and resize the output vector for this model
-     *  based on the current FastTrack (e.g. extract kinetic energy and incident
-     *  angles.)
-     */
-    virtual void prepareInput(G4FastTrack const& aFastTrack,
-			      G4ThreeVector const& localDir,
-			      InputVecs& inputs, TensorDimVecs& tensDims,
-			      std::vector<float>& output ) ;
+    plugin->declareProperty("LatentVectorSize", this->_latentSize);
 
+    plugin->declareProperty("CellSizeX", this->_cellSizeX);
+    plugin->declareProperty("CellSizeY", this->_cellSizeY);
+  }
 
-    /** create a vector of spacepoints per layer interpreting the model output  
-     */
-    virtual void convertOutput(G4FastTrack const& aFastTrack,
-			       G4ThreeVector const& localDir,
-			       const std::vector<float>& output,
-			       std::vector<SpacePointVec>& spacepoints ) ;
+  /** prepare the input vector and resize the output vector for this model
+   *  based on the current FastTrack (e.g. extract kinetic energy and incident
+   *  angles.)
+   */
+  virtual void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                            TensorDimVecs& tensDims, std::vector<float>& output);
 
+  /** create a vector of spacepoints per layer interpreting the model output
+   */
+  virtual void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
+                             const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
 
-  
-  private:
+private:
+  /// model properties for plugin
+  // These grid sizes were used for the angular BIBAE
+  int _nCellsX = 30;
+  int _nCellsY = 60;
+  int _nCellsZ = 30;
+  int _latentSize = 3;
+  float _cellSizeX = 5.;
+  float _cellSizeY = 5.;
 
-    /// model properties for plugin
-    // These grid sizes were used for the angular BIBAE
-    int _nCellsX = 30;
-    int _nCellsY = 60;
-    int _nCellsZ = 30;
-    int _latentSize = 3;
-    float _cellSizeX = 5. ;
-    float _cellSizeY = 5. ;
+  // Define incident cell in the regular grid for centering
+  // One-angle BIBAE: center: 15,12
+  int _centerCellX = _nCellsX / 2; // center of grid in X
+  int _centerCellY = 12.;
+  TensorDimVecs _tensDims = {{1, 1}, {1, 1}, {1, 2}};
+};
 
-
-    // Define incident cell in the regular grid for centering
-    // One-angle BIBAE: center: 15,12
-    int _centerCellX = _nCellsX/2 ; // center of grid in X
-    int _centerCellY = 12. ;
-    TensorDimVecs _tensDims = { {1, 1}, {1, 1}, {1,2} };
-  };
-
-} // namespace
+} // namespace ddml
 #endif
-
