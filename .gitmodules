@@ -1,3 +1,0 @@
-[submodule "SimpleGAN"]
-	path = models/simplegan
-	url = ../simplegan.git
