@@ -56,7 +56,7 @@ namespace {
 void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
                                                  InputVecs& inputs, TensorDimVecs& tensDims,
                                                  std::vector<float>& output) {
-  tensDims = _tensDims;
+  tensDims = m_tensDims;
 
   G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
 
@@ -80,7 +80,7 @@ void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, 
   }
 
   // the input for the BIB-AE is one energy and two angles (plus cond tensor)
-  inputs.resize(_latentSize);
+  inputs.resize(m_latentSize);
 
   inputs[0].resize(1); // Energy
   inputs[1].resize(1); // Theta
@@ -106,7 +106,7 @@ void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, 
 
   // ----  resize output vector
 
-  int outputSize = _nCellsX * _nCellsY * _nCellsZ;
+  int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
 
   output.assign(outputSize, 0);
 }
@@ -114,7 +114,7 @@ void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, 
 void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
                                                   const std::vector<float>& output,
                                                   std::vector<SpacePointVec>& spacepoints) {
-  int nLayer = _nCellsZ; // number of layers is z dimension
+  int nLayer = m_nCellsZ; // number of layers is z dimension
 
   // compute local incident angles
   double phi = atan2(localDir.y(), localDir.x());
@@ -131,16 +131,16 @@ void RegularGridTwoAngleBIBAEModel::convertOutput(G4FastTrack const&, G4ThreeVec
   int iHit = 0;
 
   for (int l = 0; l < nLayer; ++l) {
-    spacepoints[l].reserve(_nCellsX * _nCellsY);
+    spacepoints[l].reserve(m_nCellsX * m_nCellsY);
 
-    for (int i = 0; i < _nCellsX; ++i) {
-      for (int j = 0; j < _nCellsY; ++j) {
+    for (int i = 0; i < m_nCellsX; ++i) {
+      for (int j = 0; j < m_nCellsY; ++j) {
         if (output[iHit] > 0.) {
           // in the current BIB-AE x and y are switched, i.e. the angle is
           // changed along y
           // Allow for non-integer incident position in grid
-          double y = (i - centerCellX + 0.5) * _cellSizeX;
-          double x = (j - centerCellY + 0.5) * _cellSizeY;
+          double y = (i - centerCellX + 0.5) * m_cellSizeX;
+          double x = (j - centerCellY + 0.5) * m_cellSizeY;
 
           double y_out = -1;
           double x_out = -1;

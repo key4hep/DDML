@@ -21,7 +21,7 @@ class TorchInference : public InferenceInterface {
 public:
   TorchInference();
 
-  virtual ~TorchInference(){};
+  virtual ~TorchInference() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin);
@@ -33,16 +33,16 @@ public:
   virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output);
 
 private:
-  torch::jit::script::Module fModule;
+  torch::jit::script::Module m_jitModule;
   torch::TensorOptions m_options{};
 
-  bool _isInitialized = false;
+  bool m_isInitialized = false;
 
   /// torch properties for plugin
-  std::string modelPath = {};
-  int profileFlag = 0;
-  int optimizeFlag = 0;
-  int intraOpNumThreads = 0;
+  std::string m_modelPath = {};
+  int m_profileFlag = 0;
+  int m_optimizeFlag = 0;
+  int m_intraOpNumThreads = 0;
 };
 
 } // namespace ddml

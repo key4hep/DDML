@@ -10,7 +10,7 @@ namespace ddml {
 
 void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
                                          InputVecs& inputs, TensorDimVecs& tensDims, std::vector<float>& output) {
-  tensDims = _tensDims;
+  tensDims = m_tensDims;
 
   G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
 
@@ -26,7 +26,7 @@ void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeV
   }
 
   // the input for the BIB-AE is one energy and an angle (plus cond tensor)
-  inputs.resize(_latentSize);
+  inputs.resize(m_latentSize);
 
   inputs[0].resize(1);
   inputs[1].resize(1);
@@ -44,7 +44,7 @@ void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeV
 
   // ----  resize output vector
 
-  int outputSize = _nCellsX * _nCellsY * _nCellsZ;
+  int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
 
   output.assign(outputSize, 0);
 }
@@ -55,22 +55,22 @@ void RegularGridBIBAEModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4T
 
   double phi = atan2(localDir.y(), localDir.x());
 
-  int nLayer = _nCellsZ; // number of layers is z dimension
+  int nLayer = m_nCellsZ; // number of layers is z dimension
 
   spacepoints.resize(nLayer);
 
   int iHit = 0;
 
   for (int l = 0; l < nLayer; ++l) {
-    spacepoints[l].reserve(_nCellsX * _nCellsY);
+    spacepoints[l].reserve(m_nCellsX * m_nCellsY);
 
-    for (int i = 0; i < _nCellsX; ++i) {
-      for (int j = 0; j < _nCellsY; ++j) {
+    for (int i = 0; i < m_nCellsX; ++i) {
+      for (int j = 0; j < m_nCellsY; ++j) {
         if (output[iHit] > 0.) {
           // in the current BIB-AE x and y are switched, i.e. the angle is
           // changed along y
-          double y = (i - int(_centerCellX) + 0.5) * _cellSizeX;
-          double x = (j - int(_centerCellY) + 0.5) * _cellSizeY;
+          double y = (i - int(m_centerCellX) + 0.5) * m_cellSizeX;
+          double x = (j - int(m_centerCellY) + 0.5) * m_cellSizeY;
 
           // rotate the individual layers corresponding to the local azimuth
           // angle phi

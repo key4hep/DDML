@@ -34,27 +34,27 @@ public:
 
 private:
   /// Pointer to the ONNX enviroment
-  std::unique_ptr<Ort::Env> fEnv;
+  std::unique_ptr<Ort::Env> m_env;
   /// Pointer to the ONNX inference session
-  std::unique_ptr<Ort::Session> fSession;
+  std::unique_ptr<Ort::Session> m_session;
   /// ONNX settings
-  Ort::SessionOptions fSessionOptions;
+  Ort::SessionOptions m_sessionOptions;
   /// ONNX memory info
-  const OrtMemoryInfo* fInfo;
+  const OrtMemoryInfo* m_memInfo;
   struct MemoryInfo;
   /// the input names represent the names given to the model
   /// when defining  the model's architecture (if applicable)
   /// they can also be retrieved from model.summary()
-  std::vector<const char*> fInames;
-  std::vector<const char*> fOnames;
+  std::vector<const char*> m_inNames;
+  std::vector<const char*> m_outNames;
 
-  bool _isInitialized = false;
+  bool m_isInitialized = false;
 
   /// onxx properties for plugin
-  std::string modelPath = {};
-  int profileFlag = 0;
-  int optimizeFlag = 0;
-  int intraOpNumThreads = 0;
+  std::string m_modelPath = {};
+  int m_profileFlag = 0;
+  int m_optimizeFlag = 0;
+  int m_intraOpNumThreads = 0;
 };
 
 } // namespace ddml

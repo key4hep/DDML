@@ -29,14 +29,14 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("NCellsX", this->_nCellsX);
-    plugin->declareProperty("NCellsY", this->_nCellsY);
-    plugin->declareProperty("NCellsZ", this->_nCellsZ);
+    plugin->declareProperty("NCellsX", this->m_nCellsX);
+    plugin->declareProperty("NCellsY", this->m_nCellsY);
+    plugin->declareProperty("NCellsZ", this->m_nCellsZ);
 
-    plugin->declareProperty("LatentVectorSize", this->_latentSize);
+    plugin->declareProperty("LatentVectorSize", this->m_latentSize);
 
-    plugin->declareProperty("CellSizeX", this->_cellSizeX);
-    plugin->declareProperty("CellSizeY", this->_cellSizeY);
+    plugin->declareProperty("CellSizeX", this->m_cellSizeX);
+    plugin->declareProperty("CellSizeY", this->m_cellSizeY);
   }
 
   /** prepare the input vector and resize the output vector for this model
@@ -54,18 +54,18 @@ public:
 private:
   /// model properties for plugin
   // These grid sizes were used for the two angle BIBAE
-  int _nCellsX = 30;
-  int _nCellsY = 49;
-  int _nCellsZ = 30;
-  int _latentSize = 4;
-  float _cellSizeX = 5.088333; // 5. ;
-  float _cellSizeY = 5.088333; // 5. ;
+  int m_nCellsX = 30;
+  int m_nCellsY = 49;
+  int m_nCellsZ = 30;
+  int m_latentSize = 4;
+  float m_cellSizeX = 5.088333; // 5. ;
+  float m_cellSizeY = 5.088333; // 5. ;
 
   // Define incident cell in the regular grid for centering
   // One-angle BIBAE: center: 15,12
   // These are no longer used in the two angle implementation
-  int _centerCellX = _nCellsX / 2; // center of grid in X
-  int _centerCellY = 12.;
+  int m_centerCellX = m_nCellsX / 2; // center of grid in X
+  int m_centerCellY = 12.;
 
   // Function to compute incident cell in regular grid from input phi and theta
   // angles
@@ -86,7 +86,7 @@ private:
 
   Vector3d normalize(const Vector3d& v);
 
-  TensorDimVecs _tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
+  TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
 
 } // namespace ddml

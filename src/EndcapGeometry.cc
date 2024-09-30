@@ -13,16 +13,16 @@ namespace ddml {
 
 void EndcapGeometry::initialize() {
   auto& theDetector = dd4hep::Detector::getInstance();
-  auto det = theDetector.detector(_detector);
+  auto det = theDetector.detector(m_detector);
   auto* cal = det.extension<dd4hep::rec::LayeredCalorimeterData>();
 
   if (cal) {
     for (auto l : cal->layers) {
-      _caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
+      m_caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
     }
 
   } else {
-    std::cout << " ###### error:  detector " << _detector << " not found !" << std::endl;
+    std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
   }
 }
 
@@ -65,17 +65,17 @@ void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack, std::vector<Sp
 
   float signZ = (position.z() > 0. ? 1.0 : -1.0);
 
-  if (!_correctForAngles) {
+  if (!m_correctForAngles) {
     direction = {0., 0., signZ * 1.0}; // position layers w/ impact normal to the plane
   }
 
   // find the first layer that will have signals as sometimes particles are
   // create in the calorimeter !
   int firstLayer = 0;
-  int nLayer = _caloLayerDistances.size();
+  int nLayer = m_caloLayerDistances.size();
 
   for (int l = 0; l < nLayer; ++l) {
-    double zL = signZ * _caloLayerDistances[l];
+    double zL = signZ * m_caloLayerDistances[l];
     firstLayer = l;
     // lamda for intersection of particle direction and calo plane in phi sector
     // 0
@@ -93,7 +93,7 @@ void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack, std::vector<Sp
   }
 
   for (int l = 0; l < nLayer; ++l) {
-    double zL = signZ * _caloLayerDistances[l + firstLayer];
+    double zL = signZ * m_caloLayerDistances[l + firstLayer];
 
     // lamda for intersection of particle direction and calo plane in phi sector
     // 0

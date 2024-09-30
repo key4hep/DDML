@@ -27,9 +27,9 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("Detector", this->_detector);
-    plugin->declareProperty("Symmetry", this->_nSymmetry);
-    plugin->declareProperty("CorrectForAngles", this->_correctForAngles);
+    plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("Symmetry", this->m_nSymmetry);
+    plugin->declareProperty("CorrectForAngles", this->m_correctForAngles);
   }
 
   /** compute local direction in coordinate system that has the z-axis pointing
@@ -46,12 +46,12 @@ protected:
   int phiSector(G4ThreeVector const& position) const;
 
 private:
-  std::vector<float> _caloLayerDistances = {};
+  std::vector<float> m_caloLayerDistances = {};
 
   /// model properties for plugin
-  std::string _detector = {"EcalBarrel"};
-  int _nSymmetry = 8;
-  bool _correctForAngles = false;
+  std::string m_detector = {"EcalBarrel"};
+  int m_nSymmetry = 8;
+  bool m_correctForAngles = false;
 };
 
 } // namespace ddml

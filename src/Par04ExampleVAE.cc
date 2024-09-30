@@ -11,7 +11,7 @@ namespace ddml {
 
 void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
                                    TensorDimVecs& tensDims, std::vector<float>& output) {
-  tensDims = _tensDims;
+  tensDims = m_tensDims;
 
   G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
 
@@ -32,9 +32,9 @@ void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
     inputs.resize(1);
   }
 
-  inputs[0].resize(_latentSize + 4);
+  inputs[0].resize(m_latentSize + 4);
 
-  for (int i = 0; i < _latentSize; ++i) {
+  for (int i = 0; i < m_latentSize; ++i) {
     inputs[0][i] = CLHEP::RandGauss::shoot(0., 1.);
   }
 
@@ -43,43 +43,43 @@ void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
   /// Maximum particle angle (in degrees) in the training range
   float fMaxAngle = M_PI / 2.; // 90.0 deg ;
 
-  inputs[0][_latentSize] = (energy / CLHEP::MeV) / fMaxEnergy;
-  inputs[0][_latentSize + 1] = theta / fMaxAngle;
-  inputs[0][_latentSize + 2] = 0;
-  inputs[0][_latentSize + 3] = 1;
+  inputs[0][m_latentSize] = (energy / CLHEP::MeV) / fMaxEnergy;
+  inputs[0][m_latentSize + 1] = theta / fMaxAngle;
+  inputs[0][m_latentSize + 2] = 0;
+  inputs[0][m_latentSize + 3] = 1;
 
-  _initialEnergy = energy / CLHEP::MeV;
+  m_initialEnergy = energy / CLHEP::MeV;
 
   // ----  resize output vector
-  int outputSize = _nCellsRho * _nCellsPhi * _nCellsZ;
+  int outputSize = m_nCellsRho * m_nCellsPhi * m_nCellsZ;
 
   output.assign(outputSize, 0);
 }
 
 void Par04ExampleVAE::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVector const&,
                                     const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
-  int nLayer = _nCellsZ; // number of layers is z dimension
+  int nLayer = m_nCellsZ; // number of layers is z dimension
 
   spacepoints.resize(nLayer);
 
   for (int l = 0; l < nLayer; ++l) {
-    spacepoints[l].reserve(_nCellsRho * _nCellsPhi);
+    spacepoints[l].reserve(m_nCellsRho * m_nCellsPhi);
   }
 
   int iHit = 0;
 
-  for (int i = 0; i < _nCellsRho; ++i) {
-    float rho = (i + 0.5) * _cellSizeRho;
+  for (int i = 0; i < m_nCellsRho; ++i) {
+    float rho = (i + 0.5) * m_cellSizeRho;
 
-    for (int j = 0; j < _nCellsPhi; ++j) {
-      float phiCell = (j + 0.5) * 2. * CLHEP::pi / _nCellsPhi;
+    for (int j = 0; j < m_nCellsPhi; ++j) {
+      float phiCell = (j + 0.5) * 2. * CLHEP::pi / m_nCellsPhi;
       float x = rho * cos(phiCell);
       float y = rho * sin(phiCell);
 
       for (int l = 0; l < nLayer; ++l) {
         if (output[iHit] > 0.) {
           ddml::SpacePoint sp(x, y, 0.,
-                              output[iHit] * _initialEnergy, // model output is in fraction of initial E
+                              output[iHit] * m_initialEnergy, // model output is in fraction of initial E
                               0.);
 
           spacepoints[l].emplace_back(sp);

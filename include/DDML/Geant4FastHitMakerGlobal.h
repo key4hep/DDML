@@ -62,18 +62,18 @@ public:
   /// will be checked).
   /// @param[in] aName Name of the parallel world
   inline void SetNameOfWorldWithSD(const G4String& aName) {
-    fWorldWithSdName = aName;
+    m_worldWithSdName = aName;
   };
 
 private:
   /// Touchable
-  G4TouchableHandle fTouchableHandle;
+  G4TouchableHandle m_touchableHandle;
   /// Navigator
-  G4Navigator* fpNavigator;
+  G4Navigator* m_navigator;
   /// Flag specifying if navigator has been already set up
-  G4bool fNaviSetup;
+  G4bool m_naviSetup;
   /// Name of the world containing the sensitive detector. If empty, default
   /// mass world is used.
-  G4String fWorldWithSdName;
+  G4String m_worldWithSdName;
 };
 #endif
