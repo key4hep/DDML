@@ -16,20 +16,24 @@ ROOT.gSystem.Load(os.path.join(project_root, "cmake-build/src/libDDML.so"))
 
 class TheseTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.model_path = os.path.join(project_root, 'models/francisca_gan_jit.pt')
+        self.model_path = os.path.join(project_root, "models/francisca_gan_jit.pt")
         self.batch_size = 1
-        self.tensor_opt = {
-            'dtype': torch.float32,
-            'device': torch.device('cpu')
-        }
+        self.tensor_opt = {"dtype": torch.float32, "device": torch.device("cpu")}
         self.setup_P()
         self.setup_P_jit()
         self.setup_C()
 
     def setup_P(self):
-        self.noise = torch.as_tensor(np.random.uniform(-1, 1, 100), **self.tensor_opt).view(self.batch_size, 100, 1, 1,
-                                                                                            1).detach()
-        self.E = torch.full((1,), 90, **self.tensor_opt).view(self.batch_size, 1, 1, 1, 1).detach()
+        self.noise = (
+            torch.as_tensor(np.random.uniform(-1, 1, 100), **self.tensor_opt)
+            .view(self.batch_size, 100, 1, 1, 1)
+            .detach()
+        )
+        self.E = (
+            torch.full((1,), 90, **self.tensor_opt)
+            .view(self.batch_size, 1, 1, 1, 1)
+            .detach()
+        )
 
         self.p_input = torch.cat((self.noise.flatten(), self.E.flatten()))
         # print(self.p_input, self.p_input.shape)
@@ -39,8 +43,8 @@ class TheseTests(unittest.TestCase):
         # self.p_jit_output = torch.zeros((30*30*30), **self.tensor_opt).detach()
 
     def setup_C(self):
-        self.c_input = vector['float'](self.p_input)
-        self.c_output = vector['float'](np.zeros((30 * 30 * 30)))
+        self.c_input = vector["float"](self.p_input)
+        self.c_output = vector["float"](np.zeros((30 * 30 * 30)))
 
         self.c_torch_inference = ROOT.ddml.TorchInference()
         self.c_torch_inference.setModelPath(self.model_path)
@@ -50,7 +54,11 @@ class TheseTests(unittest.TestCase):
         self.p_jit_output = self.p_jit_model.forward(self.noise, self.E).detach()
 
         self.c_torch_inference.runInference(self.c_input, self.c_output)
-        self.c_output_pythonised = torch.as_tensor(self.c_output, **self.tensor_opt).reshape(30, 30, 30).detach()
+        self.c_output_pythonised = (
+            torch.as_tensor(self.c_output, **self.tensor_opt)
+            .reshape(30, 30, 30)
+            .detach()
+        )
         print(np.sum(self.c_output), (self.c_output_pythonised.sum()))
         print(self.p_jit_output.sum(), self.c_output_pythonised.sum())
 
