@@ -1,5 +1,5 @@
-#ifndef RegularGridBIBAEModel_H
-#define RegularGridBIBAEModel_H
+#ifndef RegularGridTwoAngleBIBAEModel_H
+#define RegularGridTwoAngleBIBAEModel_H
 
 #include "DDML/FastMLShower.h"
 #include "DDML/ModelInterface.h"
@@ -12,18 +12,20 @@ namespace ddml {
  *
  * Based on RegularGridGANModel.
  *
- * For BIBAE with single angle and energy conditioning.
- * Allow for non-central incident cell in grid.
+ * For BIBAE with two angle and energy conditioning.
+ * Additional checks performed to convert the local angles given to global
+ * coordinates (used for training). Additional computation of incident cell in
+ * regular grid added based on angles of the incident particle.
  *
  *  @author P.McKeown, DESY
- *  @date Apr. 2023
+ *  @date Aug. 2023
  */
 
-class RegularGridBIBAEModel : public ModelInterface {
+class RegularGridTwoAngleBIBAEModel : public ModelInterface {
 public:
-  RegularGridBIBAEModel(){};
+  RegularGridTwoAngleBIBAEModel(){};
 
-  virtual ~RegularGridBIBAEModel(){};
+  virtual ~RegularGridTwoAngleBIBAEModel(){};
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -51,19 +53,40 @@ public:
 
 private:
   /// model properties for plugin
-  // These grid sizes were used for the angular BIBAE
+  // These grid sizes were used for the two angle BIBAE
   int _nCellsX = 30;
-  int _nCellsY = 60;
+  int _nCellsY = 49;
   int _nCellsZ = 30;
-  int _latentSize = 3;
-  float _cellSizeX = 5.;
-  float _cellSizeY = 5.;
+  int _latentSize = 4;
+  float _cellSizeX = 5.088333; // 5. ;
+  float _cellSizeY = 5.088333; // 5. ;
 
   // Define incident cell in the regular grid for centering
   // One-angle BIBAE: center: 15,12
+  // These are no longer used in the two angle implementation
   int _centerCellX = _nCellsX / 2; // center of grid in X
   int _centerCellY = 12.;
-  TensorDimVecs _tensDims = {{1, 1}, {1, 1}, {1, 2}};
+
+  // Function to compute incident cell in regular grid from input phi and theta
+  // angles
+  std::vector<double> getIncidentCell(const double& theta, const double& phi);
+
+  std::vector<double> isect_line_plane_3Vec(const double& p0_x, const double& p0_y, const double& p0_z,
+                                            const double& p1_x, const double& p1_y, const double& p1_z,
+                                            const double& p_co_x, const double& p_co_y, const double& p_co_z,
+                                            const double& p_no_x, const double& p_no_y, const double& p_no_z);
+
+  struct Vector3d {
+    double x;
+    double y;
+    double z;
+  };
+
+  Vector3d crossProduct(const Vector3d& v1, const Vector3d& v2);
+
+  Vector3d normalize(const Vector3d& v);
+
+  TensorDimVecs _tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
 
 } // namespace ddml

@@ -26,86 +26,68 @@
 
 #include "DDML/Geant4FastHitMakerGlobal.h"
 
+#include "G4TouchableHandle.hh"
 #include "G4TransportationManager.hh"
 #include "G4VSensitiveDetector.hh"
-#include "G4TouchableHandle.hh"
 
 #include "G4VFastSimSensitiveDetector.hh"
 
-Geant4FastHitMakerGlobal::Geant4FastHitMakerGlobal()
-{
+Geant4FastHitMakerGlobal::Geant4FastHitMakerGlobal() {
   fTouchableHandle = new G4TouchableHistory();
-  fpNavigator      = new G4Navigator();
-  fNaviSetup       = false;
+  fpNavigator = new G4Navigator();
+  fNaviSetup = false;
   fWorldWithSdName = "";
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() { delete fpNavigator; }
+Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() {
+  delete fpNavigator;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aTrack)
-{
+void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aTrack) {
   // do not make empty deposit
-  if(aHit.GetEnergy() <= 0)
+  if (aHit.GetEnergy() <= 0) {
     return;
+  }
   // Locate the spot
-  if(!fNaviSetup)
-  {
+  if (!fNaviSetup) {
     // Choose the world volume that contains the sensitive detector based on its
     // name (empty name for mass geometry)
     G4VPhysicalVolume* worldWithSD = nullptr;
-    if(fWorldWithSdName.empty())
-    {
-      worldWithSD = G4TransportationManager::GetTransportationManager()
-                      ->GetNavigatorForTracking()
-                      ->GetWorldVolume();
-    }
-    else
-    {
-      worldWithSD =
-        G4TransportationManager::GetTransportationManager()->GetParallelWorld(
-          fWorldWithSdName);
+    if (fWorldWithSdName.empty()) {
+      worldWithSD = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking()->GetWorldVolume();
+    } else {
+      worldWithSD = G4TransportationManager::GetTransportationManager()->GetParallelWorld(fWorldWithSdName);
     }
     fpNavigator->SetWorldVolume(worldWithSD);
     // use track global position
     fpNavigator->LocateGlobalPointAndUpdateTouchable(
-//      aTrack.GetPrimaryTrack()->GetPosition(),
-      aHit.GetPosition(),
-      fTouchableHandle(), false);
+        //      aTrack.GetPrimaryTrack()->GetPosition(),
+        aHit.GetPosition(), fTouchableHandle(), false);
     fNaviSetup = true;
-  }
-  else
-  {
+  } else {
     // for further deposits use hit (local) position and local->global
     // transformation
     fpNavigator->LocateGlobalPointAndUpdateTouchable(
-//      aTrack.GetInverseAffineTransformation()->TransformPoint( aHit.GetPosition()),
-      aHit.GetPosition(),
-      fTouchableHandle());
+        //      aTrack.GetInverseAffineTransformation()->TransformPoint(
+        //      aHit.GetPosition()),
+        aHit.GetPosition(), fTouchableHandle());
   }
   G4VPhysicalVolume* currentVolume = fTouchableHandle()->GetVolume();
 
   G4VSensitiveDetector* sensitive;
-  if(currentVolume != 0)
-  {
+  if (currentVolume != 0) {
     sensitive = currentVolume->GetLogicalVolume()->GetSensitiveDetector();
-    G4VFastSimSensitiveDetector* fastSimSensitive =
-      dynamic_cast<G4VFastSimSensitiveDetector*>(sensitive);
-    if(fastSimSensitive)
-    {
+    G4VFastSimSensitiveDetector* fastSimSensitive = dynamic_cast<G4VFastSimSensitiveDetector*>(sensitive);
+    if (fastSimSensitive) {
       fastSimSensitive->Hit(&aHit, &aTrack, &fTouchableHandle);
-    }
-    else if(sensitive &&
-            currentVolume->GetLogicalVolume()->GetFastSimulationManager())
-    {
-      G4cerr << "ERROR - Geant4FastHitMakerGlobal::make()" << G4endl
-             << "        It is required to derive from the " << G4endl
-             << "        G4VFastSimSensitiveDetector in " << G4endl
-             << "        addition to the usual G4VSensitiveDetector class."
-             << G4endl;
+    } else if (sensitive && currentVolume->GetLogicalVolume()->GetFastSimulationManager()) {
+      G4cerr << "ERROR - Geant4FastHitMakerGlobal::make()" << G4endl << "        It is required to derive from the "
+             << G4endl << "        G4VFastSimSensitiveDetector in " << G4endl
+             << "        addition to the usual G4VSensitiveDetector class." << G4endl;
       G4Exception("Geant4FastHitMakerGlobal::make()", "InvalidSetup", FatalException,
                   "G4VFastSimSensitiveDetector interface not implemented.");
     }

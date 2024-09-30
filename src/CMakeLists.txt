@@ -6,6 +6,9 @@ set(sources
   RegularGridGANModel.cc
   Par04ExampleVAE.cc
   RegularGridBIBAEModel.cc
+  RegularGridTwoAngleBIBAEModel.cc
+  OctogonalBarrelTrigger.cc
+  EndcapTriggerTwoAngleBIBAE.cc
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
@@ -64,6 +67,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridGANModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/Par04ExampleVAE.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridBIBAEModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridTwoAngleBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
@@ -71,6 +75,9 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/Geant4FastHitMakerGlobal.h
   ${PROJECT_SOURCE_DIR}/include/DDML/FastMLShower.h
   ${PROJECT_SOURCE_DIR}/include/DDML/EndcapGeometry.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/EndcapTriggerTwoAngleBIBAE.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/OctogonalBarrelTrigger.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/TriggerInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/DDML.h
   )
 
