@@ -2,6 +2,7 @@ image: ghcr.io/key4hep/key4hep-images/ubuntu22:latest
 
 stages:
   - build
+  - test
 
 build-job:
   stage: build
@@ -23,6 +24,21 @@ build-job:
       - install/
     expire_in: 1 day
 
+test-job:
+  stage: test
+  tags:
+    - cvmfs
+  script:
+    - ls
+    - pwd
+    - source setup_env_nightly.sh
+
+  artifacts:
+    paths:
+      - tests/
+    expire_in: 1 week
+  dependencies:
+    - build-job
 
 pre-commit:
   stage: build
