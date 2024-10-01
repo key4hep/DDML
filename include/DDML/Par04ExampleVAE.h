@@ -22,14 +22,14 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("NCellsRho", this->_nCellsRho);
-    plugin->declareProperty("NCellsPhi", this->_nCellsPhi);
-    plugin->declareProperty("NCellsZ", this->_nCellsZ);
+    plugin->declareProperty("NCellsRho", this->m_nCellsRho);
+    plugin->declareProperty("NCellsPhi", this->m_nCellsPhi);
+    plugin->declareProperty("NCellsZ", this->m_nCellsZ);
 
-    plugin->declareProperty("LatentVectorSize", this->_latentSize);
+    plugin->declareProperty("LatentVectorSize", this->m_latentSize);
 
-    plugin->declareProperty("CellSizeRho", this->_cellSizeRho);
-    plugin->declareProperty("CellSizeZ", this->_cellSizeZ);
+    plugin->declareProperty("CellSizeRho", this->m_cellSizeRho);
+    plugin->declareProperty("CellSizeZ", this->m_cellSizeZ);
   }
 
   /** prepare the input vector and resize the output vector for this model
@@ -46,16 +46,16 @@ public:
                              const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
 
 private:
-  float _initialEnergy = 0.;
+  float m_initialEnergy = 0.;
   /// model properties for plugin
   //    - using numbers from examplePar04_onnx.in as default parameters
-  int _nCellsRho = 18;
-  int _nCellsPhi = 50;
-  int _nCellsZ = 45;
-  int _latentSize = 10.;
-  float _cellSizeRho = 2.325; // mm
-  float _cellSizeZ = 3.4;     // mm - not used really
-  TensorDimVecs _tensDims = {{1, _latentSize + 4}};
+  int m_nCellsRho = 18;
+  int m_nCellsPhi = 50;
+  int m_nCellsZ = 45;
+  int m_latentSize = 10.;
+  float m_cellSizeRho = 2.325; // mm
+  float m_cellSizeZ = 3.4;     // mm - not used really
+  TensorDimVecs m_tensDims = {{1, m_latentSize + 4}};
 };
 
 } // namespace ddml

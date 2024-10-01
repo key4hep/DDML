@@ -16,3 +16,8 @@ repos:
         exclude: (tests/(datamodel|src|extra_code)/.*(h|cc)$|podioVersion.in.h)
         types: [c++]
         language: system
+      - id: clang-tidy
+        name: clang-tidy
+        entry: clang-tidy -warnings-as-errors='*' -p compile-commands.json
+        types: [c++]
+        language: system

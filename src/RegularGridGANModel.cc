@@ -11,7 +11,7 @@ namespace ddml {
 
 void RegularGridGANModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const&, InputVecs& inputs,
                                        TensorDimVecs& tensDims, std::vector<float>& output) {
-  tensDims = _tensDims;
+  tensDims = m_tensDims;
 
   G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
 
@@ -33,43 +33,42 @@ void RegularGridGANModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVec
     inputs.resize(2);
   }
 
-  inputs[0].resize(_latentSize);
+  inputs[0].resize(m_latentSize);
   inputs[1].resize(1);
 
-  for (int i = 0; i < _latentSize; ++i) {
+  for (int i = 0; i < m_latentSize; ++i) {
     inputs[0][i] = CLHEP::RandFlat::shoot(-1., 1.);
 
     //    genVector[i] = CLHEP::RandGauss::shoot(0., 1.);
   }
 
   inputs[1][0] = energy / CLHEP::GeV;
-  ;
 
   // ... later ...
   // input[ _latentSize + 1 ] = angle ;
 
   // ----  resize output vector
-  int outputSize = _nCellsX * _nCellsY * _nCellsZ;
+  int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
 
   output.assign(outputSize, 0);
 }
 
 void RegularGridGANModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVector const&,
                                         const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
-  int nLayer = _nCellsZ; // number of layers is z dimension
+  int nLayer = m_nCellsZ; // number of layers is z dimension
 
   spacepoints.resize(nLayer);
 
   int iHit = 0;
 
   for (int l = 0; l < nLayer; ++l) {
-    spacepoints[l].reserve(_nCellsX * _nCellsY);
+    spacepoints[l].reserve(m_nCellsX * m_nCellsY);
 
-    for (int i = 0; i < _nCellsX; ++i) {
-      for (int j = 0; j < _nCellsY; ++j) {
+    for (int i = 0; i < m_nCellsX; ++i) {
+      for (int j = 0; j < m_nCellsY; ++j) {
         if (output[iHit] > 0.) {
-          ddml::SpacePoint sp((i - int(_nCellsX / 2) + 0.5) * _cellSizeX, (j - int(_nCellsY / 2) + 0.5) * _cellSizeY,
-                              0., output[iHit], 0.);
+          ddml::SpacePoint sp((i - int(m_nCellsX / 2) + 0.5) * m_cellSizeX,
+                              (j - int(m_nCellsY / 2) + 0.5) * m_cellSizeY, 0., output[iHit], 0.);
 
           spacepoints[l].emplace_back(sp);
         }

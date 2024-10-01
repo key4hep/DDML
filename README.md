@@ -146,3 +146,11 @@ DDSim            INFO DDSim            INFO  StartUp Time: 18.10 s, Event Proces
 real	0m36.555s
 user	1m4.798s
 sys	0m2.964s
+
+## Coding style
+
+Coding style is partially enforced. Formatting is done via `clang-format` using
+the configuration found in `.clang-format`. Additionally there are minimal
+`clang-tidy` checks that enforce that class names are *CamelCase* and that
+private and protected member variables have an `m_` prefix and are in
+*camelBack* case.

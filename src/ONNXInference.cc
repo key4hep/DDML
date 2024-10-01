@@ -11,35 +11,35 @@ ONNXInference::ONNXInference() {
 
 /// declare the proerties needed for the plugin
 void ONNXInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
-  plugin->declareProperty("ModelPath", this->modelPath);
-  plugin->declareProperty("ProfileFlag", this->profileFlag);
-  plugin->declareProperty("OptimizeFlag", this->optimizeFlag);
-  plugin->declareProperty("IntraOpNumThreads", this->intraOpNumThreads);
+  plugin->declareProperty("ModelPath", this->m_modelPath);
+  plugin->declareProperty("ProfileFlag", this->m_profileFlag);
+  plugin->declareProperty("OptimizeFlag", this->m_optimizeFlag);
+  plugin->declareProperty("IntraOpNumThreads", this->m_intraOpNumThreads);
 }
 
 void ONNXInference::initialize() {
   // initialization of the enviroment and inference session
   auto envLocal = std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "ENV");
-  fEnv = std::move(envLocal);
-  fSessionOptions.SetIntraOpNumThreads(intraOpNumThreads);
+  m_env = std::move(envLocal);
+  m_sessionOptions.SetIntraOpNumThreads(m_intraOpNumThreads);
   // graph optimizations of the model
   // if the flag is not set to true none of the optimizations will be applied
   // if it is set to true all the optimizations will be applied
-  if (optimizeFlag) {
-    fSessionOptions.SetOptimizedModelFilePath("opt-graph");
-    fSessionOptions.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
+  if (m_optimizeFlag) {
+    m_sessionOptions.SetOptimizedModelFilePath("opt-graph");
+    m_sessionOptions.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
     // ORT_ENABLE_BASIC #### ORT_ENABLE_EXTENDED
   } else {
-    fSessionOptions.SetGraphOptimizationLevel(ORT_DISABLE_ALL);
+    m_sessionOptions.SetGraphOptimizationLevel(ORT_DISABLE_ALL);
   }
   // save json file for model execution profiling
-  if (profileFlag) {
-    fSessionOptions.EnableProfiling("opt.json");
+  if (m_profileFlag) {
+    m_sessionOptions.EnableProfiling("opt.json");
   }
 
-  auto sessionLocal = std::make_unique<Ort::Session>(*fEnv, modelPath.c_str(), fSessionOptions);
-  fSession = std::move(sessionLocal);
-  fInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemTypeDefault);
+  auto sessionLocal = std::make_unique<Ort::Session>(*m_env, m_modelPath.c_str(), m_sessionOptions);
+  m_session = std::move(sessionLocal);
+  m_memInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemTypeDefault);
 
   // Collect information about input parameter shapes and names that are
   // necessary to run inference.
@@ -51,21 +51,21 @@ void ONNXInference::initialize() {
   using AllocatedStringPtr = std::unique_ptr<char, decltype(allocDeleter)>;
 #endif
   std::vector<int64_t> input_node_dims;
-  size_t num_input_nodes = fSession->GetInputCount();
+  size_t num_input_nodes = m_session->GetInputCount();
   std::vector<const char*> input_node_names(num_input_nodes);
   for (std::size_t i = 0; i < num_input_nodes; i++) {
 #if ORT_API_VERSION < 13
     const auto input_name = AllocatedStringPtr(fSession->GetInputName(i, allocator), allocDeleter).release();
 #else
-    const auto input_name = fSession->GetInputNameAllocated(i, allocator).release();
+    const auto input_name = m_session->GetInputNameAllocated(i, allocator).release();
 #endif
 
     if (DEBUGPRINT) {
       std::cout << " *** input_name : " << i << " = " << input_name << std::endl;
     }
-    fInames.push_back(input_name);
+    m_inNames.push_back(input_name);
     input_node_names[i] = input_name;
-    Ort::TypeInfo type_info = fSession->GetInputTypeInfo(i);
+    Ort::TypeInfo type_info = m_session->GetInputTypeInfo(i);
     auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
     input_node_dims = tensor_info.GetShape();
     if (DEBUGPRINT) {
@@ -82,20 +82,20 @@ void ONNXInference::initialize() {
   }
   // output nodes
   std::vector<int64_t> output_node_dims;
-  size_t num_output_nodes = fSession->GetOutputCount();
+  size_t num_output_nodes = m_session->GetOutputCount();
   std::vector<const char*> output_node_names(num_output_nodes);
   for (std::size_t i = 0; i < num_output_nodes; i++) {
 #if ORT_API_VERSION < 12
     const auto output_name = AllocatedStringPtr(fSession->GetOutputName(i, allocator), allocDeleter).release();
 #else
-    const auto output_name = fSession->GetOutputNameAllocated(i, allocator).release();
+    const auto output_name = m_session->GetOutputNameAllocated(i, allocator).release();
 #endif
-    fOnames.push_back(output_name);
+    m_outNames.push_back(output_name);
     output_node_names[i] = output_name;
     if (DEBUGPRINT) {
       std::cout << " *** output_name : " << i << " = " << output_name << std::endl;
     }
-    Ort::TypeInfo type_info = fSession->GetOutputTypeInfo(i);
+    Ort::TypeInfo type_info = m_session->GetOutputTypeInfo(i);
     auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
     output_node_dims = tensor_info.GetShape();
     if (DEBUGPRINT) {
@@ -114,9 +114,9 @@ void ONNXInference::initialize() {
 
 /// run the inference model
 void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
-  if (!_isInitialized) {
+  if (!m_isInitialized) {
     initialize();
-    _isInitialized = true;
+    m_isInitialized = true;
   }
 
   // create input tensor object from data values
@@ -126,8 +126,8 @@ void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& t
   std::vector<Ort::Value> ort_inputs;
 
   for (unsigned i = 0, N = inputs.size(); i < N; ++i) {
-    Ort::Value tensor = Ort::Value::CreateTensor<float>(fInfo, const_cast<float*>(inputs[i].data()), inputs[i].size(),
-                                                        tensDims[i].data(), tensDims[i].size());
+    Ort::Value tensor = Ort::Value::CreateTensor<float>(m_memInfo, const_cast<float*>(inputs[i].data()),
+                                                        inputs[i].size(), tensDims[i].data(), tensDims[i].size());
 
     assert(tensor.IsTensor());
 
@@ -135,8 +135,8 @@ void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& t
   }
 
   // run the inference session
-  std::vector<Ort::Value> ort_outputs = fSession->Run(Ort::RunOptions{nullptr}, fInames.data(), ort_inputs.data(),
-                                                      ort_inputs.size(), fOnames.data(), fOnames.size());
+  std::vector<Ort::Value> ort_outputs = m_session->Run(Ort::RunOptions{nullptr}, m_inNames.data(), ort_inputs.data(),
+                                                       ort_inputs.size(), m_outNames.data(), m_outNames.size());
 
   // get pointer to output tensor float values
   const auto* floatarr = ort_outputs.front().GetTensorData<float>();

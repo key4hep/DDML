@@ -10,25 +10,25 @@ TorchInference::TorchInference() {
 
 /// declare the proerties needed for the plugin
 void TorchInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
-  plugin->declareProperty("ModelPath", this->modelPath);
-  plugin->declareProperty("ProfileFlag", this->profileFlag);
-  plugin->declareProperty("OptimizeFlag", this->optimizeFlag);
-  plugin->declareProperty("IntraOpNumThreads", this->intraOpNumThreads);
+  plugin->declareProperty("ModelPath", this->m_modelPath);
+  plugin->declareProperty("ProfileFlag", this->m_profileFlag);
+  plugin->declareProperty("OptimizeFlag", this->m_optimizeFlag);
+  plugin->declareProperty("IntraOpNumThreads", this->m_intraOpNumThreads);
 }
 
 void TorchInference::initialize() {
-  fModule = torch::jit::load(modelPath);
-  fModule.to(torch::kCPU);
-  fModule.eval();
+  m_jitModule = torch::jit::load(m_modelPath);
+  m_jitModule.to(torch::kCPU);
+  m_jitModule.eval();
 
   m_options = torch::TensorOptions().dtype(torch::kFloat32).device(torch::kCPU);
 }
 
 /// run the inference model
 void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
-  if (!_isInitialized) {
+  if (!m_isInitialized) {
     initialize();
-    _isInitialized = true;
+    m_isInitialized = true;
   }
 
   if (DEBUGPRINT) {
@@ -63,7 +63,7 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     }
   }
 
-  at::Tensor outTensor = fModule.forward(tensors).toTensor(); //.contiguous();
+  at::Tensor outTensor = m_jitModule.forward(tensors).toTensor(); //.contiguous();
 
   if (DEBUGPRINT) {
     std::cout << " outTensor : " << outTensor << std::endl;
