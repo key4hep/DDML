@@ -10,6 +10,10 @@
   #include "DDML/ONNXInference.h"
 #endif
 
+#ifdef DDML_USE_LOAD_HDF5
+  #include "DDML/LoadHdf5.h"
+#endif
+
 #include "DDML/EndcapGeometry.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
@@ -84,8 +88,22 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridTwoAngle
                                  Geant4FastHitMakerGlobal,
                                  ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     RegularGridTwoAngleBIBAEModelEndcapTorchModel;
-
 #endif
+
+#ifdef DDML_USE_LOAD_HDF5
+/// Load from HDF5 file- as an example for the two angle BIBAE regular grid
+// Barrel
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::PolyhedraBarrelGeometry,
+                                 Geant4FastHitMakerGlobal,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+    LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel;
+// Endcap
+typedef FastMLShower<
+    FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
+                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+    LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
+#endif
+
 } // namespace ddml
 
 #include <DDG4/Factories.h>
@@ -104,4 +122,9 @@ DECLARE_GEANT4ACTION_NS(ddml, RegularGridBIBAEPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridBIBAEEndcapTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridTwoAngleBIBAEModelEndcapTorchModel)
+#endif
+
+#ifdef DDML_USE_LOAD_HDF5
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelEndcap)
 #endif

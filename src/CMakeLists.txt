@@ -56,6 +56,17 @@ if(Torch_FOUND)
   )
 endif()
 
+if(HDF5_FOUND)
+  target_sources(${PROJECT_NAME} PRIVATE
+    LoadHdf5.cc
+  )
+  target_link_libraries(${PROJECT_NAME} PUBLIC
+    hdf5::hdf5 hdf5::hdf5_cpp MPI::MPI_CXX
+  )
+  target_compile_definitions(${PROJECT_NAME} PUBLIC
+    DDML_USE_LOAD_HDF5
+  )
+endif()
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets
@@ -87,6 +98,10 @@ endif()
 
 if(Torch_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/TorchInference.h)
+endif()
+
+if(HDF5_FOUND)
+  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/LoadHdf5.h)
 endif()
 
 #install(FILES

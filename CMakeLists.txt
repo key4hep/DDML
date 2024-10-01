@@ -67,6 +67,20 @@ find_package(EDM4HEP REQUIRED)
 # make sure the onnx find script is found:
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+# HDF5, MPI headers are also required
+# HDF5 seems not to properly export targets, so have to find MPI explicitly
+find_package(HDF5 COMPONENTS C CXX)
+find_package(MPI REQUIRED)
+if(HDF5_FOUND)
+  message("HDF5 found")
+  message(STATUS "INCLUDE LOCATION" ${HDF5_INCLUDE_DIRS})
+  message(STATUS "version" ${HDF5_VERSION})
+  message(STATUS "DEFINITIONS" ${HDF5_DEFINITIONS})
+  message(STATUS "LIBRARIES" ${HDF5_LIBRARIES})
+  message(STATUS "HL_LIBRARIES" ${HDF5_HL_LIBRARIES})
+else()
+  message("HDF5 not found!")
+endif()
 #--------------------------------------------------
 
 find_package(OnnxRuntime)
