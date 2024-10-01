@@ -57,6 +57,8 @@ endif()
 
 option(INSTRUMENT_MODEL "Instrument the steps of the showerModel call" OFF)
 
+option(DOWNLOAD_MODELS "Download and install the models that are stored externally" ON)
+
 #---------------------------------------------------
 # external packages
 
@@ -90,3 +92,13 @@ dd4hep_set_compiler_flags()
 dd4hep_use_python_executable()
 
 add_subdirectory(src)
+
+if (DOWNLOAD_MODELS)
+  include(ExternalData)
+  list(APPEND ExternalData_URL_TEMPLATES
+    "https://key4hep.web.cern.ch:443/MLFastShowerModels/%(hash)"
+  )
+  add_subdirectory(models)
+
+  ExternalData_Add_Target(model_download)
+endif()
