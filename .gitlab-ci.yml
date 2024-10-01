@@ -35,6 +35,7 @@ pre-commit:
   script:
     - source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
     - ln -s build/compile_commands.json compile_commands.json
+    - ls -lhrt
     - git config --global --add safe.directory $(pwd)
     - python -m venv /root/pre-commit-venv
     - source /root/pre-commit-venv/bin/activate
