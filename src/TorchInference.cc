@@ -27,7 +27,6 @@ void TorchInference::initialize() {
 
 /// run the inference model
 void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
-  
   torch::NoGradGuard no_grad;
   if (!m_isInitialized) {
     initialize();
@@ -80,6 +79,5 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
   for (int i = 0, N = output.size(); i < N; ++i) {
     output[i] = *(outTensor.data_ptr<float>() + i);
   }
-
 }
 } // namespace ddml

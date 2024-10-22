@@ -54,8 +54,8 @@
 
 # for ILD barrel
 
-/gps/ang/mintheta 90. deg 
-/gps/ang/maxtheta 90. deg 
+/gps/ang/mintheta 90. deg
+/gps/ang/maxtheta 90. deg
 
 #/gps/ang/mintheta 60. deg #15. deg
 #/gps/ang/maxtheta 60 deg #165. deg

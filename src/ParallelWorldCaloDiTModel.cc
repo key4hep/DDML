@@ -1,4 +1,4 @@
-#include "DDML/Par04CylindrialScoringMeshVAE.h"
+#include "DDML/ParallelWorldCaloDiTModel.h"
 
 #include <G4FastTrack.hh> // for G4FastTrack
 
@@ -9,47 +9,48 @@
 
 namespace ddml {
 
-void Par04CylindrialScoringMeshVAE::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
-                                                 InputVecs& inputs, TensorDimVecs& tensDims,
-                                                 std::vector<float>& output) {
+void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                                    TensorDimVecs& tensDims, std::vector<float>& output) {
   tensDims = _tensDims;
-
-  G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
-
+  G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy() / 1000; // MeV -> GeV
   G4ThreeVector position = aFastTrack.GetPrimaryTrack()->GetPosition();
   G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-  // compute local incident angle
-  double theta = acos(localDir.z());
-
-  if (DEBUGPRINT) {
-    std::cout << "  Par04CylindrialScoringMeshVAE::prepareInput   pos0 = " << position << " - dir = " << direction
-              << " - E = " << energy / CLHEP::GeV << " theta = " << theta * 180. / M_PI << std::endl;
-  }
-
-  // the input for this model is the latent space and the energy conditioning
+  // the input for this model is [energy, phi, theta]
 
   if (inputs.size() != 1) {
     inputs.resize(1);
   }
 
-  inputs[0].resize(_latentSize + 4);
+  inputs[0].resize(_latentSize);
 
-  for (int i = 0; i < _latentSize; ++i) {
-    inputs[0][i] = CLHEP::RandGauss::shoot(0., 1.);
-  }
+  inputs[0][0] = energy;
+  inputs[0][1] = atan2(direction.y(), direction.x()); // global direction in radius not degree
+  inputs[0][2] = acos(direction.z());                 // same
 
-  /// Maximum particle energy value (in MeV) in the training range
-  float fMaxEnergy = 1024000.0;
-  /// Maximum particle angle (in degrees) in the training range
-  float fMaxAngle = M_PI / 2.; // 90.0 deg ;
+  // inputs.resize(_latentSize);
+  // inputs[0].resize(1);   // Energy
+  // inputs[1].resize(1);   // Phi
+  // inputs[2].resize(1);   // Theta
 
-  inputs[0][_latentSize] = (energy / CLHEP::MeV) / fMaxEnergy;
-  inputs[0][_latentSize + 1] = theta / fMaxAngle;
-  inputs[0][_latentSize + 2] = 0;
-  inputs[0][_latentSize + 3] = 1;
+  // if( DEBUGPRINT )
+  std::cout << "  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " << std::endl;
+  std::cout << " inputs   [energy, phi, theta] = " << inputs[0][0] << "," << inputs[0][1] << "," << inputs[0][2]
+            << std::endl;
+  // std::cout << "local theta angle" << localDir.z() << std::endl ;
+  // std::cout << "local energy" << energy << std::endl ;
+  // std::cout << "localDir" << localDir.x() <<"," << localDir.y() <<","<< localDir.z() << std::endl ;
+  // std::cout << "direction" << direction.x() <<"," << direction.y() <<","<< direction.z() << std::endl ;
+  // std::cout << "position" << position.x() <<"," << position.y() <<","<< position.z() << std::endl ;
+  std::cout << "  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " << std::endl;
 
-  _initialEnergy = energy / CLHEP::MeV;
+  std::cout << "phi = " << atan2(localDir.y(), localDir.x()) / M_PI * 180.
+            << "   theta : " << acos(localDir.z()) / M_PI * 180. << std::endl;
+
+  // // inputs[0][0] =  energy/ CLHEP::GeV;
+  // inputs[0][0] =  50;
+  // inputs[1][0] =  0;
+  // inputs[2][0] =  1.57;
 
   // ----  resize output vector
   int outputSize = _nCellsRho * _nCellsPhi * _nCellsZ;
@@ -57,9 +58,8 @@ void Par04CylindrialScoringMeshVAE::prepareInput(G4FastTrack const& aFastTrack, 
   output.assign(outputSize, 0);
 }
 
-void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
-                                                  const std::vector<float>& output,
-                                                  std::vector<SpacePointVec>& spacepoints) {
+void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
+                                     const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
   int nLayer = _nCellsZ; // number of layers is z dimension
 
   spacepoints.resize(nLayer);
@@ -89,7 +89,7 @@ void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const&, G4ThreeVec
   G4ThreeVector check_rot = rotMatrix * G4ThreeVector(0, 0, 1);
 
   // check rotation by applying it to a known unit vector
-  std::cout << "Par04CylindrialScoringMeshVAE::convertOutput - check_rot = " << check_rot << std::endl;
+  std::cout << "ParallelWorldCaloDiTModel::convertOutput - check_rot = " << check_rot << std::endl;
 
   int iHit = 0;
 
@@ -109,7 +109,7 @@ void Par04CylindrialScoringMeshVAE::convertOutput(G4FastTrack const&, G4ThreeVec
 
           ddml::SpacePoint sp(local_cylindrical_spacepoint.x(), local_cylindrical_spacepoint.y(),
                               local_cylindrical_spacepoint.z(),
-                              output[iHit] * _initialEnergy, // model output is in fraction of initial E
+                              output[iHit], // model output is in fraction of initial E
                               0.);
 
           spacepoints[l].emplace_back(sp);

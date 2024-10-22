@@ -14,8 +14,8 @@ SIM = DD4hepSimulation()
 ## The compact XML file
 SIM.compactFile = ""
 ## Lorentz boost for the crossing angle, in radian!
-SIM.crossingAngleBoost = 7.e-3*rad ### Need to check this for FCC!
-SIM.enableDetailedShowerMode = False #True
+SIM.crossingAngleBoost = 7.0e-3 * rad  ### Need to check this for FCC!
+SIM.enableDetailedShowerMode = False  # True
 SIM.enableG4GPS = True
 SIM.enableG4Gun = False
 SIM.enableGun = False
@@ -24,10 +24,10 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 10 #100
+SIM.numberOfEvents = 10  # 100
 ## Outputfile from the simulation,only lcio output is supported
-#SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "CLD_fast_notracker_edm4hep.root" #"dummyOutput.slcio"
+# SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
+SIM.outputFile = "CLD_fast_notracker_edm4hep.root"  # "dummyOutput.slcio"
 # SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
 
 ## Physics list to use in simulation
@@ -296,46 +296,43 @@ SIM.random.type = None
 
 
 def aiDance(kernel):
-   ild =  False #True #True #False #True
-   par04 = False #True #False
-   par04ParrallelWorld = False #False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
-   old_DD4hep = False   ## use for DD4hep versions/commits before ~ Apr 21st 2023
-   CLD = True
+    ild = False  # True #True #False #True
+    par04 = False  # True #False
+    par04ParrallelWorld = False  # False #True #False #True # Set true to use the Par04 example with for the Parallel world setup
+    old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
+    CLD = True
 
-   print(ild)
+    print(ild)
 
-   if ild == True :
-      ml_barrel_name = 'EcalBarrel'
-      ml_barrel_symmetry = 8
-      ml_endcap_name = 'EcalEndcap'
-   else :
-      ml_barrel_name = 'ECalBarrel'
-      ml_barrel_symmetry = 12
-      ml_endcap_name = 'ECalEndcap'
+    if ild == True:
+        ml_barrel_name = "EcalBarrel"
+        ml_barrel_symmetry = 8
+        ml_endcap_name = "EcalEndcap"
+    else:
+        ml_barrel_name = "ECalBarrel"
+        ml_barrel_symmetry = 12
+        ml_endcap_name = "ECalEndcap"
 
-   if par04 == True :
-      ml_file = "../models/Generator.onnx"
-      ml_model = "Par04ExampleVAEPolyhedraBarrelONNXModel/ShowerModel"
-      ml_model1 = "Par04ExampleVAEEndcapONNXModel/ShowerModel"
-   elif par04ParrallelWorld == True:
-      ml_file = "../models/Generator.onnx"
-      ml_model = "Par04CylindrialScoringMeshVAEBarrelParallelONNXModel/ShowerModel"
-      ml_model1 = "Par04CylindrialScoringMeshVAEEndcapParallelONNXModel/ShowerModel"
-   elif CLD == True:
-      # ml_file = "../models/whole_any_nograd.onnx"
-      ml_file = "../models/whole_any_nograd_opset13.onnx"
-      ml_model = "FCCeeCLDGeometryBarrelParallelONNXModel/ShowerModel"
-      ml_model1 = "FCCeeCLDGeometryBarrelParallelONNXModel/ShowerModel"
-   
-   else :
-      ml_file = "../models/francisca_gan.onnx"
-      ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
-      ml_model1 = "RegularGridGANEndcapONNXModel/ShowerModel"
+    if par04 == True:
+        ml_file = "../models/Generator.onnx"
+        ml_model = "Par04ExampleVAEPolyhedraBarrelONNXModel/ShowerModel"
+        ml_model1 = "Par04ExampleVAEEndcapONNXModel/ShowerModel"
+    elif par04ParrallelWorld == True:
+        ml_file = "../models/Generator.onnx"
+        ml_model = "Par04CylindrialScoringMeshVAEBarrelParallelONNXModel/ShowerModel"
+        ml_model1 = "Par04CylindrialScoringMeshVAEEndcapParallelONNXModel/ShowerModel"
+    elif CLD == True:
+        # ml_file = "../models/whole_any_nograd.onnx"
+        ml_file = "../models/whole_any_nograd_opset13.onnx"
+        ml_model = "ParallelWorldCaloDiTModelBarrelParallelONNXModel/ShowerModel"
+        ml_model1 = "ParallelWorldCaloDiTModelyBarrelParallelONNXModel/ShowerModel"
 
+    else:
+        ml_file = "../models/francisca_gan.onnx"
+        ml_model = "RegularGridGANPolyhedraBarrelONNXModel/ShowerModel"
+        ml_model1 = "RegularGridGANEndcapONNXModel/ShowerModel"
 
-   
-
-   ml_correct_angles = False #True ---- set false for Parallel world geometry, since mesh is aligned with incident particle direction
+    ml_correct_angles = False  # True ---- set false for Parallel world geometry, since mesh is aligned with incident particle direction
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
     from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -381,7 +378,7 @@ def aiDance(kernel):
     ##   # Mandatory model parameters
     model1.RegionName = "EcalEndcapRegion"
     model1.Detector = ml_endcap_name
-    model1.Enable = True    ####### JUST TESTING BARREL FOR NOW!!!! ########
+    model1.Enable = True  ####### JUST TESTING BARREL FOR NOW!!!! ########
     model1.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     model1.ApplicableParticles = {"e+", "e-", "gamma"}
@@ -408,7 +405,7 @@ def aiDanceTorch(kernel):
     BIBAE = False
     Two_Angle = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-   CLD = True
+    CLD = True
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -431,13 +428,13 @@ def aiDanceTorch(kernel):
         )
         ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
-   elif CLD == True:
-      ml_file = "../models/nocuda.pt"
-      # ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
-      # ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
-      ml_model = "FCCeeCLDGeometryBarrelParallelTorchModel/BarrelModelTorch"
-      ml_model_1 = "FCCeeCLDGeometryEndcapParallelTorchModel/EndcapModelTorch"
-      ml_correct_angles = False
+    elif CLD == True:
+        ml_file = "../models/nocuda.pt"
+        # ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
+        # ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
+        ml_model = "ParallelWorldCaloDiTModelBarrelParallelTorchModel/BarrelModelTorch"
+        ml_model_1 = "ParallelWorldCaloDiTModelEndcapParallelTorchModel/EndcapModelTorch"
+        ml_correct_angles = False
     else:
         ml_file = "../models/francisca_gan_jit.pt"
         ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"

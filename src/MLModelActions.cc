@@ -15,22 +15,19 @@
 #endif
 
 #include "DDML/EndcapGeometry.h"
-#include "DDML/PolyhedraBarrelGeometryParallelWorld.h"
 #include "DDML/EndcapGeometryParallelWorld.h"
-#include "DDML/Geant4FastHitMakerGlobal.h"
-#include "DDML/Par04ExampleVAE.h"
-#include "DDML/Par04CylindrialScoringMeshVAE.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
+#include "DDML/ParallelWorldCaloDiTModel.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/OctogonalBarrelTrigger.h"
+#include "DDML/Par04CylindrialScoringMeshVAE.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
+#include "DDML/PolyhedraBarrelGeometryParallelWorld.h"
 #include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
 #include "DDML/TriggerInterface.h"
-#include "DDML/FCCeeCLDGeometry.h"
-
 
 namespace ddml {
 
@@ -52,41 +49,30 @@ typedef FastMLShower<
     FastMLModel<ddml::ONNXInference, ddml::Par04ExampleVAE, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal>>
     Par04ExampleVAEPolyhedraBarrelONNXModel;
 
-  /// a concrete model for regular grid GANs applied to the endcap calorimeter with ONNX
-  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
-				   ddml::Par04ExampleVAE,
-				   ddml::EndcapGeometry,
-				   Geant4FastHitMakerGlobal> >
-  Par04ExampleVAEEndcapONNXModel ;
+/// a concrete model for regular grid GANs applied to the endcap calorimeter with ONNX
+typedef FastMLShower<
+    FastMLModel<ddml::ONNXInference, ddml::Par04ExampleVAE, ddml::EndcapGeometry, Geant4FastHitMakerGlobal>>
+    Par04ExampleVAEEndcapONNXModel;
 
-
-  /// Cylindrical Mesh Parallel World Geometry
-  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
-          ddml::Par04CylindrialScoringMeshVAE,
-          ddml::PolyhedraBarrelGeometryParallelWorld,
-          Geant4FastHitMakerGlobal> >
-  Par04CylindrialScoringMeshVAEBarrelParallelONNXModel;
+/// Cylindrical Mesh Parallel World Geometry
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::Par04CylindrialScoringMeshVAE,
+                                 ddml::PolyhedraBarrelGeometryParallelWorld, Geant4FastHitMakerGlobal>>
+    Par04CylindrialScoringMeshVAEBarrelParallelONNXModel;
 
 // Endcap copy Par04Example- update once barrel checked!
-  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
-				  ddml::Par04CylindrialScoringMeshVAE,
-				  ddml::EndcapGeometryParallelWorld,
-				  Geant4FastHitMakerGlobal> >
-  Par04CylindrialScoringMeshVAEEndcapParallelONNXModel ;
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::Par04CylindrialScoringMeshVAE,
+                                 ddml::EndcapGeometryParallelWorld, Geant4FastHitMakerGlobal>>
+    Par04CylindrialScoringMeshVAEEndcapParallelONNXModel;
 
-   /// FCCee CLD barrel onnx inference
-  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
-          ddml::FCCeeCLDGeometry,
-          ddml::PolyhedraBarrelGeometryParallelWorld,
-          Geant4FastHitMakerGlobal> >
-  FCCeeCLDGeometryBarrelParallelONNXModel;
+/// FCCee CLD barrel onnx inference
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::ParallelWorldCaloDiTModel,
+                                 ddml::PolyhedraBarrelGeometryParallelWorld, Geant4FastHitMakerGlobal>>
+    ParallelWorldCaloDiTModelBarrelParallelONNXModel;
 
 // FCCee CLD endcap ? onnx inference
-  typedef FastMLShower<FastMLModel<ddml::ONNXInference,
-				  ddml::FCCeeCLDGeometry,
-				  ddml::EndcapGeometryParallelWorld,
-				  Geant4FastHitMakerGlobal> >
-  FCCeeCLDGeometryEndcapParallelONNXModel ;
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::ParallelWorldCaloDiTModel, ddml::EndcapGeometryParallelWorld,
+                                 Geant4FastHitMakerGlobal>>
+    ParallelWorldCaloDiTModelEndcapParallelONNXModel;
 
 #endif
 
@@ -140,36 +126,27 @@ typedef FastMLShower<
     FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
-  /// Model for two angle BIBAE regular grid inference in the barrel calorimeter with Torch
-  typedef FastMLShower<FastMLModel<ddml::TorchInference,
-          ddml::RegularGridTwoAngleBIBAEModel,
-          ddml::PolyhedraBarrelGeometry,
-				  Geant4FastHitMakerGlobal,
-          ddml::OctogonalBarrelTrigger> > // add ML trigger
-  RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel ;
+/// Model for two angle BIBAE regular grid inference in the barrel calorimeter with Torch
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridTwoAngleBIBAEModel,
+                                 ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+    RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel;
 
-  /// Model for two angle BIBAE regular grid inference in the endcap calorimter with Torch
-  typedef FastMLShower<FastMLModel<ddml::TorchInference,
-				   ddml::RegularGridTwoAngleBIBAEModel,
-				   ddml::EndcapGeometry,
-				   Geant4FastHitMakerGlobal,
-           ddml::EndcapTriggerTwoAngleBIBAE> > // add ML trigger
-  RegularGridTwoAngleBIBAEModelEndcapTorchModel ;
+/// Model for two angle BIBAE regular grid inference in the endcap calorimter with Torch
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry,
+                                 Geant4FastHitMakerGlobal,
+                                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+    RegularGridTwoAngleBIBAEModelEndcapTorchModel;
 
-   /// FCCee CLD barrel torch inference
-  typedef FastMLShower<FastMLModel<ddml::TorchInference,
-          ddml::FCCeeCLDGeometry,
-          ddml::PolyhedraBarrelGeometryParallelWorld,
-          Geant4FastHitMakerGlobal> >
-  FCCeeCLDGeometryBarrelParallelTorchModel;
+/// FCCee CLD barrel torch inference
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::ParallelWorldCaloDiTModel,
+                                 ddml::PolyhedraBarrelGeometryParallelWorld, Geant4FastHitMakerGlobal>>
+    ParallelWorldCaloDiTModelBarrelParallelTorchModel;
 
 // FCCee CLD endcap ? torch inference
-  typedef FastMLShower<FastMLModel<ddml::TorchInference,
-				  ddml::FCCeeCLDGeometry,
-				  ddml::EndcapGeometryParallelWorld,
-				  Geant4FastHitMakerGlobal> >
-  FCCeeCLDGeometryEndcapParallelTorchModel ;
-
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::ParallelWorldCaloDiTModel, ddml::EndcapGeometryParallelWorld,
+                                 Geant4FastHitMakerGlobal>>
+    ParallelWorldCaloDiTModelEndcapParallelTorchModel;
 
 #endif
 
@@ -178,14 +155,14 @@ typedef FastMLShower<
 #include <DDG4/Factories.h>
 
 #ifdef DDML_USE_ONNX_INFERENCE
-DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANPolyhedraBarrelONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,RegularGridGANEndcapONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEPolyhedraBarrelONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,Par04ExampleVAEEndcapONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,Par04CylindrialScoringMeshVAEBarrelParallelONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,Par04CylindrialScoringMeshVAEEndcapParallelONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,FCCeeCLDGeometryBarrelParallelONNXModel)
-DECLARE_GEANT4ACTION_NS(ddml,FCCeeCLDGeometryEndcapParallelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, RegularGridGANPolyhedraBarrelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, RegularGridGANEndcapONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, Par04ExampleVAEPolyhedraBarrelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, Par04ExampleVAEEndcapONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, Par04CylindrialScoringMeshVAEBarrelParallelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, Par04CylindrialScoringMeshVAEEndcapParallelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelBarrelParallelONNXModel)
+DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelEndcapParallelONNXModel)
 #endif
 
 #ifdef DDML_USE_TORCH_INFERENCE
@@ -195,8 +172,8 @@ DECLARE_GEANT4ACTION_NS(ddml, RegularGridBIBAEPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridBIBAEEndcapTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridTwoAngleBIBAEModelEndcapTorchModel)
-DECLARE_GEANT4ACTION_NS(ddml,FCCeeCLDGeometryBarrelParallelTorchModel)
-DECLARE_GEANT4ACTION_NS(ddml,FCCeeCLDGeometryEndcapParallelTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelBarrelParallelTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelEndcapParallelTorchModel)
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5

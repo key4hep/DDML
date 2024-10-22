@@ -1,9 +1,9 @@
-import os 
+import os
 
 def get_edm4hep_path():
     """
     Get the EDM4hep path from LD_LIBRARY_PATH
-    NOTE: not the most elegant, nor the most robust solution, but should in general 
+    NOTE: not the most elegant, nor the most robust solution, but should in general
     work with Key4hep environments
     """
     edm4hep_lib_path = [

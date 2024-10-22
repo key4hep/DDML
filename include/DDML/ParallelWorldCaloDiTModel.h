@@ -1,5 +1,5 @@
-#ifndef Par04CylindrialScoringMeshVAE_H
-#define Par04CylindrialScoringMeshVAE_H
+#ifndef ParallelWorldCaloDiTModel_H
+#define ParallelWorldCaloDiTModel_H
 
 #include "DDML/FastMLShower.h"
 #include "DDML/ModelInterface.h"
@@ -11,15 +11,15 @@ namespace ddml {
  * Remove z dimension orientation along the depth of the calorimeter- it is instead oriented along the
  * shower axis. Rho and phi coordinates are also defined relative to the shower axis.
  *
- *  @author P. McKeown, CERN
- *  @date March 2024
+ *  @author X. Zhu, CERN
+ *  @date August 2024
  */
 
-class Par04CylindrialScoringMeshVAE : public ModelInterface {
+class ParallelWorldCaloDiTModel : public ModelInterface {
 public:
-  Par04CylindrialScoringMeshVAE(){};
+  ParallelWorldCaloDiTModel(){};
 
-  virtual ~Par04CylindrialScoringMeshVAE(){};
+  virtual ~ParallelWorldCaloDiTModel(){};
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -47,19 +47,18 @@ public:
                              const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
 
 private:
-  // Copied from Par04
-  G4ThreeVector fMeshSize = G4ThreeVector(2.325 * CLHEP::mm, 1, 3.4 * CLHEP::mm);
+  // Copied from calo challenge
+  G4ThreeVector fMeshSize = G4ThreeVector(4.65 * CLHEP::mm, 1, 3.4 * CLHEP::mm);
 
-  float _initialEnergy = 0.;
   /// model properties for plugin
-  //    - using numbers from examplePar04_onnx.in as default parameters
-  int _nCellsRho = 18;
-  int _nCellsPhi = 50;
+  //    - using numbers from calochallenge
+  int _nCellsRho = 9;
+  int _nCellsPhi = 16;
   int _nCellsZ = 45;
-  int _latentSize = 10.;
-  float _cellSizeRho = 2.325; // mm
-  float _cellSizeZ = 3.4;     // mm
-  TensorDimVecs _tensDims = {{1, _latentSize + 4}};
+  int _latentSize = 3;
+  float _cellSizeRho = 4.65; // mm
+  float _cellSizeZ = 3.4;    // mm
+  TensorDimVecs _tensDims = {{1, _latentSize}};
 };
 
 } // namespace ddml

@@ -23,7 +23,7 @@ page](https://edm4hep.web.cern.ch):
 
 You see a diagrammatic overview of EDM4hep with all the available data types,
 broadly organized into different categories. The arrows depict two ways data
-types can be related / associated with each other 
+types can be related / associated with each other
 
 - ["Relations"](#relations) (black arrows)
 - ["Associations"](#associations) (purple-ish arrows)
@@ -32,8 +32,8 @@ types can be related / associated with each other
 These are relations defined within the data types, and which are directly
 accessible from the data types. They come in two flavors, depending on the
 multiplicity of the relation
-- `OneToOneRelations` 
-- `OneToManyRelations` 
+- `OneToOneRelations`
+- `OneToManyRelations`
 
 Data types can relate to other instances of the same type (e.g. `MCParticle`s
 usually form a hierarchy of mothers/daughters). Relations are directed, i.e. it
@@ -163,7 +163,7 @@ interface
 - The *POD Layer* at the very bottom is where all the actual data lives in
   simple `XYZData` POD structs. These are the things that are actually stored
   in, e.g. root files that are written by podio.
-  
+
 ### Basics of generated code - value semantics
 The generated c++ code offers so called *value semantics*. The exact details of
 what this actually means are not very important, the main point **is that you
@@ -177,13 +177,13 @@ auto recos = edm4hep::ReconstructedParticleCollection();
 auto p = recos.create();
 // or via
 auto p2 = edm4hep::ReconstructedParticle();
-recos.push_back(p2); 
+recos.push_back(p2);
 
 // Loop over a collection
 for (auto reco : recos) {
   auto vtx = reco.getStartVertex();
   // do something with the vertex
-  
+
   // loop over related tracks
   for (auto track : reco.getTracks()) {
     // do something with this track
@@ -206,7 +206,7 @@ recos.push_back(p2)
 for reco in recos:
   vtx = reco.getStartVertex()
   # do something with the vertex
-  
+
   # loop over rleated tracks
   for track in reco.getTracks():
     # do something with the tracks
@@ -296,13 +296,13 @@ void printEMutable(edm4hep::MutableMCParticle particle) {
 int main() {
   auto mutP = edm4hep::MutableMCParticle();
   p.setEnergy(3.14);
-  
+
   printE(mutP);  // Works due to implicit conversion
   printEMutable(mutP);  // Obviously also works
-  
+
   // Now we create an immutable object
   auto P = edm4hep::MCParticle();
-  
+
   printE(P);  // Obviously works
   printEMutable(P);  // BREAKS: No conversion from default to Mutable
 
@@ -323,7 +323,7 @@ To create a subset collection, simply do
 auto muons = edm4hep::ReconstructedParticleCollection();
 muons.setSubsetCollection();
 
-// You can now add objects that are part 
+// You can now add objects that are part
 // of another collection to this one via push_back
 muons.push_back(recos[0]);
 ```
@@ -342,9 +342,9 @@ safe interface for data access
   `Frame`
 - All data that is inside a `Frame` is owned by it, and this is also reflected
   in its interface.
-  
+
 ![]()<img src="../images/frame_concept.svg" width="300">
-  
+
 Here we will just briefly introduce the main functionality, for more details see
 the [documentation in
 podio](https://github.com/AIDASoft/podio/blob/master/doc/frame.md).
@@ -353,13 +353,13 @@ podio](https://github.com/AIDASoft/podio/blob/master/doc/frame.md).
 Assuming that `event` is a `podio::Frame` in the following code examples,
 getting a collection can be done via (c++)
 
-```cpp 
-auto& mcParticles = event.get<edm4hep::MCParticleCollection>("MCParticles"); 
+```cpp
+auto& mcParticles = event.get<edm4hep::MCParticleCollection>("MCParticles");
 ```
 
 or (python)
 
-```python 
+```python
 mcParticles = event.get("MCParticles")
 ```
 
@@ -423,12 +423,12 @@ int main() {
   auto reader = podio::ROOTFrameReader();
   // auto reader = podio::ROOTLegacyReader(); // For reading legacy files
   reader.openFile("some_file_containing_edm4hep_data.root");
-  
+
   // Loop over all events
   for (size_t i = 0; reader.getEntries("events"); ++i) {
     auto event = podio::Frame(reader.readNextEntry("events"));
     auto& mcParticles = event.get<edm4hep::MCParticleCollection>("MCParticles");
-    
+
     // do more stuff with this event
   }
 

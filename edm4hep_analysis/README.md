@@ -1,4 +1,4 @@
-In this tutorial, we will be calculating the recoil mass 
+In this tutorial, we will be calculating the recoil mass
 ```math
 M^2_{\text{recoil}} = M^2_H = s + M^2_Z - 2 E_Z \sqrt{s}
 ```
@@ -6,7 +6,7 @@ in
 ```math
 e^+ e^- \rightarrow Z^* \rightarrow ZH \rightarrow H\ell^+ \ell^-
 ```
-events at ILC. 
+events at ILC.
 
 Before starting off, let's have a look at [the introduction to EDM4hep and podio](./edm4hep_api_intro.md)
 
@@ -24,7 +24,7 @@ cd /home/workarea/tutorials
 jupyter lab  --port=8888 --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-You should see 
+You should see
 ```console
 [I 2022-11-21 14:16:10.398 ServerApp] jupyterlab | extension was successfully loaded.
 [I 2022-11-21 14:16:10.400 ServerApp] Serving notebooks from local directory: /home/workarea
@@ -57,7 +57,7 @@ Then go to your browser and setup a network proxy for it to go through this tunn
 - Choose `Manual proxy configuration`
   - In the `SOCKS Host` field enter `localhost`, use the `Port` number you specified in the ssh command
   - Choose `SOCKS v5`
-  
+
 ![](../images/firefox_proxy.png)
 </details>
 
