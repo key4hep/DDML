@@ -7,3 +7,11 @@
 *.log
 # model binary files
 models/*.pt
+/models/*.onnx
+
+# Local directories for geometry
+/CLIC_local/CLIC/*
+/FCCee_local/FCCee/*
+/k4geo_fully_sensitive/*
+/ODDxml/*
+/edm4hep_analysis/*
