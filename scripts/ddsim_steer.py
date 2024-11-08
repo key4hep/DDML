@@ -501,15 +501,27 @@ def LoadHdf5(kernel):
     BIBAE = True
     Two_Angle = True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
+    hadrons = True
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8
         ml_endcap_name = "EcalEndcap"
+
+        ## For hadron shower fast simulation
+        ml_had_barrel_name = "HcalBarrel"
+        ml_had_barrel_symmetry = 8
+        ml_had_endcap_name = "HcalEndcap"
+
     else:
         ml_barrel_name = "ECalBarrel"
         ml_barrel_symmetry = 12
         ml_endcap_name = "ECalEndcap"
+
+        ## For hadron shower fast simulation is needed
+        ml_had_barrel_name = "HCalBarrel"
+        ml_had_barrel_symmetry = 12
+        ml_had_endcap_name = "HCalEndcap"
 
     if BIBAE == True and Two_Angle == True:
         ml_file = "../models/photons-E5050A-theta9090A-phi9090-p1.hdf5"
@@ -517,6 +529,10 @@ def LoadHdf5(kernel):
             "LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel/BarrelModelTorch"
         )
         ml_model_1 = "LoadHDF5RegularGridTwoAngleBIBAEModelEndcap/EndcapModelTorch"
+        ml_correct_angles = False
+
+    if hadrons == True:
+        ml_model_had = "LoadHDF5HadronPointCloudModelPolyhedraBarrel/BarrelModelTorch"
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
@@ -543,6 +559,7 @@ def LoadHdf5(kernel):
         seq.adopt(sensitives)
 
     # -----------------
+    ## EM in Barrel
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
@@ -565,6 +582,7 @@ def LoadHdf5(kernel):
     model.enableUI()
     seq.adopt(model)
     # -------------------
+    ## EM in Endcap
     model1 = DetectorConstruction(kernel, str(ml_model_1))
 
     ##   # Mandatory model parameters
@@ -585,12 +603,33 @@ def LoadHdf5(kernel):
 
     model1.enableUI()
     seq.adopt(model1)
+
+    # -------------------
+    ## Hadrons in Barrel
+    modelHad1 = DetectorConstruction(kernel, str())
+
+    ##   # Mandatory model parameters
+    model.isHadShower = True
+    model.RegionName = "EcalBarrelRegion"  ## hadron model triggers in ecal
+    model.Detector = ml_barrel_name
+    model.HadDetector = ml_had_barrel_name
+    model.Symmetry = ml_barrel_symmetry
+    model.HadSymmetry = ml_had_barrel_symmetry
+    model.Enable = True
+    model.CorrectForAngles = ml_correct_angles
+    # Energy boundaries are optional: Units are GeV
+    model.ApplicableParticles = {"pi+"}
+    model.Etrigger = {"pi+": 10.0 * GeV}  # trigger on lower training threshold
+    model.FilePath = ml_file
+    # model.OptimizeFlag = 1
+    # model.IntraOpNumThreads = 1
+
     # -------------------
 
     # Now build the physics list:
     phys = kernel.physicsList()
     ph = PhysicsList(kernel, str("Geant4FastPhysics/FastPhysicsList"))
-    ph.EnabledParticles = ["e+", "e-", "gamma"]
+    ph.EnabledParticles = ["e+", "e-", "gamma", "pi+"]
     ph.BeVerbose = True
     ph.enableUI()
     phys.adopt(ph)

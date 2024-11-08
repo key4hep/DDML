@@ -27,8 +27,10 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("isHadShower", m_isHadShower) plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("HadDetector", this->m_HadDetector);
     plugin->declareProperty("Symmetry", this->m_nSymmetry);
+    plugin->declareProperty("HadSymmetry", this->m_nHadSymmetry);
     plugin->declareProperty("CorrectForAngles", this->m_correctForAngles);
   }
 
