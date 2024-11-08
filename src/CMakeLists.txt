@@ -50,6 +50,7 @@ if(Torch_FOUND)
     )
   target_link_libraries(${PROJECT_NAME} PUBLIC
     torch
+    OpenMP::OpenMP_CXX
     )
   target_compile_definitions(${PROJECT_NAME} PUBLIC
     DDML_USE_TORCH_INFERENCE

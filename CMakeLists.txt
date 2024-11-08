@@ -92,6 +92,7 @@ endif()
 
 find_package(Torch)
 if(Torch_FOUND)
+  find_package( OpenMP REQUIRED)
   message("Torch inference library found.")
 else()
   message("Torch not found!")

@@ -1,4 +1,5 @@
 #include "DDML/TorchInference.h"
+#include "omp.h" // for setting num torch threads
 #include <cassert>
 
 #define DEBUGPRINT 0
@@ -22,6 +23,15 @@ void TorchInference::initialize() {
   m_jitModule.eval();
 
   m_options = torch::TensorOptions().dtype(torch::kFloat32).device(torch::kCPU);
+
+  // set number of threads
+  omp_set_num_threads(m_intraOpNumThreads);
+
+  int num_threads = omp_get_num_threads();
+  int max_threads = omp_get_max_threads();
+
+  dd4hep::printout(dd4hep::DEBUG, "TorchInference::initialize", "omp num threads: %i", num_threads);
+  dd4hep::printout(dd4hep::DEBUG, "TorchInference::initialize", "omp max threads: %i", max_threads);
 }
 
 /// run the inference model
