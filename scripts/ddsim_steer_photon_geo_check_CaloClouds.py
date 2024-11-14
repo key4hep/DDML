@@ -22,12 +22,17 @@ SIM.enableGun = False
 ## InputFiles for simulation .stdhep, .slcio, .HEPEvt, .hepevt, .hepmc, .pairs files are supported
 SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
-SIM.macroFile = "./test_onnx.mac"
+SIM.macroFile = "./photon_geo_check.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 42
+SIM.numberOfEvents = 2000  # 100
 ## Outputfile from the simulation,only lcio output is supported
 # SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "dummyOutput.slcio"
+
+# BIBAE
+# SIM.outputFile = "/beegfs/desy/user/mckeownp/DDML/Angle_version_with_triggers/ddfastshowerml/Single_photon_timing_BIBAE/Single_photon_timing_check_BIBAE_5GeV.slcio"
+
+# BIBAE 6by6 split
+SIM.outputFile = "/beegfs/desy/user/akorol/projects/ddfastshowerml/scripts/BIBAE_6by6_split_poisition_2_sim-Irreg-DDML_G4_VERSION_CHECK-E5050A-theta9090A-phi9090-p1.slcio"
 
 ## Physics list to use in simulation
 SIM.physicsList = None
@@ -351,8 +356,6 @@ def aiDance(kernel):
     model.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     model.ApplicableParticles = {"e+", "e-", "gamma"}
-    # model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
-    model.Etrigger = {"e+": 1.0 * GeV, "e-": 1.0 * GeV, "gamma": 1.0 * GeV}
     model.Etrigger = {"e+": 5.0 * GeV, "e-": 5.0 * GeV, "gamma": 5.0 * GeV}
     model.ModelPath = ml_file
     model.OptimizeFlag = 1
@@ -389,8 +392,8 @@ def aiDance(kernel):
 
 def aiDanceTorch(kernel):
     ild = True
-    BIBAE = False  # True
-    Two_Angle = False  # True
+    BIBAE = False
+    Two_Angle = False
     CaloClouds = True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
@@ -416,7 +419,7 @@ def aiDanceTorch(kernel):
         ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
     elif CaloClouds == True:
-        ml_file = "../models/CC3_SF_2A.pt"
+        ml_file = "../models/CC2_SF.pt"
         ml_model = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch"
         ml_model_1 = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/EndcapModelTorch"
         ml_correct_angles = False
@@ -461,9 +464,9 @@ def aiDanceTorch(kernel):
     # Energy boundaries are optional: Units are GeV
     model.ApplicableParticles = {"e+", "e-", "gamma"}
     model.Etrigger = {
-        "e+": 10.0 * GeV,
-        "e-": 10.0 * GeV,
-        "gamma": 10.0 * GeV,
+        "e+": 5.0 * GeV,
+        "e-": 5.0 * GeV,
+        "gamma": 5.0 * GeV,
     }  # trigger on lower training threshold
     model.ModelPath = ml_file
     model.OptimizeFlag = 1
@@ -482,9 +485,9 @@ def aiDanceTorch(kernel):
     # Energy boundaries are optional: Units are GeV
     model1.ApplicableParticles = {"e+", "e-", "gamma"}
     model1.Etrigger = {
-        "e+": 10.0 * GeV,
-        "e-": 10.0 * GeV,
-        "gamma": 10.0 * GeV,
+        "e+": 5.0 * GeV,
+        "e-": 5.0 * GeV,
+        "gamma": 5.0 * GeV,
     }  # trigger on lower training threshold
     model1.ModelPath = ml_file
     model1.OptimizeFlag = 1
@@ -504,107 +507,5 @@ def aiDanceTorch(kernel):
     phys.dump()
 
 
-def LoadHdf5(kernel):
-    ild = True
-    BIBAE = True
-    Two_Angle = True
-    old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-
-    if ild == True:
-        ml_barrel_name = "EcalBarrel"
-        ml_barrel_symmetry = 8
-        ml_endcap_name = "EcalEndcap"
-    else:
-        ml_barrel_name = "ECalBarrel"
-        ml_barrel_symmetry = 12
-        ml_endcap_name = "ECalEndcap"
-
-    if BIBAE == True and Two_Angle == True:
-        ml_file = "../models/photons-E5050A-theta9090A-phi9090-p1.hdf5"
-        ml_model = (
-            "LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel/BarrelModelTorch"
-        )
-        ml_model_1 = "LoadHDF5RegularGridTwoAngleBIBAEModelEndcap/EndcapModelTorch"
-        ml_correct_angles = False
-
-    from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
-    from DDG4 import DetectorConstruction, Geant4, PhysicsList
-
-    geant4 = Geant4(kernel)
-
-    seq = geant4.detectorConstruction()
-
-    if old_DD4hep:  # this is now done in DD4hepSimulations.py, i.e. in ddsim
-        seq, act = geant4.addDetectorConstruction(
-            "Geant4DetectorGeometryConstruction/ConstructGeo"
-        )
-        act.DebugMaterials = True
-        act.DebugElements = False
-        act.DebugVolumes = True
-        act.DebugShapes = True
-
-        # Apply sensitive detectors
-        sensitives = DetectorConstruction(
-            kernel, str("Geant4DetectorSensitivesConstruction/ConstructSD")
-        )
-        sensitives.enableUI()
-        seq.adopt(sensitives)
-
-    # -----------------
-    model = DetectorConstruction(kernel, str(ml_model))
-
-    ##   # Mandatory model parameters
-    model.RegionName = "EcalBarrelRegion"
-    model.Detector = ml_barrel_name
-    model.Symmetry = ml_barrel_symmetry
-    model.Enable = True
-    model.CorrectForAngles = ml_correct_angles
-    # Energy boundaries are optional: Units are GeV
-    model.ApplicableParticles = {"e+", "e-", "gamma"}
-    model.Etrigger = {
-        "e+": 10.0 * GeV,
-        "e-": 10.0 * GeV,
-        "gamma": 10.0 * GeV,
-    }  # trigger on lower training threshold
-    model.FilePath = ml_file
-    # model.OptimizeFlag = 1
-    # model.IntraOpNumThreads = 1
-
-    model.enableUI()
-    seq.adopt(model)
-    # -------------------
-    model1 = DetectorConstruction(kernel, str(ml_model_1))
-
-    ##   # Mandatory model parameters
-    model1.RegionName = "EcalEndcapRegion"
-    model1.Detector = ml_endcap_name
-    model1.Enable = True
-    model1.CorrectForAngles = ml_correct_angles
-    # Energy boundaries are optional: Units are GeV
-    model1.ApplicableParticles = {"e+", "e-", "gamma"}
-    model1.Etrigger = {
-        "e+": 10.0 * GeV,
-        "e-": 10.0 * GeV,
-        "gamma": 10.0 * GeV,
-    }  # trigger on lower training threshold
-    model1.FilePath = ml_file
-    # model1.OptimizeFlag = 1
-    # model1.IntraOpNumThreads = 1
-
-    model1.enableUI()
-    seq.adopt(model1)
-    # -------------------
-
-    # Now build the physics list:
-    phys = kernel.physicsList()
-    ph = PhysicsList(kernel, str("Geant4FastPhysics/FastPhysicsList"))
-    ph.EnabledParticles = ["e+", "e-", "gamma"]
-    ph.BeVerbose = True
-    ph.enableUI()
-    phys.adopt(ph)
-    phys.dump()
-
-
 # SIM.physics.setupUserPhysics( aiDance)
 SIM.physics.setupUserPhysics(aiDanceTorch)
-# SIM.physics.setupUserPhysics(LoadHdf5)

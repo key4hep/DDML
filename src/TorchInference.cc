@@ -84,8 +84,8 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
   // std::vector<float> output( outTensor.data_ptr<float>(),
   // outTensor.data_ptr<float>() + outTensor.numel() );
 
-  for (int i = 0, N = output.size(); i < N; ++i) {
-    output[i] = *(outTensor.data_ptr<float>() + i);
+  for (unsigned j = 0; j < output.size(); ++j) {
+    output[j] = *(outTensor.data_ptr<float>() + j);
   }
 }
 } // namespace ddml

@@ -1,6 +1,7 @@
 # The models to download
 set(models
   BIBAE_Full_PP_cut.pt
+  CC3_SF_2A.pt
 )
 
 set(models_data)

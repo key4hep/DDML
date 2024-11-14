@@ -9,6 +9,7 @@ set(sources
   RegularGridTwoAngleBIBAEModel.cc
   OctogonalBarrelTrigger.cc
   EndcapTriggerTwoAngleBIBAE.cc
+  CaloCloudsTwoAngleModel.cc
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
@@ -91,6 +92,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/OctogonalBarrelTrigger.h
   ${PROJECT_SOURCE_DIR}/include/DDML/TriggerInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/DDML.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/CaloCloudsTwoAngleModel.h
   )
 
 if(OnnxRuntime_FOUND)

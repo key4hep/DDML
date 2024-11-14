@@ -3,3 +3,15 @@
 
 # model binary files
 models/*.pt
+
+ILDConfig/*
+Regular_detector/ILDConfig/*
+
+.bash_history
+.history
+.vscode
+.viminfo
+compile.sh
+*.slcio
+*.pt
+run.sh
