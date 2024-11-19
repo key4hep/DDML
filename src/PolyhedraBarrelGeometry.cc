@@ -16,12 +16,6 @@ void PolyhedraBarrelGeometry::initialize() {
   auto det = theDetector.detector(m_detector);
   auto* cal = det.extension<dd4hep::rec::LayeredCalorimeterData>();
 
-  // For hadronic shower simulation
-  if (m_isHadShower == true) {
-    auto det_had = theDetector.detector(m_HadDetector);
-    auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
-  }
-
   if (cal) {
     for (auto l : cal->layers) {
       m_caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
@@ -30,11 +24,17 @@ void PolyhedraBarrelGeometry::initialize() {
     std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
   }
 
+  // For hadronic shower simulation
   if (m_isHadShower == true) {
+      auto det_had = theDetector.detector(m_HadDetector);
+      auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
     if (cal_had) {
       for (auto l_had : cal_had->layers) {
         m_caloLayerDistances.push_back((l_had.distance + l_had.inner_thickness) / dd4hep::mm);
       }
+    }
+    else {
+      std::cout << " ###### error:  detector " << m_HadDetector << " not found !" << std::endl;
     }
   }
 }
