@@ -26,6 +26,7 @@
 #include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
+#include "DDML/PionCloudsModel.h"
 #include "DDML/TriggerInterface.h"
 
 namespace ddml {
@@ -140,6 +141,7 @@ typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::En
                                  ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5PionCloudsPCHadronModelEndcap;
 #endif
+
 
 } // namespace ddml
 
