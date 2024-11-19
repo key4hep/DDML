@@ -546,7 +546,8 @@ def LoadHdf5(kernel):
         ml_correct_angles = False
 
     if hadrons == True:
-        ml_model_had = "LoadHDF5HadronPointCloudModelPolyhedraBarrel/BarrelModelTorch"
+        ml_model_had = "LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel/BarrelModelTorch"
+        ml_had_file = "../models/PionClouds_50GeV_sp.h5"
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
@@ -620,23 +621,26 @@ def LoadHdf5(kernel):
 
     # -------------------
     ## Hadrons in Barrel
-    modelHad1 = DetectorConstruction(kernel, str())
+    modelHad1 = DetectorConstruction(kernel, str(ml_model_had))
 
     ##   # Mandatory model parameters
-    model.isHadShower = True
-    model.RegionName = "EcalBarrelRegion"  ## hadron model triggers in ecal
-    model.Detector = ml_barrel_name
-    model.HadDetector = ml_had_barrel_name
-    model.Symmetry = ml_barrel_symmetry
-    model.HadSymmetry = ml_had_barrel_symmetry
-    model.Enable = True
-    model.CorrectForAngles = ml_correct_angles
+    modelHad1.isHadShower = True
+    modelHad1.RegionName = "EcalBarrelRegion"  ## hadron model triggers in ecal
+    modelHad1.Detector = ml_barrel_name
+    modelHad1.HadDetector = ml_had_barrel_name
+    modelHad1.Symmetry = ml_barrel_symmetry
+    modelHad1.HadSymmetry = ml_had_barrel_symmetry
+    modelHad1.Enable = True
+    modelHad1.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
-    model.ApplicableParticles = {"pi+"}
-    model.Etrigger = {"pi+": 10.0 * GeV}  # trigger on lower training threshold
-    model.FilePath = ml_file
+    modelHad1.ApplicableParticles = {"pi+"}
+    modelHad1.Etrigger = {"pi+": 10.0 * GeV}  # trigger on lower training threshold
+    modelHad1.FilePath = ml_had_file
     # model.OptimizeFlag = 1
     # model.IntraOpNumThreads = 1
+
+    modelHad1.enableUI()
+    seq.adopt(modelHad1)
 
     # -------------------
 

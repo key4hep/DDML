@@ -27,7 +27,8 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("isHadShower", m_isHadShower) plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("isHadShower", this->m_isHadShower);
     plugin->declareProperty("HadDetector", this->m_HadDetector);
     plugin->declareProperty("Symmetry", this->m_nSymmetry);
     plugin->declareProperty("HadSymmetry", this->m_nHadSymmetry);
@@ -54,6 +55,9 @@ private:
   std::string m_detector = {"EcalBarrel"};
   int m_nSymmetry = 8;
   bool m_correctForAngles = false;
+  bool m_isHadShower = false;
+  std::string m_HadDetector = {"HcalBarrel"};
+  int m_nHadSymmetry = m_nSymmetry;
 };
 
 } // namespace ddml

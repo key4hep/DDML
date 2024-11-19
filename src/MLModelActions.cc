@@ -25,6 +25,7 @@
 #include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
+#include "DDML/PionCloudsModel.h"
 #include "DDML/TriggerInterface.h"
 
 namespace ddml {
@@ -127,7 +128,20 @@ typedef FastMLShower<
     FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
+
+/// Load from HDF5 file- as an example for Hadron showers from PionClouds
+// Barrel
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::PolyhedraBarrelGeometry,
+                                 Geant4FastHitMakerGlobal,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+    LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel;
+// Endcap // ENDCAP IS CURRENTLY NOT IMPLEMENTED!!!!
+typedef FastMLShower<
+    FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
+                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+    LoadHDF5PionCloudsPCHadronModelEndcap;
 #endif
+
 
 } // namespace ddml
 
@@ -156,4 +170,6 @@ DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelEndcapTorchModel)
 #ifdef DDML_USE_LOAD_HDF5
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelEndcap)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5PionCloudsPCHadronModelEndcap)
 #endif

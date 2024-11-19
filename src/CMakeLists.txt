@@ -7,6 +7,7 @@ set(sources
   Par04ExampleVAE.cc
   RegularGridBIBAEModel.cc
   RegularGridTwoAngleBIBAEModel.cc
+  PionCloudsModel.cc
   OctogonalBarrelTrigger.cc
   EndcapTriggerTwoAngleBIBAE.cc
   CaloCloudsTwoAngleModel.cc
@@ -82,6 +83,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/Par04ExampleVAE.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridTwoAngleBIBAEModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/PionCloudsModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
