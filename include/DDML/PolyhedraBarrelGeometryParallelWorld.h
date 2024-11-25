@@ -30,7 +30,7 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("Detector", this->_detector);
+    plugin->declareProperty("Detector", this->m_detector);
     plugin->declareProperty("Symmetry", this->_nSymmetry);
     plugin->declareProperty("CorrectForAngles", this->_correctForAngles);
   }
@@ -49,7 +49,7 @@ protected:
   int phiSector(G4ThreeVector const& position) const;
 
 private:
-  std::vector<float> _caloLayerDistances = {};
+  std::vector<float> m_caloLayerDistances = {};
 
   // These variables are HARCODED! Should move to python steering file
   /// model properties for plugin
@@ -57,7 +57,7 @@ private:
   // int _nSymmetry = 8 ;
   // bool _correctForAngles = false  ;
 
-  std::string _detector = {"ECalBarrel"};
+  std::string m_detector = {"ECalBarrel"};
   int _nSymmetry = 12;
   bool _correctForAngles = false;
 

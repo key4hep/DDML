@@ -9,8 +9,8 @@
 
 namespace ddml {
 
-void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
-                                    TensorDimVecs& tensDims, std::vector<float>& output) {
+void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
+                                             InputVecs& inputs, TensorDimVecs& tensDims, std::vector<float>& output) {
   tensDims = _tensDims;
   G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy() / 1000; // MeV -> GeV
   G4ThreeVector position = aFastTrack.GetPrimaryTrack()->GetPosition();
@@ -59,7 +59,8 @@ void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4Th
 }
 
 void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
-                                     const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
+                                              const std::vector<float>& output,
+                                              std::vector<SpacePointVec>& spacepoints) {
   int nLayer = _nCellsZ; // number of layers is z dimension
 
   spacepoints.resize(nLayer);
@@ -102,7 +103,7 @@ void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector 
       float y = rho * sin(phiCell);
 
       for (int l = 0; l < nLayer; ++l) {
-        float z = (l + 0.5) * _cellSizeZ;
+        float z =  (l+1) * _cellSizeZ; // This is actually the separation between layers? First position is position of first layer//(l + 0.5) * _cellSizeZ;
 
         if (output[iHit] > 0.) {
           G4ThreeVector local_cylindrical_spacepoint = rotMatrixInv * G4ThreeVector(x, y, z);

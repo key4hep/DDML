@@ -13,6 +13,7 @@ set(sources
   OctogonalBarrelTrigger.cc
   EndcapTriggerTwoAngleBIBAE.cc
   ParallelWorldCaloDiTModel.cc
+  ParallelWorldSD.cc
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})

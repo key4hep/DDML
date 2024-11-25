@@ -43,8 +43,8 @@ public:
 
   /** create a vector of spacepoints per layer interpreting the model output
    */
-  virtual void convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
-                             const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
+  virtual void convertOutput(G4FastTrack const&, G4ThreeVector const& localDir, const std::vector<float>& output,
+                             std::vector<SpacePointVec>& spacepoints);
 
 private:
   // Copied from Par04

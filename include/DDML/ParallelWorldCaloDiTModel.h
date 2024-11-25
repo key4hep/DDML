@@ -43,8 +43,8 @@ public:
 
   /** create a vector of spacepoints per layer interpreting the model output
    */
-  virtual void convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
-                             const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
+  virtual void convertOutput(G4FastTrack const&, G4ThreeVector const& localDir, const std::vector<float>& output,
+                             std::vector<SpacePointVec>& spacepoints);
 
 private:
   // Copied from calo challenge
@@ -52,12 +52,22 @@ private:
 
   /// model properties for plugin
   //    - using numbers from calochallenge
+  
+  int _nCellsRho = 9;
+  int _nCellsPhi = 16;
+  int _nCellsZ = 45;
+  int _latentSize = 3;
+  float _cellSizeRho = 4.65; // mm
+  float _cellSizeZ = 5.05;    // mm
+  
+  /**** OLD
   int _nCellsRho = 9;
   int _nCellsPhi = 16;
   int _nCellsZ = 45;
   int _latentSize = 3;
   float _cellSizeRho = 4.65; // mm
   float _cellSizeZ = 3.4;    // mm
+  */
   TensorDimVecs _tensDims = {{1, _latentSize}};
 };
 

@@ -12,11 +12,24 @@
 namespace ddml {
 
 void PolyhedraBarrelGeometryParallelWorld::initialize() {
-  // auto& theDetector = dd4hep::Detector::getInstance();
-  // auto det = theDetector.detector( _detector ) ;
-  //  auto* cal = det.extension<dd4hep::rec::LayeredCalorimeterData>() ; // this may be needed later...
+  
+  /************* For Debugging!!!! ***********/
+  auto& theDetector = dd4hep::Detector::getInstance();
+  auto det = theDetector.detector(m_detector);
+  auto* cal = det.extension<dd4hep::rec::LayeredCalorimeterData>();
 
-  std::cout << " PolyhedraBarrelGeometryParallelWorld: detector is " << _detector << std::endl;
+  if (cal) {
+    for (auto l : cal->layers) {
+      m_caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
+      std::cout << " ECAL Layer distances " << l.distance + l.inner_thickness << std::endl;
+    }
+  } else {
+    std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
+  }
+
+  /************ End of for Debugging!!! *********/
+
+  std::cout << " PolyhedraBarrelGeometryParallelWorld: detector is " << m_detector << std::endl;
 }
 
 int PolyhedraBarrelGeometryParallelWorld::phiSector(G4ThreeVector const& position) const {
@@ -125,6 +138,8 @@ void PolyhedraBarrelGeometryParallelWorld::localToGlobal(G4FastTrack const& aFas
       sp.X = global.x();
       sp.Y = global.y();
       sp.Z = global.z();
+
+      std::cout << "PolyhedraBarrelGeometryParallelWorld::localToGlobal --- sp.X: " << sp.X << ", sp.Y: " << sp.Y << ", sp.Z: " << sp.Z << std::endl; 
     }
   }
 }
