@@ -48,7 +48,7 @@ public:
 
 private:
   // Copied from calo challenge
-  G4ThreeVector fMeshSize = G4ThreeVector(4.65 * CLHEP::mm, 1, 3.4 * CLHEP::mm);
+  //G4ThreeVector fMeshSize = G4ThreeVector(4.65 * CLHEP::mm, 1, 3.4 * CLHEP::mm);
 
   /// model properties for plugin
   //    - using numbers from calochallenge
@@ -57,8 +57,8 @@ private:
   int _nCellsPhi = 16;
   int _nCellsZ = 45;
   int _latentSize = 3;
-  float _cellSizeRho = 4.65; // mm
-  float _cellSizeZ = 5.05;    // mm
+  double _cellSizeRho = 4.65 * CLHEP::mm; // mm
+  double _cellSizeZ = 5.05 * CLHEP::mm;    // mm
   
   /**** OLD
   int _nCellsRho = 9;

@@ -95,15 +95,15 @@ void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector 
   int iHit = 0;
 
   for (int i = 0; i < _nCellsRho; ++i) {
-    float rho = (i + 0.5) * _cellSizeRho;
+    double rho = (i + 0.5) * _cellSizeRho;
 
     for (int j = 0; j < _nCellsPhi; ++j) {
-      float phiCell = (j + 0.5) * 2. * CLHEP::pi / _nCellsPhi;
-      float x = rho * cos(phiCell);
-      float y = rho * sin(phiCell);
+      double phiCell = (j + 0.5) * 2. * CLHEP::pi / _nCellsPhi;
+      double x = rho * cos(phiCell);
+      double y = rho * sin(phiCell);
 
       for (int l = 0; l < nLayer; ++l) {
-        float z =  (l+1) * _cellSizeZ; // This is actually the separation between layers? First position is position of first layer//(l + 0.5) * _cellSizeZ;
+        double z =  (l+1) * _cellSizeZ; // This is actually the separation between layers? First position is position of first layer//(l + 0.5) * _cellSizeZ;
 
         if (output[iHit] > 0.) {
           G4ThreeVector local_cylindrical_spacepoint = rotMatrixInv * G4ThreeVector(x, y, z);
