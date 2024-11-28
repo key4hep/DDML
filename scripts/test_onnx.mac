@@ -9,7 +9,7 @@
 /gps/energy    50 GeV
 
 # for SimpleCalo
-#/gps/direction  #0.4 1 -0.3
+/gps/direction  0 1 0.5 #0 1 0 #0.4 1 -0.3
                 #0.2 1 0.3
                 #0 1 -0.3
                 #0 1 0.3
@@ -54,8 +54,8 @@
 
 # for ILD barrel
 
-/gps/ang/mintheta 90. deg
-/gps/ang/maxtheta 90. deg
+#/gps/ang/mintheta 90. deg
+#/gps/ang/maxtheta 90. deg
 
 #/gps/ang/mintheta 60. deg #15. deg
 #/gps/ang/maxtheta 60 deg #165. deg

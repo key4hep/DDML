@@ -26,7 +26,8 @@ SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
 SIM.numberOfEvents = 10  # 100
 ## Outputfile from the simulation,only lcio output is supported
-SIM.outputFile = "dummyOutput.slcio"# "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
+#SIM.outputFile = "FulldummyOutput_Angle.slcio"
+SIM.outputFile = "dummyOutput_Angle.slcio"# "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
 #SIM.outputFile = "CLD_fast_notracker_edm4hep.root"  # "dummyOutput.slcio"
 # SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
 
@@ -76,7 +77,7 @@ SIM.vertexSigma = [0.0, 0.0, 0.0, 0.0]
 ##      as well as for fast simulation as long as all absorbers are marked as sensitive in XML
 ##    TODO: fix for hadronic calorimetry, right now it is ignored so test only with EM showers
 #SIM.action.calo = "Geant4ScintillatorCalorimeterAction"
-SIM.action.calo = ('Geant4FullFastCalorimeterAction', {'sensitiveEMSlice': 4, 'sensitiveHadSlice': 3})
+SIM.action.calo = ('Geant4FullFastCalorimeterAction', {'sensitiveEMSlice': 3, 'sensitiveHadSlice': 3})
 
 ##  create a map of patterns and actions to be applied to sensitive detectors
 ##         example: SIM.action.mapActions['tpc'] = "TPCSDAction"
@@ -288,7 +289,7 @@ SIM.random.enableEventSeed = False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = None
+SIM.random.seed = None #1 #None
 SIM.random.type = None
 
 # ---------------------------------------------

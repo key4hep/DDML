@@ -84,6 +84,7 @@ void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aT
     G4VFastSimSensitiveDetector* fastSimSensitive = dynamic_cast<G4VFastSimSensitiveDetector*>(sensitive);
     if (fastSimSensitive) {
       fastSimSensitive->Hit(&aHit, &aTrack, &m_touchableHandle);
+      std::cout << "G4FastHit Position, x: " << aHit.GetPosition().x() << " y: " << aHit.GetPosition().y() << " z: " << aHit.GetPosition().z() << std::endl;
     } else if (sensitive && currentVolume->GetLogicalVolume()->GetFastSimulationManager()) {
       G4cerr << "ERROR - Geant4FastHitMakerGlobal::make()" << G4endl << "        It is required to derive from the "
              << G4endl << "        G4VFastSimSensitiveDetector in " << G4endl

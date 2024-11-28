@@ -103,7 +103,7 @@ void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector 
       double y = rho * sin(phiCell);
 
       for (int l = 0; l < nLayer; ++l) {
-        double z =  (l+1) * _cellSizeZ; // This is actually the separation between layers? First position is position of first layer//(l + 0.5) * _cellSizeZ;
+        double z =  (l+1.5) * _cellSizeZ; // This is actually the separation between layers? First position is position of first layer//(l + 0.5) * _cellSizeZ; Note- 1.5 to place at the center of cell...
 
         if (output[iHit] > 0.) {
           G4ThreeVector local_cylindrical_spacepoint = rotMatrixInv * G4ThreeVector(x, y, z);
