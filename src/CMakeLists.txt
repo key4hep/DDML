@@ -71,6 +71,12 @@ if(HDF5_FOUND)
   target_compile_definitions(${PROJECT_NAME} PUBLIC
     DDML_USE_LOAD_HDF5
   )
+  if(${HDF5_VERSION} GREATER 1.13)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+    DDML_NEW_HDF5_VERSION
+    )
+    message(STATUS "HDF5 DDML_NEW_HDF5_VERSION" DDML_NEW_HDF5_VERSION)
+  endif()
 endif()
 
 install(TARGETS ${PROJECT_NAME}
