@@ -39,9 +39,6 @@ void LoadHdf5::initialize() {
 
   m_dimsOut = dims_out;
 
-  // ensure that output size has been asigned correctly
-  assert(m_dimsOut[0] == output.size());
-
   assert(rank == 4); // assuming 4 dimensional input
   // index 0: shower number
   // index 1, 2, 3: x, y, z cell number
