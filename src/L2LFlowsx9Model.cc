@@ -1,101 +1,89 @@
 #include "DDML/L2LFlowsx9Model.h"
 
-#include <cstdlib>
 #include <G4FastTrack.hh>
+#include <cstdlib>
 
 #define DEBUGPRINT 0
 
-
 namespace ddml {
 
-  void L2LFlowsx9Model::prepareInput(G4FastTrack const& aFastTrack,
-			      G4ThreeVector const& localDir,
-			      InputVecs& inputs, TensorDimVecs& tensDims,
-			      std::vector<float>& output ) {
+void L2LFlowsx9Model::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                                   TensorDimVecs& tensDims, std::vector<float>& output) {
+  tensDims = m_tensDims;
 
-    tensDims = _tensDims ;
+  G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
+  G4ThreeVector localDirNormed = localDir.unit();
 
-    G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
-    G4ThreeVector localDirNormed = localDir.unit();
-
-    // resize input vectors according to the tensor dimensions
-    inputs.resize(tensDims.size());
-    for (std::size_t i = 0; i < tensDims.size(); i++){
-      int size = 1;
-      for (std::size_t j = 0; j < tensDims[i].size(); j++){
-        size *= tensDims[i][j];
-      }
-      inputs[0].resize(size);
+  // resize input vectors according to the tensor dimensions
+  inputs.resize(tensDims.size());
+  for (std::size_t i = 0; i < tensDims.size(); i++) {
+    int size = 1;
+    for (std::size_t j = 0; j < tensDims[i].size(); j++) {
+      size *= tensDims[i][j];
     }
-
-    // For now, assume batch size one, and just assign values
-    inputs[0][0] = energy / CLHEP::GeV;
-    inputs[0][1] = -1. * localDirNormed.x();
-    inputs[0][2] = -1. * localDirNormed.y();
-    inputs[0][3] = localDirNormed.z();
-
-    if(DEBUGPRINT) {
-      std::cout << " e_I : " <<   inputs[0][0] << std::endl ;
-      std::cout << " p_x : " <<   inputs[0][1] << std::endl ;
-      std::cout << " p_y : " <<   inputs[0][2] << std::endl ;
-      std::cout << " p_z : " <<   inputs[0][3] << std::endl ;
-    }
-
-    // ----  resize output vector
-    int outputSize = _nCellsX * _nCellsY * _nCellsZ;
-    output.assign(outputSize, 0);
+    inputs[0].resize(size);
   }
 
+  // For now, assume batch size one, and just assign values
+  inputs[0][0] = energy / CLHEP::GeV;
+  inputs[0][1] = -1. * localDirNormed.x();
+  inputs[0][2] = -1. * localDirNormed.y();
+  inputs[0][3] = localDirNormed.z();
 
-  void L2LFlowsx9Model::convertOutput(G4FastTrack const& /*aFastTrack*/,
-              G4ThreeVector const& localDir,
-              const std::vector<float>& output,
-              std::vector<SpacePointVec>& spacepoints ){
+  if (DEBUGPRINT) {
+    std::cout << " e_I : " << inputs[0][0] << std::endl;
+    std::cout << " p_x : " << inputs[0][1] << std::endl;
+    std::cout << " p_y : " << inputs[0][2] << std::endl;
+    std::cout << " p_z : " << inputs[0][3] << std::endl;
+  }
 
-    std::vector<float> x_shift;
-    std::vector<float> y_shift;
-    _shift(localDir.unit(), x_shift, y_shift);
+  // ----  resize output vector
+  int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
+  output.assign(outputSize, 0);
+}
 
-    spacepoints.resize( _nCellsZ ) ;
+void L2LFlowsx9Model::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVector const& localDir,
+                                    const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
+  std::vector<float> x_shift;
+  std::vector<float> y_shift;
+  _shift(localDir.unit(), x_shift, y_shift);
 
-    for (int i = 0; i < _nCellsZ; i++) {
-      for (int j = 0; j < _nCellsX; j++) {
-        for (int k = 0; k < _nCellsY; k++) {
+  spacepoints.resize(m_nCellsZ);
 
-          int idx = i * _nCellsX * _nCellsY + j * _nCellsY + k;
+  for (int i = 0; i < m_nCellsZ; i++) {
+    for (int j = 0; j < m_nCellsX; j++) {
+      for (int k = 0; k < m_nCellsY; k++) {
+        int idx = i * m_nCellsX * m_nCellsY + j * m_nCellsY + k;
 
-          if (output[idx] > 1e-5) {
-            float offset_x = ((float) std::rand()) / RAND_MAX;
-            float offset_y = ((float) std::rand()) / RAND_MAX;
+        if (output[idx] > 1e-5) {
+          float offset_x = ((float)std::rand()) / ((float)RAND_MAX);
+          float offset_y = ((float)std::rand()) / ((float)RAND_MAX);
 
-            ddml::SpacePoint sp(
-              -1. * (j - _nCellsX / 2. + offset_x) * _cellSizeX/_factor + x_shift[i] + 1.4844563802083140, // x
-              -1. * (k - _nCellsY / 2. + offset_y) * _cellSizeY/_factor + y_shift[i] + 0.6716766357421875, // y
-              0., // z
-              output[idx]*1e3, // energy
-              0. // time
-            );
+          ddml::SpacePoint sp(
+              -1. * (j - m_nCellsX / 2. + offset_x) * m_cellSizeX / m_factor + x_shift[i] + 1.4844563802083140, // x
+              -1. * (k - m_nCellsY / 2. + offset_y) * m_cellSizeY / m_factor + y_shift[i] + 0.6716766357421875, // y
+              0.,                                                                                               // z
+              output[idx] * 1e3, // energy
+              0.                 // time
+          );
 
-            spacepoints[i].push_back(sp);
-
-          }
+          spacepoints[i].push_back(sp);
         }
       }
     }
   }
+}
 
-  void L2LFlowsx9Model::_shift(
-      const G4ThreeVector& localDirNormed,
-      std::vector<float>& x_shift,
-      std::vector<float>& y_shift) {
-    x_shift.resize(_nCellsZ);
-    y_shift.resize(_nCellsZ);
-    for (int i = 0; i < _nCellsZ; i++) {
-      float dist_to_layers = layer_bottom_pos[i] - 1804.7 + _cell_thickness / 2.0;
-      float r = dist_to_layers / localDirNormed.z();
-      x_shift[i] = r * localDirNormed.x();
-      y_shift[i] = r * localDirNormed.y();
-    }
+void L2LFlowsx9Model::_shift(const G4ThreeVector& localDirNormed, std::vector<float>& x_shift,
+                             std::vector<float>& y_shift) {
+  x_shift.resize(m_nCellsZ);
+  y_shift.resize(m_nCellsZ);
+  for (int i = 0; i < m_nCellsZ; i++) {
+    float dist_to_layers = m_layerBottomPos[i] - 1804.7 + m_cellThickness / 2.0;
+    float r = dist_to_layers / localDirNormed.z();
+    x_shift[i] = r * localDirNormed.x();
+    y_shift[i] = r * localDirNormed.y();
   }
+}
 
 } // namespace ddml

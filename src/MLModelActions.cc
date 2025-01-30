@@ -18,14 +18,14 @@
 #include "DDML/EndcapGeometry.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
+#include "DDML/L2LFlowsModel.h"
+#include "DDML/L2LFlowsx9Model.h"
 #include "DDML/OctogonalBarrelTrigger.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
-#include "DDML/L2LFlowsModel.h"
-#include "DDML/L2LFlowsx9Model.h"
 #include "DDML/TriggerInterface.h"
 
 namespace ddml {
@@ -105,33 +105,25 @@ typedef FastMLShower<
     CaloCloudsTwoAngleModelEndcapTorchModel;
 
 /// L2L Flows Model
-typedef FastMLShower<FastMLModel<ddml::TorchInference,
-         ddml::L2LFlowsModel,
-         ddml::PolyhedraBarrelGeometry,
-         Geant4FastHitMakerGlobal,
-         ddml::OctogonalBarrelTrigger> > // add ML trigger
-L2LFlowsModelPolyhedraBarrelTorchModel ;
+typedef FastMLShower<
+    FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
+                ddml::OctogonalBarrelTrigger>> // add ML trigger
+    L2LFlowsModelPolyhedraBarrelTorchModel;
 /// L2L Flows Model
-typedef FastMLShower<FastMLModel<ddml::TorchInference,
-         ddml::L2LFlowsModel,
-         ddml::EndcapGeometry,
-         Geant4FastHitMakerGlobal,
-         ddml::EndcapTriggerTwoAngleBIBAE> > // add ML trigger
-L2LFlowsModelEndcapTorchModel ;
+typedef FastMLShower<
+    FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
+                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+    L2LFlowsModelEndcapTorchModel;
 /// L2L Flows x9 Model
-typedef FastMLShower<FastMLModel<ddml::TorchInference,
-         ddml::L2LFlowsx9Model,
-         ddml::PolyhedraBarrelGeometry,
-         Geant4FastHitMakerGlobal,
-         ddml::OctogonalBarrelTrigger> > // add ML trigger
-L2LFlowsx9ModelPolyhedraBarrelTorchModel ;
+typedef FastMLShower<
+    FastMLModel<ddml::TorchInference, ddml::L2LFlowsx9Model, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
+                ddml::OctogonalBarrelTrigger>> // add ML trigger
+    L2LFlowsx9ModelPolyhedraBarrelTorchModel;
 /// L2L Flows x9 Model
-typedef FastMLShower<FastMLModel<ddml::TorchInference,
-         ddml::L2LFlowsx9Model,
-         ddml::EndcapGeometry,
-         Geant4FastHitMakerGlobal,
-         ddml::EndcapTriggerTwoAngleBIBAE> > // add ML trigger
-L2LFlowsx9ModelEndcapTorchModel ;
+typedef FastMLShower<
+    FastMLModel<ddml::TorchInference, ddml::L2LFlowsx9Model, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
+                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+    L2LFlowsx9ModelEndcapTorchModel;
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
