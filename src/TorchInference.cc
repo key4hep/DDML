@@ -18,6 +18,8 @@ void TorchInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
 }
 
 void TorchInference::initialize() {
+  c10::InferenceMode guard(true);
+
   m_jitModule = torch::jit::load(m_modelPath);
   m_jitModule.to(torch::kCPU);
   m_jitModule.eval();
@@ -36,6 +38,8 @@ void TorchInference::initialize() {
 
 /// run the inference model
 void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
+  c10::InferenceMode guard(true);
+
   if (!m_isInitialized) {
     initialize();
     m_isInitialized = true;
