@@ -1,6 +1,7 @@
 #include "DDML/L2LFlowsModel.h"
 
 #include <G4FastTrack.hh>
+#include <cstdlib>
 
 #define DEBUGPRINT 0
 
@@ -29,12 +30,10 @@ void L2LFlowsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector co
   inputs[0][2] = -1. * localDirNormed.y();
   inputs[0][3] = localDirNormed.z();
 
-  if (DEBUGPRINT) {
-    std::cout << " e_I : " << inputs[0][0] << std::endl;
-    std::cout << " p_x : " << inputs[0][1] << std::endl;
-    std::cout << " p_y : " << inputs[0][2] << std::endl;
-    std::cout << " p_z : " << inputs[0][3] << std::endl;
-  }
+  dd4hep::printout(dd4hep::DEBUG, "L2LFlowsModel::prepareInput", "Input_energy : %f", inputs[0][0]);
+  dd4hep::printout(dd4hep::DEBUG, "L2LFlowsModel::prepareInput", "Input_p_x : %f", inputs[0][1]);
+  dd4hep::printout(dd4hep::DEBUG, "L2LFlowsModel::prepareInput", "Input_p_y : %f", inputs[0][2]);
+  dd4hep::printout(dd4hep::DEBUG, "L2LFlowsModel::prepareInput", "Input_p_z : %f", inputs[0][3]);
 
   // ----  resize output vector
   int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
@@ -45,7 +44,7 @@ void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVect
                                   const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
   std::vector<float> x_shift;
   std::vector<float> y_shift;
-  _shift(localDir.unit(), x_shift, y_shift);
+  shift(localDir.unit(), x_shift, y_shift);
 
   spacepoints.resize(m_nCellsZ);
 
@@ -55,11 +54,21 @@ void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVect
         int idx = i * m_nCellsX * m_nCellsY + j * m_nCellsY + k;
 
         if (output[idx] > 1e-5) {
-          ddml::SpacePoint sp(-1. * (j - m_nCellsX / 2. + 0.5) * m_cellSizeX + x_shift[i], // x
-                              -1. * (k - m_nCellsY / 2. + 0.5) * m_cellSizeY + y_shift[i], // y
-                              0.,                                                          // z
-                              output[idx] * 1e3,                                           // energy
-                              0.                                                           // time
+          float offset_x, offset_y;
+          if (m_randomShift) {
+            offset_x = ((float)std::rand()) / ((float)RAND_MAX);
+            offset_y = ((float)std::rand()) / ((float)RAND_MAX);
+          } else {
+            offset_x = 0.5;
+            offset_y = 0.5;
+          }
+
+          ddml::SpacePoint sp(
+              -1. * (j - m_nCellsX / 2. + offset_x) * m_cellSizeX / m_factor + x_shift[i] + m_gridShiftX, // x
+              -1. * (k - m_nCellsY / 2. + offset_y) * m_cellSizeY / m_factor + y_shift[i] + m_gridShiftY, // y
+              0.,                                                                                         // z
+              output[idx] * 1e3,                                                                          // energy
+              0.                                                                                          // time
           );
 
           spacepoints[i].push_back(sp);
@@ -69,8 +78,8 @@ void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVect
   }
 }
 
-void L2LFlowsModel::_shift(const G4ThreeVector& localDirNormed, std::vector<float>& x_shift,
-                           std::vector<float>& y_shift) {
+void L2LFlowsModel::shift(const G4ThreeVector& localDirNormed, std::vector<float>& x_shift,
+                          std::vector<float>& y_shift) {
   x_shift.resize(m_nCellsZ);
   y_shift.resize(m_nCellsZ);
   for (int i = 0; i < m_nCellsZ; i++) {

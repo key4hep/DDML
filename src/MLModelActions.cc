@@ -19,7 +19,6 @@
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/L2LFlowsModel.h"
-#include "DDML/L2LFlowsx9Model.h"
 #include "DDML/OctogonalBarrelTrigger.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
@@ -114,16 +113,6 @@ typedef FastMLShower<
     FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     L2LFlowsModelEndcapTorchModel;
-/// L2L Flows x9 Model
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::L2LFlowsx9Model, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
-                ddml::OctogonalBarrelTrigger>> // add ML trigger
-    L2LFlowsx9ModelPolyhedraBarrelTorchModel;
-/// L2L Flows x9 Model
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::L2LFlowsx9Model, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
-                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
-    L2LFlowsx9ModelEndcapTorchModel;
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
