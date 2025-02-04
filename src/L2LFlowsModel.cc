@@ -67,7 +67,7 @@ void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVect
               -1. * (j - m_nCellsX / 2. + offset_x) * m_cellSizeX / m_factor + x_shift[i] + m_gridShiftX, // x
               -1. * (k - m_nCellsY / 2. + offset_y) * m_cellSizeY / m_factor + y_shift[i] + m_gridShiftY, // y
               0.,                                                                                         // z
-              output[idx] * 1e3,                                                                          // energy
+              output[idx] * CLHEP::GeV,                                                                   // energy
               0.                                                                                          // time
           );
 
