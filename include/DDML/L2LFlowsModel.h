@@ -30,7 +30,6 @@ public:
 
     plugin->declareProperty("CellSizeX", this->m_cellSizeX);
     plugin->declareProperty("CellSizeY", this->m_cellSizeY);
-    plugin->declareProperty("CellThickness", this->m_cellThickness);
 
     plugin->declareProperty("Factor", this->m_factor);
     plugin->declareProperty("GridShiftX", this->m_gridShiftX);
@@ -57,22 +56,11 @@ private:
   int m_nCellsZ = 30;
   float m_cellSizeX = 5.088333;
   float m_cellSizeY = 5.088333;
-  float m_cellThickness = 0.5250244140625;
   float m_factor = 3.0;
   float m_gridShiftX = 1.4844563802083140;
   float m_gridShiftY = 0.6716766357421875;
   bool m_randomShift = true;
-
-  constexpr static std::array<float, 30> m_layerBottomPos = {
-      1811.34020996, 1814.46508789, 1823.81005859, 1826.93505859, 1836.2800293,  1839.4050293,
-      1848.75,       1851.875,      1861.2199707,  1864.3449707,  1873.68994141, 1876.81494141,
-      1886.16003418, 1889.28503418, 1898.63000488, 1901.75500488, 1911.09997559, 1914.22497559,
-      1923.56994629, 1926.69494629, 1938.14001465, 1943.36499023, 1954.81005859, 1960.03503418,
-      1971.47998047, 1976.70495605, 1988.15002441, 1993.375,      2004.81994629, 2010.04504395};
-
   TensorDimVecs m_tensDims = {{1, 4}};
-
-  void shift(const G4ThreeVector& p_normed, std::vector<float>& x_shift, std::vector<float>& y_shift);
 };
 
 } // namespace ddml

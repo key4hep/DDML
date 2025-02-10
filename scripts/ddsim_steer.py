@@ -425,7 +425,7 @@ def aiDanceTorch(kernel):
         ml_file = "../models/L2LFlowsx9.pt"
         ml_model = "L2LFlowsModelPolyhedraBarrelTorchModel/BarrelModelTorch"
         ml_model_1 = "L2LFlowsModelEndcapTorchModel/EndcapModelTorch"
-        ml_correct_angles = False
+        ml_correct_angles = True
     else:
         ml_file = "../models/francisca_gan_jit.pt"
         ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"

@@ -40,12 +40,8 @@ void L2LFlowsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector co
   output.assign(outputSize, 0);
 }
 
-void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVector const& localDir,
+void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVector const& /*localDir*/,
                                   const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
-  std::vector<float> x_shift;
-  std::vector<float> y_shift;
-  shift(localDir.unit(), x_shift, y_shift);
-
   spacepoints.resize(m_nCellsZ);
 
   for (int i = 0; i < m_nCellsZ; i++) {
@@ -63,30 +59,17 @@ void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVect
             offset_y = 0.5;
           }
 
-          ddml::SpacePoint sp(
-              -1. * (j - m_nCellsX / 2. + offset_x) * m_cellSizeX / m_factor + x_shift[i] + m_gridShiftX, // x
-              -1. * (k - m_nCellsY / 2. + offset_y) * m_cellSizeY / m_factor + y_shift[i] + m_gridShiftY, // y
-              0.,                                                                                         // z
-              output[idx] * CLHEP::GeV,                                                                   // energy
-              0.                                                                                          // time
+          ddml::SpacePoint sp(-1. * (j - m_nCellsX / 2. + offset_x) * m_cellSizeX / m_factor + m_gridShiftX, // x
+                              -1. * (k - m_nCellsY / 2. + offset_y) * m_cellSizeY / m_factor + m_gridShiftY, // y
+                              0.,                                                                            // z
+                              output[idx] * CLHEP::GeV,                                                      // energy
+                              0.                                                                             // time
           );
 
           spacepoints[i].push_back(sp);
         }
       }
     }
-  }
-}
-
-void L2LFlowsModel::shift(const G4ThreeVector& localDirNormed, std::vector<float>& x_shift,
-                          std::vector<float>& y_shift) {
-  x_shift.resize(m_nCellsZ);
-  y_shift.resize(m_nCellsZ);
-  for (int i = 0; i < m_nCellsZ; i++) {
-    float dist_to_layers = m_layerBottomPos[i] - 1804.7 + m_cellThickness / 2.0;
-    float r = dist_to_layers / localDirNormed.z();
-    x_shift[i] = r * localDirNormed.x();
-    y_shift[i] = r * localDirNormed.y();
   }
 }
 
