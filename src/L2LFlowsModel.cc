@@ -36,18 +36,18 @@ void L2LFlowsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector co
   dd4hep::printout(dd4hep::DEBUG, "L2LFlowsModel::prepareInput", "Input_p_z : %f", inputs[0][3]);
 
   // ----  resize output vector
-  int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
+  int outputSize = m_nBinsX * m_nBinsY * m_nBinsZ;
   output.assign(outputSize, 0);
 }
 
 void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVector const& /*localDir*/,
                                   const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
-  spacepoints.resize(m_nCellsZ);
+  spacepoints.resize(m_nBinsZ);
 
-  for (int i = 0; i < m_nCellsZ; i++) {
-    for (int j = 0; j < m_nCellsX; j++) {
-      for (int k = 0; k < m_nCellsY; k++) {
-        int idx = i * m_nCellsX * m_nCellsY + j * m_nCellsY + k;
+  for (int i = 0; i < m_nBinsZ; i++) {
+    for (int j = 0; j < m_nBinsX; j++) {
+      for (int k = 0; k < m_nBinsY; k++) {
+        int idx = i * m_nBinsX * m_nBinsY + j * m_nBinsY + k;
 
         if (output[idx] > 1e-5) {
           float offset_x, offset_y;
@@ -59,11 +59,11 @@ void L2LFlowsModel::convertOutput(G4FastTrack const& /*aFastTrack*/, G4ThreeVect
             offset_y = 0.5;
           }
 
-          ddml::SpacePoint sp(-1. * (j - m_nCellsX / 2. + offset_x) * m_cellSizeX / m_factor + m_gridShiftX, // x
-                              -1. * (k - m_nCellsY / 2. + offset_y) * m_cellSizeY / m_factor + m_gridShiftY, // y
-                              0.,                                                                            // z
-                              output[idx] * CLHEP::GeV,                                                      // energy
-                              0.                                                                             // time
+          ddml::SpacePoint sp(-1. * (j - m_nBinsX / 2. + offset_x) * m_cellSizeX / m_factor + m_gridShiftX, // x
+                              -1. * (k - m_nBinsY / 2. + offset_y) * m_cellSizeY / m_factor + m_gridShiftY, // y
+                              0.,                                                                           // z
+                              output[idx] * CLHEP::GeV,                                                     // energy
+                              0.                                                                            // time
           );
 
           spacepoints[i].push_back(sp);

@@ -24,9 +24,9 @@ public:
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
-    plugin->declareProperty("NCellsX", this->m_nCellsX);
-    plugin->declareProperty("NCellsY", this->m_nCellsY);
-    plugin->declareProperty("NCellsZ", this->m_nCellsZ);
+    plugin->declareProperty("NBinsX", this->m_nBinsX);
+    plugin->declareProperty("NBinsY", this->m_nBinsY);
+    plugin->declareProperty("NBinsZ", this->m_nBinsZ);
 
     plugin->declareProperty("CellSizeX", this->m_cellSizeX);
     plugin->declareProperty("CellSizeY", this->m_cellSizeY);
@@ -51,12 +51,12 @@ public:
 
 private:
   /// model properties for plugin
-  int m_nCellsX = 90;
-  int m_nCellsY = 90;
-  int m_nCellsZ = 30;
+  int m_nBinsX = 90;
+  int m_nBinsY = 90;
+  int m_nBinsZ = 30;
   float m_cellSizeX = 5.088333;
   float m_cellSizeY = 5.088333;
-  float m_factor = 3.0;
+  float m_factor = 3.0; // number of bins per cell
   float m_gridShiftX = 1.4844563802083140;
   float m_gridShiftY = 0.6716766357421875;
   bool m_randomShift = true;
