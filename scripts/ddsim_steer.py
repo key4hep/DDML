@@ -574,6 +574,7 @@ def LoadHdf5(kernel):
         seq.adopt(sensitives)
 
     # -----------------
+    '''
     ## EM in Barrel
     model = DetectorConstruction(kernel, str(ml_model))
 
@@ -596,6 +597,7 @@ def LoadHdf5(kernel):
 
     model.enableUI()
     seq.adopt(model)
+    '''
     # -------------------
     ## EM in Endcap
     model1 = DetectorConstruction(kernel, str(ml_model_1))
@@ -625,7 +627,7 @@ def LoadHdf5(kernel):
 
     ##   # Mandatory model parameters
     modelHad1.isHadShower = True
-    modelHad1.RegionName = "EcalBarrelRegion"  ## hadron model triggers in ecal
+    modelHad1.RegionName = "EcalBarrelRegion" #or "HcalBarrelRegion"  ## hadron model triggers in ecal
     modelHad1.Detector = ml_barrel_name
     modelHad1.HadDetector = ml_had_barrel_name
     modelHad1.Symmetry = ml_barrel_symmetry

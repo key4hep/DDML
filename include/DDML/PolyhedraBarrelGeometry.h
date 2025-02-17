@@ -12,6 +12,11 @@ namespace ddml {
  *
  *  @author F.Gaede, DESY
  *  @date Mar 2023
+ * 
+ * Addiional option included to support Hadronic shower simulation in ECAL + HCAL
+ *  @author P. McKeown, CERN
+ *  @date Feb 2025
+ * 
  */
 
 class PolyhedraBarrelGeometry : public GeometryInterface {
@@ -55,7 +60,7 @@ private:
   std::string m_detector = {"EcalBarrel"};
   int m_nSymmetry = 8;
   bool m_correctForAngles = false;
-  bool m_isHadShower = false;
+  bool m_isHadShower = true;
   std::string m_HadDetector = {"HcalBarrel"};
   int m_nHadSymmetry = m_nSymmetry;
 };
