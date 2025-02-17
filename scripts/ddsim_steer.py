@@ -388,7 +388,7 @@ def aiDance(kernel):
 def aiDanceTorch(kernel):
     ild = True
     BIBAE = True
-    Two_Angle = True
+    Two_Angle = True #True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
     if ild == True:
@@ -560,6 +560,7 @@ def LoadHdf5(kernel):
         seq.adopt(sensitives)
 
     # -----------------
+    '''
     ## EM in Barrel
     model = DetectorConstruction(kernel, str(ml_model))
 
@@ -582,6 +583,7 @@ def LoadHdf5(kernel):
 
     model.enableUI()
     seq.adopt(model)
+    '''
     # -------------------
     ## EM in Endcap
     model1 = DetectorConstruction(kernel, str(ml_model_1))
@@ -611,7 +613,7 @@ def LoadHdf5(kernel):
 
     ##   # Mandatory model parameters
     modelHad1.isHadShower = True
-    modelHad1.RegionName = "EcalBarrelRegion"  ## hadron model triggers in ecal
+    modelHad1.RegionName = "EcalBarrelRegion" #or "HcalBarrelRegion"  ## hadron model triggers in ecal
     modelHad1.Detector = ml_barrel_name
     modelHad1.HadDetector = ml_had_barrel_name
     modelHad1.Symmetry = ml_barrel_symmetry
@@ -640,6 +642,6 @@ def LoadHdf5(kernel):
     phys.dump()
 
 
-# SIM.physics.setupUserPhysics( aiDance)
-# SIM.physics.setupUserPhysics(aiDanceTorch)
-SIM.physics.setupUserPhysics(LoadHdf5)
+#SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics(aiDanceTorch)
+#SIM.physics.setupUserPhysics(LoadHdf5)
