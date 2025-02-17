@@ -5,6 +5,7 @@ project(DDML)
 
 # Provides install directory variables as defined for GNU software
 include(GNUInstallDirs)
+set(CMAKE_INSTALL_LIBDIR lib)  # Make sure that the generated thisDDML.sh script points to the right location
 
 # Define a default build type can be overriden by passing
 # ``-DCMAKE_BUILD_TYPE=<type>`` when invoking CMake

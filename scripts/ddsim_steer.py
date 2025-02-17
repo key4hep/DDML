@@ -392,6 +392,7 @@ def aiDanceTorch(kernel):
     BIBAE = False  # True
     Two_Angle = False  # True
     CaloClouds = True
+    L2LFlows = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
     if ild == True:
@@ -420,6 +421,11 @@ def aiDanceTorch(kernel):
         ml_model = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch"
         ml_model_1 = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/EndcapModelTorch"
         ml_correct_angles = False
+    elif L2LFlows == True:
+        ml_file = "../models/L2LFlowsx9.pt"
+        ml_model = "L2LFlowsModelPolyhedraBarrelTorchModel/BarrelModelTorch"
+        ml_model_1 = "L2LFlowsModelEndcapTorchModel/EndcapModelTorch"
+        ml_correct_angles = True
     else:
         ml_file = "../models/francisca_gan_jit.pt"
         ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"

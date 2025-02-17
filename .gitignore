@@ -1,5 +1,6 @@
 /install/
 /build/
+/log/
 
 # model binary files
 models/*.pt
@@ -15,3 +16,4 @@ compile.sh
 *.slcio
 *.pt
 run.sh
+compile_commands.json
