@@ -33,6 +33,18 @@ if(INSTRUMENT_MODEL)
   )
 endif()
 
+if(RECORD_CALO_IMPACT)
+  target_sources(${PROJECT_NAME} PRIVATE
+    DDMLRunAction.cc
+    DDMLEventAction.cc
+  )
+  target_compile_definitions(${PROJECT_NAME} PUBLIC
+    DDML_RECORD_CALO_IMPACT=1
+  )
+endif()
+
+
+
 if(OnnxRuntime_FOUND)
   target_sources(${PROJECT_NAME} PRIVATE
     ONNXInference.cc
@@ -104,6 +116,10 @@ endif()
 
 if(HDF5_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/LoadHdf5.h)
+endif()
+
+if(RECORD_CALO_IMPACT)
+  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h)
 endif()
 
 #install(FILES

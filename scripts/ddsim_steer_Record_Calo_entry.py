@@ -6,6 +6,7 @@
 #
 ######################################################################
 from DDSim.DD4hepSimulation import DD4hepSimulation
+import DDG4
 from g4units import m, mm, GeV, MeV, rad
 import os
 
@@ -86,6 +87,14 @@ SIM.action.tracker = (
     {"HitPositionCombination": 2, "CollectSingleDeposits": False},
 )
 
+### Configure Run actions
+kernel = DDG4.Kernel()
+run1 = DDG4.RunAction(kernel, 'DDMLRunAction/runaction')
+kernel.registerGlobalAction(run1)
+kernel.runAction().add(run1)
+event1 = DDG4.EventAction(kernel, 'DDMLEventAction/eventaction')
+kernel.registerGlobalAction(event1)
+kernel.eventAction().add(event1)
 
 ################################################################################
 ## Configuration for the magnetic field (stepper)
@@ -280,11 +289,11 @@ SIM.physics.rangecut = 0.1 * mm
 
 ## If True, calculate random seed for each event based on eventID and runID
 ## allows reproducibility even when SkippingEvents
-SIM.random.enableEventSeed = False
+SIM.random.enableEventSeed = True #False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = None
+SIM.random.seed = 42 #None
 SIM.random.type = None
 
 # ---------------------------------------------
@@ -533,7 +542,7 @@ def LoadHdf5(kernel):
 
     if hadrons == True:
         ml_model_had = "LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel/BarrelModelTorch"
-        ml_had_file =  "../models/PionClouds_50GeV_sp.h5" #"../models/PionClouds_50GeV_sp_scaled.h5"
+        ml_had_file = "../models/PionClouds_50GeV_sp.h5" #"../models/PionClouds_50GeV_sp_scaled.h5"
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
