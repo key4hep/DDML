@@ -124,8 +124,8 @@ namespace ddml {
 
     for (int i = 0; i < nPoints; i++) {
         ddml::SpacePoint sp(
-            reshaped[i][0]*1e3,   // x // *(-1) to align local to global convention in ddml
-            reshaped[i][2]*1e3,   // y // *(-1) to align local to global convention in ddml
+            reshaped[i][0],   // x // *(-1) to align local to global convention in ddml
+            reshaped[i][2],   // y // *(-1) to align local to global convention in ddml
             0.,             // z
             reshaped[i][3],   // energy
             0.              // time
