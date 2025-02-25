@@ -70,73 +70,84 @@ namespace ddml {
 }
 
 
-  
-  void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack,
-              G4ThreeVector const& localDir,
-              const std::vector<float>& output,
-              std::vector<SpacePointVec>& spacepoints ){
-  
-    int nPoints = m_numPoints ; // number of points in shower
+/* For array structure: (No. showers, dimensions(4), No. points)
+void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack,
+  G4ThreeVector const& localDir,
+  const std::vector<float>& output,
+  std::vector<SpacePointVec>& spacepoints ){
 
-    dd4hep::printout(dd4hep::DEBUG, "PionCloudsModel::convertOutput", "m_numPoints : %i", m_numPoints);
+    //int nPoints = m_numPoints ; // number of points in shower
 
-    spacepoints.resize( m_nLayer ) ;
-
-    int numSP = 0;
     int layerNum = 0;
-    int numElements = 0;
-    for (int i = 0; i < m_nLayer; i++) {
-      numSP = output[i] + 1;
-      spacepoints[i].reserve(numSP);
-      numElements += output[i] * 4;
-    }
 
-    std::cout << " PionCloudsModel::convertOutput DONE numElements, numElements = " << numElements << std::endl;
+    /// This is too C-like - once model is concrete use std::vector
+    //float reshaped[m_numPoints][4];
+    std::vector<std::vector<int>> reshaped(4, std::vector<int>(m_numPoints));
 
-    /*
-    for (int i = m_nLayer; i < m_nLayer + numElements; i += 4) {
-      std::cout << " PionCloudsModel::convertOutput Layer Loop, i = " << i << std::endl;
-      std::cout << " PionCloudsModel::convertOutput Layer Loop, output[i] " << output[i] << std::endl;
-      std::cout << " PionCloudsModel::convertOutput Layer Loop, output[i+1] " << output[i] << std::endl;
-      std::cout << " PionCloudsModel::convertOutput Layer Loop, output[i+3] " << output[i] << std::endl;
-          ddml::SpacePoint sp(
-            output[i],   // x // *(-1) to align local to global convention in ddml
-            output[i+1],   // y // *(-1) to align local to global convention in ddml
-            0.,             // z
-            output[i+3],   // energy
-            0.              // time
-        );
-        layerNum = output[i+2];
-        std::cout << " PionCloudsModel::convertOutput Layer Loop, layerNum " << layerNum << std::endl;
-	    spacepoints[layerNum].emplace_back( sp ) ;
-    */
-
-
-    float reshaped[2600][4];
-
-    // Fill the 3D array using the flattened vector
-    size_t index = 0;
-      for (size_t j = 0; j < 2600; ++j) {
-          for (size_t k = 0; k < 4; ++k) {
+    // Fill the 3D array-like vector using the flattened vector
+    int index = 0;
+      for (int j = 0; j < 4; ++j) {
+          for (int k = 0; k < m_numPoints; ++k) {
               reshaped[j][k] = output[index++];
           }
       }
 
-    for (int i = 0; i < nPoints; i++) {
-        ddml::SpacePoint sp(
-            reshaped[i][0],   // x // *(-1) to align local to global convention in ddml
-            reshaped[i][2],   // y // *(-1) to align local to global convention in ddml
-            0.,             // z
-            reshaped[i][3],   // energy
-            0.              // time
-        );
-        layerNum = reshaped[i][1];
-        std::cout << "PionCloudsModel::convertOutput - layerNum" << layerNum <<std::endl;
-        std::cout << "PionCloudsModel::convertOutput - x: " << reshaped[i][0]*1e3 << std::endl;
-        std::cout << "PionCloudsModel::convertOutput - z: " << reshaped[i][2]*1e3 << std::endl;
-	    spacepoints[layerNum].emplace_back( sp ) ;
-    }
+    spacepoints.resize( m_nLayer ) ;
 
-    std::cout << " PionCloudsModel::convertOutput FINISHED " << std::endl;
+    for (int i = 0; i < m_numPoints; i++) {
+    ddml::SpacePoint sp(
+    reshaped[0][i],   // x // *(-1) to align local to global convention in ddml
+    reshaped[2][i],   // y // *(-1) to align local to global convention in ddml
+    0.,             // z
+    reshaped[3][i],   // energy
+    0.              // time
+    );
+    layerNum = reshaped[1][i];
+    spacepoints[layerNum].emplace_back( sp ) ;
+    }
+  }
+}
+*/
+
+
+// For array structure: (No. showers, No. points, dimensions(4))
+void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack,
+  G4ThreeVector const& localDir,
+  const std::vector<float>& output,
+  std::vector<SpacePointVec>& spacepoints ){
+
+    //int nPoints = m_numPoints ; // number of points in shower
+
+    int layerNum = 0;
+
+    /// This is too C-like -  use std::vector
+    //float reshaped[m_numPoints][4];
+    std::vector<std::vector<float>> reshaped(m_numPoints, std::vector<float>(4));
+
+    // Fill the 3D array-like vector using the flattened vector
+    int index = 0;
+      for (int j = 0; j < m_numPoints; ++j) {
+          for (int k = 0; k < 4; ++k) {
+              reshaped[j][k] = output[index];
+              index++;
+          }
+      }
+
+    spacepoints.resize( m_nLayer ) ;
+
+    for (int i = 0; i < m_numPoints; i++) {
+    ddml::SpacePoint sp(
+    reshaped[i][0],   // x // *(-1) to align local to global convention in ddml
+    reshaped[i][2],   // y // *(-1) to align local to global convention in ddml
+    0.,             // z
+    reshaped[i][3],   // energy
+    0.              // time
+    );
+    layerNum = reshaped[i][1];
+    //std::cout << "PionCloudsModel::convertOutput - layerNum" << layerNum <<std::endl;
+    //std::cout << "PionCloudsModel::convertOutput - x: " << reshaped[i][0] << std::endl;
+    //std::cout << "PionCloudsModel::convertOutput - z: " << reshaped[i][2] << std::endl;
+    spacepoints[layerNum].emplace_back( sp ) ;
+    }
   }
 }

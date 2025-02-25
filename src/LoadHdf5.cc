@@ -19,7 +19,7 @@ void LoadHdf5::initialize() {
   // inputs and TensorDimVecs unused
 
   // Open dataset + dataspace
-  std::string datasetName = "spase_points"; //"layers";
+  std::string datasetName =  "spase_points"; //"events"; //"spase_points"; //"layers";
   H5::DataSet dataset = m_file.openDataSet(datasetName);
   dd4hep::printout(dd4hep::DEBUG, "LoadHdf5::initialize", "Accessed HDF5 dataset");
   H5::DataSpace dataspace = dataset.getSpace();
