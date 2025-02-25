@@ -542,7 +542,8 @@ def LoadHdf5(kernel):
 
     if hadrons == True:
         ml_model_had = "LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel/BarrelModelTorch"
-        ml_had_file = "../models/PionClouds_50GeV_sp.h5" #"../models/PionClouds_50GeV_sp_scaled.h5"
+        ml_had_file = "../models/PionClouds_50GeV_sp_scaled.h5" #"../models/gen_showers_for_reco_50GeV_2000.hdf5"
+        #"../models/gen_showers_50GeV_2000_Martina.hdf5" #"../models/PionClouds_50GeV_sp_scaled.h5" #"../models/PionClouds_50GeV_sp.h5" #
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
@@ -631,7 +632,7 @@ def LoadHdf5(kernel):
     modelHad1.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     modelHad1.ApplicableParticles = {"pi+"}
-    modelHad1.Etrigger = {"pi+": 10.0 * GeV}  # trigger on lower training threshold
+    modelHad1.Etrigger = {"pi+": 30.0 * GeV} #{"pi+": 10.0 * GeV}  # trigger on lower training threshold
     modelHad1.FilePath = ml_had_file
     # model.OptimizeFlag = 1
     # model.IntraOpNumThreads = 1
