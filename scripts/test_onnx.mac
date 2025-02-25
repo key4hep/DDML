@@ -3,13 +3,24 @@
 #  example script to run inference on a GAN w/ ONNX runtime
 
 # --- the particle gun
-/gps/pos/centre 30 0 0 #30 180.48 0 #### this is ILD calo Face #120 180.48 120 #30 180.48 0 #30 0 0
+
+# At right side face (perpendicular to x=0)
+#/gps/pos/centre 18.47 0 0 #0 180.47 150 #### this is ILD calo Face #120 180.48 120 #30 180.48 0 #30 0 0
+#30 0 0
+
+#/gps/pos/centre 0 0 0 #0 180.47 150 #### this is ILD calo Face #120 180.48 120 #30 180.48 0 #30 0 0
+#30 0 0
 #/gps/particle  gamma
+
+# for SimpleCalo
+#/gps/direction  1 0 0 #0 1 0 #-0.4152 1 0 #(pi/8 + pi/4) #1 0.414213562 0 #(pi/8) #-1 2.414213562 0 #(pi/8 + 1 deg) # 0.25 0.25 0.5  #0 0.5 0.655 # ( 37 deg in theta- most you can get in endcap from IP )
+
 /gps/particle  pi+
 /gps/energy    50 GeV
 
-# for SimpleCalo
-/gps/direction  0 1 0 #-0.4152 1 0 #(pi/8 + pi/4) #1 0.414213562 0 #(pi/8) #-1 2.414213562 0 #(pi/8 + 1 deg) # 0.25 0.25 0.5  #0 0.5 0.655 # ( 37 deg in theta- most you can get in endcap from IP )
+/gps/pos/centre -5 0 -15
+/gps/direction -0.037864591009775746 0.9992828792427412 0 # 90 deg imact for 50 GeV p+
+
 
                 # phi barrel
                 #1 0.414213562 0 #(pi/8)
