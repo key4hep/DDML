@@ -1,0 +1,6 @@
+/eos/user/p/pmckeown/DDML_Hadrons_merge/DDML/install/lib/libDDML.components
+/eos/user/p/pmckeown/DDML_Hadrons_merge/DDML/install/lib/libDDML.so
+/eos/user/p/pmckeown/DDML_Hadrons_merge/DDML/install/lib/libDDML.so
+/eos/user/p/pmckeown/DDML_Hadrons_merge/DDML/install/bin/thisDDML.sh
+/eos/user/p/pmckeown/DDML_Hadrons_merge/DDML/install/share/DDML/models/BIBAE_Full_PP_cut.pt
+/eos/user/p/pmckeown/DDML_Hadrons_merge/DDML/install/share/DDML/models/CC3_SF_2A.pt
