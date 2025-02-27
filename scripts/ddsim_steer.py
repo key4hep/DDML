@@ -74,6 +74,7 @@ SIM.vertexSigma = [0.0, 0.0, 0.0, 0.0]
 
 ##  set the default calorimeter action
 SIM.action.calo = "Geant4ScintillatorCalorimeterAction"
+#SIM.action.calo = ('Geant4FullFastCalorimeterAction', {'sensitiveEMSlice': 3, 'sensitiveHadSlice': 3})
 
 ##  create a map of patterns and actions to be applied to sensitive detectors
 ##         example: SIM.action.mapActions['tpc'] = "TPCSDAction"
@@ -429,7 +430,11 @@ def aiDanceTorch(kernel):
         ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
     elif CLD == True:
-        ml_file = "../models/nocuda.pt"
+        # Consistency Distilled
+        ml_file = "../models/CaloDiT_Consistency_distilled_cpu.pt"
+
+        ## Cinyu's model
+        #ml_file = "../models/nocuda.pt"
         # ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
         # ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
         ml_model = "ParallelWorldCaloDiTModelBarrelParallelTorchModel/BarrelModelTorch"

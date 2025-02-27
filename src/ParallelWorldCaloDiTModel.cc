@@ -25,8 +25,15 @@ void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4Th
   inputs[0].resize(_latentSize);
 
   inputs[0][0] = energy;
-  inputs[0][1] = atan2(direction.y(), direction.x()); // global direction in radius not degree
-  inputs[0][2] = acos(direction.z());                 // same
+  inputs[0][1] = atan2(direction.y(), direction.x()); // phi- global direction in radians not degree
+  inputs[0][2] = acos(direction.z());                 // theta- same
+  // Geometry condition inputs for model
+  // Geo conditions for CLD are: [0, 0, 0, 1, 0]
+  inputs[0][3] = 0.;
+  inputs[0][4] = 0.;
+  inputs[0][5] = 0.;
+  inputs[0][6] = 1.;
+  inputs[0][7] = 0.;
 
   // inputs.resize(_latentSize);
   // inputs[0].resize(1);   // Energy

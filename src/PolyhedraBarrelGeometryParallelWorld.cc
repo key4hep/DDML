@@ -139,7 +139,10 @@ void PolyhedraBarrelGeometryParallelWorld::localToGlobal(G4FastTrack const& aFas
       sp.Y = global.y();
       sp.Z = global.z();
 
-      std::cout << "PolyhedraBarrelGeometryParallelWorld::localToGlobal --- sp.X: " << sp.X << ", sp.Y: " << sp.Y << ", sp.Z: " << sp.Z << std::endl; 
+    //if (DEBUGPRINT) {
+    //  std::cout << "PolyhedraBarrelGeometryParallelWorld::localToGlobal --- sp.X: " << sp.X << ", sp.Y: " << sp.Y << ", sp.Z: " << sp.Z << std::endl; 
+    //}
+
     }
   }
 }

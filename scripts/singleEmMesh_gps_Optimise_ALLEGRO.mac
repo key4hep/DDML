@@ -1,0 +1,12 @@
+#  ECalBarrelEndcap.mac
+#
+
+
+/gps/pos/centre 10 2100 10 mm ### Note: inner barrel radius of ALLEGRO
+/gps/particle gamma
+/gps/energy 126 GeV
+/gps/direction 0 1 0
+
+
+
+/run/beamOn 1000

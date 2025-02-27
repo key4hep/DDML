@@ -27,7 +27,19 @@ SIM.macroFile = "./test_onnx.mac"
 SIM.numberOfEvents = 10  # 100
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "FulldummyOutput_Angle.slcio"
-SIM.outputFile = "dummyOutput_Angle.slcio"# "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
+SIM.outputFile = "CLD_OGstack_NoTracker_G4_Raw_50GeV_gamma_gps_0_1_0_edm4hep.root"
+#"CLD_OGstack_NoTracker_G4_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root"
+
+# "CLD_OGstack_NoTracker_CaloDiT_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root"
+# "CLD_OGstack_NoTracker_CaloDiT_NOcustomSD_50GeV_gamma_gps_0_1_0_edm4hep.root"
+# "CLD_OGstack_NoTracker_G4Mesh_NOcustomSD_50GeV_gamma_gps_0_1_0_edm4hep.root" 
+# "CLD_OGstack_NoTracker_G4Mesh_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root" 
+#"CLD_Test_edm4hep.root"
+
+#"CLD_NoTracker_G4Mesh_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root" 
+#"CLD_NoTracker_G4_50GeV_gamma_gps_0_1_0_edm4hep.root"
+#"CLD_Test_edm4hep.root" #"CLD_NoTracker_G4Mesh_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root" #"CLD_NoTracker_G4_50GeV_gamma_gps_0_1_0_edm4hep.root" #
+#"dummyOutput_Angle.slcio"# "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
 #SIM.outputFile = "CLD_fast_notracker_edm4hep.root"  # "dummyOutput.slcio"
 # SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
 
@@ -69,15 +81,15 @@ SIM.vertexSigma = [0.0, 0.0, 0.0, 0.0]
 ##
 ##   >>> SIM = DD4hepSimulation()
 ##   >>> SIM.action.mapActions['ecal'] =( "CaloPreShowerSDAction", {"FirstLayerNumber": 1} )
-##
+##CLD_NoTracker_G4Mesh_NOcustomSD_50GeV_gamma_gps_0_1_0_edm4hep.root
 ##
 ################################################################################
 
 ##  set the calorimeter action that works both for full sim scoring only in the single slice (defined by ID below)
 ##      as well as for fast simulation as long as all absorbers are marked as sensitive in XML
 ##    TODO: fix for hadronic calorimetry, right now it is ignored so test only with EM showers
-#SIM.action.calo = "Geant4ScintillatorCalorimeterAction"
-SIM.action.calo = ('Geant4FullFastCalorimeterAction', {'sensitiveEMSlice': 3, 'sensitiveHadSlice': 3})
+SIM.action.calo = "Geant4ScintillatorCalorimeterAction"
+##SIM.action.calo = ('Geant4FullFastCalorimeterAction', {'sensitiveEMSlice': 3, 'sensitiveHadSlice': 3})
 
 ##  create a map of patterns and actions to be applied to sensitive detectors
 ##         example: SIM.action.mapActions['tpc'] = "TPCSDAction"
@@ -289,7 +301,7 @@ SIM.random.enableEventSeed = False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = None #1 #None
+SIM.random.seed = 1 #None
 SIM.random.type = None
 
 # ---------------------------------------------
@@ -433,7 +445,10 @@ def aiDanceTorch(kernel):
         ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
     elif CLD == True:
-        ml_file = "../models/nocuda.pt"
+        ml_file = "../models/CaloDiT_Consistency_distilled_cpu.pt"
+
+        ## Cinyu's model
+        #ml_file = "../models/nocuda.pt"
         # ml_file = "../models/model.torchscriptcaliDiTcinyufinal.pt"
         # ml_file = "../models/BIBAE_Two_Angle_Full_PP_cut.pt"
         ml_model = "ParallelWorldCaloDiTModelBarrelParallelTorchModel/BarrelModelTorch"
@@ -530,7 +545,7 @@ def aiDanceTorch(kernel):
 
 
 def LoadHdf5(kernel):
-    ild = True
+    ild = False #True
     BIBAE = False #True
     Two_Angle = False #True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
@@ -644,5 +659,5 @@ def LoadHdf5(kernel):
 
 
 # SIM.physics.setupUserPhysics( aiDance)
-# SIM.physics.setupUserPhysics(aiDanceTorch)
-SIM.physics.setupUserPhysics(LoadHdf5)
+#SIM.physics.setupUserPhysics(aiDanceTorch)
+#SIM.physics.setupUserPhysics(LoadHdf5)

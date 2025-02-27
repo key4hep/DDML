@@ -3,13 +3,13 @@
 #  example script to run inference on a GAN w/ ONNX runtime
 
 # --- the particle gun
-/gps/pos/centre 0 0 0
+/gps/pos/centre 0 2150 0 mm #0 0 0
 /gps/particle  gamma
 #/gps/particle  pi-
 /gps/energy    50 GeV
 
 # for SimpleCalo
-/gps/direction  0 1 0.5 #0 1 0 #0.4 1 -0.3
+/gps/direction  0 1 0 #0 1 0.5 #-0.07 1 -0.1 #0 1 0 #0.4 1 -0.3
                 #0.2 1 0.3
                 #0 1 -0.3
                 #0 1 0.3
@@ -73,5 +73,5 @@
 #/gps/direction  0.1 -0.8 .1
 
 
-/run/beamOn 10 #100
+/run/beamOn 1200 #926 #2500 #10 #100
 

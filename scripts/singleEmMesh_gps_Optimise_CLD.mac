@@ -1,0 +1,18 @@
+#  ECalBarrelEndcap.mac
+#
+
+#/random/setSavingFlag 1
+#/analysis/setFileName analysis_FCCeeCLD.root
+#/param/ActivateModel DefineMeshModel
+#/param/listModels
+#/param/listIsApplicable
+
+
+/gps/pos/centre 10 2150 10 mm ### Note: inner barrel radius of CLD
+/gps/particle gamma
+/gps/energy 126 GeV
+/gps/direction 0 1 0
+
+
+
+/run/beamOn 1000

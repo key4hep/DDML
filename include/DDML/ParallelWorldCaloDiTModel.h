@@ -13,6 +13,10 @@ namespace ddml {
  *
  *  @author X. Zhu, CERN
  *  @date August 2024
+ * 
+ * Modification: Adpations for consitency model, including geometry conditions
+ * @author P. McKeown, CERN
+ * @date Dec. 2024
  */
 
 class ParallelWorldCaloDiTModel : public ModelInterface {
@@ -56,7 +60,7 @@ private:
   int _nCellsRho = 9;
   int _nCellsPhi = 16;
   int _nCellsZ = 45;
-  int _latentSize = 3;
+  int _latentSize = 3+5; // three conditions + geometry conditions
   double _cellSizeRho = 4.65 * CLHEP::mm; // mm
   double _cellSizeZ = 5.05 * CLHEP::mm;    // mm
   
