@@ -128,7 +128,7 @@ void PolyhedraBarrelGeometryParallelWorld::localToGlobal(G4FastTrack const& aFas
       auto& sp = spacepoints[l][i];
 
       /// PARALLEL WORLD LOCAL TO GLOBAL
-      // In this case, don''t use any information about the sensitive positions,
+      // In this case, don't use any information about the sensitive positions,
       // but rather only about the position of the envelope (i.e. surface of the calorimeter face)
       G4ThreeVector pos(posR.x() + sp.Z, posR.y() + sp.Y, posR.z() - sp.X);
 

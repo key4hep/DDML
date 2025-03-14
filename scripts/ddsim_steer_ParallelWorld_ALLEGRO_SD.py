@@ -27,7 +27,7 @@ SIM.macroFile = "./singleEmMesh_gps_Optimise_ALLEGRO.mac"
 SIM.numberOfEvents = 10  # 100
 ## Outputfile from the simulation,only lcio output is supported
 #SIM.outputFile = "FulldummyOutput_Angle.slcio"
-SIM.outputFile = "ALLEGRO_G4_Raw_optim_126GeV_Theta90_Phi90_edm4hep.root" #"TEST_ALLEGRO_G4_Raw_optim_126GeV_Theta90_Phi90_edm4hep.root"
+SIM.outputFile = "ALLEGRO_G4_Mesh_optim_126GeV_Theta90_Phi90_edm4hep.root" #"TEST_ALLEGRO_G4_Raw_optim_126GeV_Theta90_Phi90_edm4hep.root"
 #"CLD_OGstack_NoTracker_G4_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root"
 
 # "CLD_OGstack_NoTracker_CaloDiT_customSD_50GeV_gamma_gps_0_1_0_edm4hep.root"
@@ -418,7 +418,8 @@ def aiDanceTorch(kernel):
     BIBAE = False
     Two_Angle = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-    CLD = True
+    CLD = False #True
+    ALLEGRO = True
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -546,15 +547,21 @@ def LoadHdf5(kernel):
     BIBAE = False #True
     Two_Angle = False #True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-    CLD = True
+    CLD = False #True
+    ALLEGRO = True
+
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8
         ml_endcap_name = "EcalEndcap"
-    else:
+    elif CLD == True:
         ml_barrel_name = "ECalBarrel"
         ml_barrel_symmetry = 12
         ml_endcap_name = "ECalEndcap"
+    elif ALLEGRO == True:
+        ml_barrel_name = "ECalBarrel"
+        ml_barrel_symmetry = 12
+        ml_endcap_name = "EMEC_turbine"
 
     if BIBAE == True and Two_Angle == True:
         ml_file = "../models/photons-E5050A-theta9090A-phi9090-p1.hdf5"
@@ -570,6 +577,11 @@ def LoadHdf5(kernel):
         ml_model = "LoadHDF5ParallelWorldCaloDiTModelBarrelParallel/BarrelModelTorch"
         ml_model_1 = "LoadHDF5ParallelWorldCaloDiTModelEndcapParallel/EndcapModelTorch"
         ml_correct_angles = False
+    elif ALLEGRO == True:
+        ml_file = "../models/singleShower_FCCeeALLEGRO_OG_lowgran_edm4hep.h5"
+        ml_model = "LoadHDF5ParallelWorldCaloDiTModelCylindricalBarrel/BarrelModelTorch"
+        ml_model_1 = "LoadHDF5ParallelWorldCaloDiTModelEndcapParallel/EndcapModelTorch"
+        #ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
     from DDG4 import DetectorConstruction, Geant4, PhysicsList
@@ -603,9 +615,10 @@ def LoadHdf5(kernel):
     else:
         model.RegionName = "ECalBarrelRegion"
     model.Detector = ml_barrel_name
-    model.Symmetry = ml_barrel_symmetry
     model.Enable = True
-    model.CorrectForAngles = ml_correct_angles
+    if ALLEGRO == False:
+        model.Symmetry = ml_barrel_symmetry
+        model.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     model.ApplicableParticles = {"e+", "e-", "gamma"}
     model.Etrigger = {
@@ -629,7 +642,8 @@ def LoadHdf5(kernel):
         model1.RegionName = "ECalEndcapRegion"
     model1.Detector = ml_endcap_name
     model1.Enable = True
-    model1.CorrectForAngles = ml_correct_angles
+    if ALLEGRO == False:
+        model1.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     model1.ApplicableParticles = {"e+", "e-", "gamma"}
     model1.Etrigger = {
@@ -657,4 +671,4 @@ def LoadHdf5(kernel):
 
 # SIM.physics.setupUserPhysics( aiDance)
 #SIM.physics.setupUserPhysics(aiDanceTorch)
-#SIM.physics.setupUserPhysics(LoadHdf5)
+SIM.physics.setupUserPhysics(LoadHdf5)

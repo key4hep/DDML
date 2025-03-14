@@ -1,4 +1,4 @@
-#include "DDML/ParallelWorldCaloDiTModel.h"
+#include "DDML/ParallelWorldALLEGROCaloDiTModel.h"
 
 #include <G4FastTrack.hh> // for G4FastTrack
 
@@ -9,7 +9,7 @@
 
 namespace ddml {
 
-void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
+void ParallelWorldALLEGROCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
                                              InputVecs& inputs, TensorDimVecs& tensDims, std::vector<float>& output) {
   tensDims = _tensDims;
   G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy() / 1000; // MeV -> GeV
@@ -65,7 +65,7 @@ void ParallelWorldCaloDiTModel::prepareInput(G4FastTrack const& aFastTrack, G4Th
   output.assign(outputSize, 0);
 }
 
-void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
+void ParallelWorldALLEGROCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector const& localDir,
                                               const std::vector<float>& output,
                                               std::vector<SpacePointVec>& spacepoints) {
   int nLayer = _nCellsZ; // number of layers is z dimension
@@ -97,7 +97,7 @@ void ParallelWorldCaloDiTModel::convertOutput(G4FastTrack const&, G4ThreeVector 
   G4ThreeVector check_rot = rotMatrix * G4ThreeVector(0, 0, 1);
 
   // check rotation by applying it to a known unit vector
-  std::cout << "ParallelWorldCaloDiTModel::convertOutput - check_rot = " << check_rot << std::endl;
+  std::cout << "ParallelWorldALLEGROCaloDiTModel::convertOutput - check_rot = " << check_rot << std::endl;
 
   int iHit = 0;
 

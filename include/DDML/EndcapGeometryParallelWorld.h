@@ -47,7 +47,7 @@ private:
   std::vector<float> _caloLayerDistances = {};
 
   /// model properties for plugin
-  std::string _detector = {"ECalEndcap"};
+  std::string _detector = {"EMEC_turbine"};
   bool _correctForAngles = false;
 
   int _nCellsZ = 45; // number of cells in mesh in z' direction (along particle flight path)

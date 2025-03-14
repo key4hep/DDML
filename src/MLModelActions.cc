@@ -22,8 +22,10 @@
 #include "DDML/Par04CylindrialScoringMeshVAE.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/ParallelWorldCaloDiTModel.h"
+#include "DDML/ParallelWorldALLEGROCaloDiTModel.h"
 #include "DDML/PolyhedraBarrelGeometry.h"
 #include "DDML/PolyhedraBarrelGeometryParallelWorld.h"
+#include "DDML/CylindricalBarrelGeometryParallelWorld.h"
 #include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
@@ -121,7 +123,13 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::ParallelWorldCaloDi
 typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::ParallelWorldCaloDiTModel,
                                  ddml::EndcapGeometryParallelWorld, Geant4FastHitMakerGlobal>>
     ParallelWorldCaloDiTModelEndcapParallelTorchModel;
+
+//FCCee ALLEGRO barrel torch inference
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::ParallelWorldCaloDiTModel,
+                                ddml::CylindricalBarrelGeometryParallelWorld, Geant4FastHitMakerGlobal>>
+    ParallelWorldCaloDiTModelCylindricalBarrelTorchModel;
 #endif
+
 
 #ifdef DDML_USE_LOAD_HDF5
 /// Load from HDF5 file- as an example for the two angle BIBAE regular grid
@@ -135,15 +143,20 @@ typedef FastMLShower<
     FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
-/// FCCee CLD barrel torch inference
+/// FCCee CLD barrel hdf5 loading
 typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::ParallelWorldCaloDiTModel,
                                  ddml::PolyhedraBarrelGeometryParallelWorld, Geant4FastHitMakerGlobal>>
     LoadHDF5ParallelWorldCaloDiTModelBarrelParallel;
 
-// FCCee CLD endcap ? torch inference
+// FCCee CLD endcap ? hdf5 loading
 typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::ParallelWorldCaloDiTModel,
                                  ddml::EndcapGeometryParallelWorld, Geant4FastHitMakerGlobal>>
     LoadHDF5ParallelWorldCaloDiTModelEndcapParallel;
+
+// FCCee ALLEGRO barrel hdf5 loading
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::ParallelWorldALLEGROCaloDiTModel,
+                                ddml::CylindricalBarrelGeometryParallelWorld, Geant4FastHitMakerGlobal>>
+    LoadHDF5ParallelWorldCaloDiTModelCylindricalBarrel;
 
 #endif
 
@@ -171,6 +184,7 @@ DECLARE_GEANT4ACTION_NS(ddml, RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchM
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridTwoAngleBIBAEModelEndcapTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelBarrelParallelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelEndcapParallelTorchModel)
+DECLARE_GEANT4ACTION_NS(ddml, ParallelWorldCaloDiTModelCylindricalBarrelTorchModel)
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
@@ -178,4 +192,5 @@ DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarr
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelEndcap)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5ParallelWorldCaloDiTModelBarrelParallel)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5ParallelWorldCaloDiTModelEndcapParallel)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5ParallelWorldCaloDiTModelCylindricalBarrel)
 #endif

@@ -422,6 +422,7 @@ def aiDanceTorch(kernel):
     Two_Angle = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
     CLD = True
+    ALLEGRO = False
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -549,7 +550,9 @@ def LoadHdf5(kernel):
     BIBAE = False #True
     Two_Angle = False #True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-    CLD = True
+    CLD =  True
+    ALLEGRO = False #True
+
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8

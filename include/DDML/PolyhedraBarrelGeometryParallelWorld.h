@@ -62,6 +62,7 @@ private:
   bool _correctForAngles = false;
 
   int _nCellsZ = 45; // number of cells in mesh in z' direction (along particle flight path)
+                     // This is also a parameter used in the model implementation, so should be sourced from a common definitiion
 };
 
 } // namespace ddml

@@ -5,6 +5,7 @@ set(sources
   MLModelActions.cc
   PolyhedraBarrelGeometry.cc
   PolyhedraBarrelGeometryParallelWorld.cc
+  CylindricalBarrelGeometryParallelWorld.cc
   RegularGridGANModel.cc
   Par04ExampleVAE.cc
   Par04CylindrialScoringMeshVAE.cc
@@ -13,6 +14,7 @@ set(sources
   OctogonalBarrelTrigger.cc
   EndcapTriggerTwoAngleBIBAE.cc
   ParallelWorldCaloDiTModel.cc
+  ParallelWorldALLEGROCaloDiTModel.cc
   ParallelWorldSD.cc
   )
 
@@ -93,6 +95,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridTwoAngleBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometryParallelWorld.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/CylindricalBarrelGeometryParallelWorld.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/GeometryInterface.h
@@ -105,6 +108,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/TriggerInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/DDML.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ParallelWorldCaloDiTModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/ParallelWorldALLEGROCaloDiTModel.h
   )
 
 if(OnnxRuntime_FOUND)

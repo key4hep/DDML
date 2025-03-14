@@ -22,12 +22,13 @@ SIM.enableGun = False
 ## InputFiles for simulation .stdhep, .slcio, .HEPEvt, .hepevt, .hepmc, .pairs files are supported
 SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
-SIM.macroFile = "./test_onnx.mac"
+SIM.macroFile = "./singleEmMesh_gps_Optimise_CLD.mac" #"./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 10  # 100
+SIM.numberOfEvents = 1000 #2000  # 100
 ## Outputfile from the simulation,only lcio output is supported
-# SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "CLD_fast_notracker_edm4hep.root"  # "dummyOutput.slcio"
+SIM.outputFile = "CLD_G4_Raw_optim_126GeV_Theta90_Phi90_edm4hep.root" #"CLD_CaloDiT_customSD_50GeV_gamma_gps_0_1_0p5_edm4hep.root"
+#"CLD_CaloDiT_CDdummyOutput.slcio" #CLD_CaloDiT_dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
+#SIM.outputFile = "CLD_fast_notracker_edm4hep.root"  # "dummyOutput.slcio"
 # SIM.outputFile = "CLD_dummyOutput_ML_Rot2_edm4hep.root"
 
 ## Physics list to use in simulation
@@ -402,11 +403,12 @@ def aiDance(kernel):
 
 
 def aiDanceTorch(kernel):
-    ild = False
+    ild = False #True #False
     BIBAE = False
     Two_Angle = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
     CLD = True
+    ALLEGRO = False
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -632,5 +634,5 @@ def LoadHdf5(kernel):
 
 
 # SIM.physics.setupUserPhysics( aiDance)
-# SIM.physics.setupUserPhysics(aiDanceTorch)
+#SIM.physics.setupUserPhysics(aiDanceTorch)
 SIM.physics.setupUserPhysics(LoadHdf5)
