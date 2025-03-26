@@ -1,6 +1,7 @@
 #include "DDML/ONNXInference.h"
 
 #include <cassert>
+#include <iostream>
 
 #define DEBUGPRINT 0
 
