@@ -459,7 +459,7 @@ def aiDanceTorch(kernel):
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
-    model.RegionName = "EcalBarrelRegion"
+    model.RegionName = "EcalBarrelFastSimTriggerRegion" #"EcalBarrelRegion"
     model.Detector = ml_barrel_name
     model.Symmetry = ml_barrel_symmetry
     model.Enable = True
