@@ -2,7 +2,6 @@
 
 #include <G4FastTrack.hh> //for G4FastTrack
 
-
 namespace ddml {
 
 bool OctogonalBarrelTrigger::check_trigger(const G4FastTrack& aFastTrack) {
@@ -37,13 +36,10 @@ bool OctogonalBarrelTrigger::check_trigger(const G4FastTrack& aFastTrack) {
       (global_theta < (40. * (M_PI / 180.))) || (global_theta > (140. * (M_PI / 180.))) ||
 
       // Exclude backscatter
-      flightProjection <= 0.
-  )
-      {
-       return false;
-      }
-    else {
-       return true;
+      flightProjection <= 0.) {
+    return false;
+  } else {
+    return true;
   }
 };
 
