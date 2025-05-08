@@ -15,6 +15,7 @@
 #endif
 
 #include "DDML/CaloCloudsTwoAngleModel.h"
+#include "DDML/LoadHdf5IO.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/Geant4FastHitMakerGlobal.h"
@@ -127,6 +128,17 @@ typedef FastMLShower<
     FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
+/// Load from HDF5 file- as an example for the two angle CaloClouds model
+// Barrel
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::LoadHdf5IO, ddml::PolyhedraBarrelGeometry,
+                                 Geant4FastHitMakerGlobal,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+    LoadHDF5CaloCloudsTwoAngleModelPolyhedraBarrel;
+// Endcap
+typedef FastMLShower<
+    FastMLModel<ddml::LoadHdf5, ddml::LoadHdf5IO, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
+                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+    LoadHDF5CaloCloudsTwoAngleModelEndcap;
 #endif
 
 } // namespace ddml
@@ -156,4 +168,6 @@ DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelEndcapTorchModel)
 #ifdef DDML_USE_LOAD_HDF5
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelEndcap)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5CaloCloudsTwoAngleModelPolyhedraBarrel)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5CaloCloudsTwoAngleModelEndcap)
 #endif

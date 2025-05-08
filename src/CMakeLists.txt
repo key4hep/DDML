@@ -11,6 +11,7 @@ set(sources
   EndcapTriggerTwoAngleBIBAE.cc
   CaloCloudsTwoAngleModel.cc
   L2LFlowsModel.cc
+  LoadHdf5IO.cc
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
@@ -95,6 +96,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/DDML.h
   ${PROJECT_SOURCE_DIR}/include/DDML/CaloCloudsTwoAngleModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/L2LFlowsModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/LoadHdf5.h
   )
 
 if(OnnxRuntime_FOUND)

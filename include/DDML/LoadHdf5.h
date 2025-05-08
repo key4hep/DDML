@@ -54,8 +54,21 @@ private:
   // properties for plugin
   std::string m_filePath = {};
 
+  // number of samples
+  unsigned long m_numSamples = 0;
+
+  // size of each sample
+  unsigned long m_sampleSize = 0;
+
   // counter to keep track of location in file
   uint32_t m_count{0};
+
+  // for mc_momentum
+  std::vector<hsize_t>  m_momDims;
+  size_t                m_momSampleSize{0};
+  std::vector<float>    m_momentumLibrary;
+  // one probably want to make the dataset name configurable:
+  std::string           m_momentumDatasetName{"mc_momentum"};
 };
 
 } // namespace ddml
