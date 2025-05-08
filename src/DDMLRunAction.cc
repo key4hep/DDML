@@ -46,20 +46,6 @@ analysisManager->CreateNtupleDColumn("MC_DirY");
 analysisManager->CreateNtupleDColumn("MC_DirZ");
 analysisManager->FinishNtuple();
 
-/*
-DDMLEventAction* mEventAction = dynamic_cast<DDMLEventAction*>(G4EventManager::GetEventManager()->GetUserEventAction());
-analysisManager->CreateNtuple("Fast Sim Info", "MC info at calo face");
-analysisManager->CreateNtupleIColumn("Calo_MC_PDG", mEventAction->GetCaloMC_PDG());
-analysisManager->CreateNtupleDColumn("Calo_MC_Energy", mEventAction->GetCaloMC_E());
-analysisManager->CreateNtupleDColumn("Calo_MC_PosX", mEventAction->GetCaloMC_PosX());
-analysisManager->CreateNtupleDColumn("Calo_MC_PosY", mEventAction->GetCaloMC_PosY());
-analysisManager->CreateNtupleDColumn("Calo_MC_PosZ", mEventAction->GetCaloMC_PosZ());
-analysisManager->CreateNtupleDColumn("Calo_MC_DirX", mEventAction->GetCaloMC_DirX());
-analysisManager->CreateNtupleDColumn("Calo_MC_DirY", mEventAction->GetCaloMC_DirY());
-analysisManager->CreateNtupleDColumn("Calo_MC_DirZ", mEventAction->GetCaloMC_DirZ());
-analysisManager->FinishNtuple();
-*/
-
 analysisManager->CreateNtuple("Fast_Sim_Info", "MC info at calo face");
 analysisManager->CreateNtupleIColumn("Calo_MC_PDG");
 analysisManager->CreateNtupleDColumn("Calo_MC_Energy");

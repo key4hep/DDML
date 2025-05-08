@@ -2,8 +2,6 @@
 
 #include <G4FastTrack.hh>                // for G4FastTrack
 
-//#include <torch/script.h>
-
 #define DEBUGPRINT 0
 
 namespace ddml {
@@ -31,8 +29,6 @@ namespace ddml {
 
   dd4hep::printout(dd4hep::DEBUG, "PionCloudsModel::prepareInput", "DDML::localDir: (%f, %f, %f)",
                    localDir_.x(), localDir_.y(), localDir_.z());
-  // std::cout << "PionClouds::localDir:" << "(" << localDir_.x() << "," << localDir_.y() << "," << localDir_.z() << ")"
-  //           << std::endl;
 
   // compute local incident angles
   double r = sqrt(localDir_.x() * localDir_.x() + localDir_.y() * localDir_.y() + localDir_.z() * localDir_.z());
@@ -54,12 +50,6 @@ namespace ddml {
   inputs[1][0] = theta;               // 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
   inputs[2][0] = phi;
 
-  // if (DEBUGPRINT) {
-  //   std::cout << " Input_energy_tensor : " << inputs[0][0] << std::endl;
-  //   std::cout << " Input_theta_tensor : " << inputs[1][0] << std::endl;
-  //   std::cout << " Input_phi_tensor : " << inputs[2][0] << std::endl;
-  // }
-
   dd4hep::printout(dd4hep::DEBUG, "PionCloudsModel::prepareInput", "Input_energy_tensor : %f", inputs[0][0]);
   dd4hep::printout(dd4hep::DEBUG, "PionCloudsModel::prepareInput", "Input_theta_tensor : %f", inputs[1][0]);
   dd4hep::printout(dd4hep::DEBUG, "PionCloudsModel::prepareInput", "Input_phi_tensor : %f", inputs[2][0]);
@@ -68,46 +58,6 @@ namespace ddml {
   
   output.assign(m_maxNumElements, 0);
 }
-
-
-/* For array structure: (No. showers, dimensions(4), No. points)
-void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack,
-  G4ThreeVector const& localDir,
-  const std::vector<float>& output,
-  std::vector<SpacePointVec>& spacepoints ){
-
-    //int nPoints = m_numPoints ; // number of points in shower
-
-    int layerNum = 0;
-
-    /// This is too C-like - once model is concrete use std::vector
-    //float reshaped[m_numPoints][4];
-    std::vector<std::vector<int>> reshaped(4, std::vector<int>(m_numPoints));
-
-    // Fill the 3D array-like vector using the flattened vector
-    int index = 0;
-      for (int j = 0; j < 4; ++j) {
-          for (int k = 0; k < m_numPoints; ++k) {
-              reshaped[j][k] = output[index++];
-          }
-      }
-
-    spacepoints.resize( m_nLayer ) ;
-
-    for (int i = 0; i < m_numPoints; i++) {
-    ddml::SpacePoint sp(
-    reshaped[0][i],   // x // *(-1) to align local to global convention in ddml
-    reshaped[2][i],   // y // *(-1) to align local to global convention in ddml
-    0.,             // z
-    reshaped[3][i],   // energy
-    0.              // time
-    );
-    layerNum = reshaped[1][i];
-    spacepoints[layerNum].emplace_back( sp ) ;
-    }
-  }
-}
-*/
 
 
 // For array structure: (No. showers, No. points, dimensions(4))
@@ -120,8 +70,6 @@ void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack,
 
     int layerNum = 0;
 
-    /// This is too C-like -  use std::vector
-    //float reshaped[m_numPoints][4];
     std::vector<std::vector<float>> reshaped(m_numPoints, std::vector<float>(4));
 
     // Fill the 3D array-like vector using the flattened vector
@@ -144,9 +92,6 @@ void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack,
     0.              // time
     );
     layerNum = reshaped[i][1];
-    //std::cout << "PionCloudsModel::convertOutput - layerNum" << layerNum <<std::endl;
-    //std::cout << "PionCloudsModel::convertOutput - x: " << reshaped[i][0] << std::endl;
-    //std::cout << "PionCloudsModel::convertOutput - z: " << reshaped[i][2] << std::endl;
     spacepoints[layerNum].emplace_back( sp ) ;
     }
   }

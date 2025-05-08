@@ -547,7 +547,7 @@ def LoadHdf5(kernel):
 
     if hadrons == True:
         ml_model_had = "LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel/BarrelModelTorch"
-        ml_had_file =  "../models/PionClouds_50GeV_sp.h5" #"../models/PionClouds_50GeV_sp_scaled.h5"
+        ml_had_file =  "../models/PionClouds_50GeV_sp.h5"
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
