@@ -284,7 +284,7 @@ SIM.random.enableEventSeed = False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = None
+SIM.random.seed = 42  ##None
 SIM.random.type = None
 
 # ---------------------------------------------
@@ -459,7 +459,7 @@ def aiDanceTorch(kernel):
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
-    model.RegionName = "EcalBarrelRegion"
+    model.RegionName = "EcalBarrelFastSimTriggerRegion"  # "EcalBarrelRegion"
     model.Detector = ml_barrel_name
     model.Symmetry = ml_barrel_symmetry
     model.Enable = True
