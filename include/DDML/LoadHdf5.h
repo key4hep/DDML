@@ -49,7 +49,8 @@ private:
   std::vector<float> m_library{};
 
   // shower library dimensions
-  std::vector<unsigned long> m_dimsOut{};
+  std::vector<unsigned long long> m_dimsOut{}; // This is a hot fix for older HDF5 versions!
+  //std::vector<unsigned long> m_dimsOut{};
 
   // properties for plugin
   std::string m_filePath = {};

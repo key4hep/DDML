@@ -19,9 +19,25 @@ void PolyhedraBarrelGeometry::initialize() {
   if (cal) {
     for (auto l : cal->layers) {
       m_caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
+      std::cout << " ECAL Layer distances " << l.distance + l.inner_thickness << std::endl;
     }
   } else {
     std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
+  }
+
+  // For hadronic shower simulation
+  if (m_isHadShower == true) {
+      auto det_had = theDetector.detector(m_HadDetector);
+      auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
+    if (cal_had) {
+      for (auto l_had : cal_had->layers) {
+        m_caloLayerDistances.push_back((l_had.distance + l_had.inner_thickness) / dd4hep::mm);
+        std::cout << " HCAL Layer distances " << l_had.distance + l_had.inner_thickness << std::endl;
+      }
+    }
+    else {
+      std::cout << " ###### error:  detector " << m_HadDetector << " not found !" << std::endl;
+    }
   }
 }
 
@@ -124,6 +140,8 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
   int firstLayer = 0;
   int nLayer = m_caloLayerDistances.size();
 
+  std::cout << "  PolyhedraBarrelGeometry::localToGlobal nLayer " << nLayer << std::endl;
+
   for (int l = 0; l < nLayer; ++l) {
     double r = m_caloLayerDistances[l];
     firstLayer = l;
@@ -167,6 +185,10 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
       sp.X = global.x();
       sp.Y = global.y();
       sp.Z = global.z();
+
+      std::cout << "  PolyhedraBarrelGeometry::localToGlobal - global.x() = " <<  global.x() << "  global.y() = " <<  global.y()
+              << "  global.z() " <<  global.z()  << " Energy: " << sp.E << std::endl;
+
     }
   }
 }

@@ -7,6 +7,7 @@ set(sources
   Par04ExampleVAE.cc
   RegularGridBIBAEModel.cc
   RegularGridTwoAngleBIBAEModel.cc
+  PionCloudsModel.cc
   OctogonalBarrelTrigger.cc
   EndcapTriggerTwoAngleBIBAE.cc
   CaloCloudsTwoAngleModel.cc
@@ -33,6 +34,18 @@ if(INSTRUMENT_MODEL)
     DDML_INSTRUMENT_MODEL_SHOWER=1
   )
 endif()
+
+if(RECORD_CALO_IMPACT)
+  target_sources(${PROJECT_NAME} PRIVATE
+    DDMLRunAction.cc
+    DDMLEventAction.cc
+  )
+  target_compile_definitions(${PROJECT_NAME} PUBLIC
+    DDML_RECORD_CALO_IMPACT=1
+  )
+endif()
+
+
 
 if(OnnxRuntime_FOUND)
   target_sources(${PROJECT_NAME} PRIVATE
@@ -82,6 +95,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/Par04ExampleVAE.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridBIBAEModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/RegularGridTwoAngleBIBAEModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/PionCloudsModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/PolyhedraBarrelGeometry.h
   ${PROJECT_SOURCE_DIR}/include/DDML/ModelInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/InferenceInterface.h
@@ -107,6 +121,10 @@ endif()
 
 if(HDF5_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/LoadHdf5.h)
+endif()
+
+if(RECORD_CALO_IMPACT)
+  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h)
 endif()
 
 #install(FILES
