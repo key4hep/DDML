@@ -6,6 +6,7 @@
 #
 ######################################################################
 from DDSim.DD4hepSimulation import DD4hepSimulation
+import DDG4
 from g4units import m, mm, GeV, MeV, rad
 import os
 
@@ -24,7 +25,7 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 42
+SIM.numberOfEvents = 100
 ## Outputfile from the simulation,only lcio output is supported
 # SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
 SIM.outputFile = "dummyOutput.slcio"
@@ -86,6 +87,14 @@ SIM.action.tracker = (
     {"HitPositionCombination": 2, "CollectSingleDeposits": False},
 )
 
+### Configure Run actions
+kernel = DDG4.Kernel()
+run1 = DDG4.RunAction(kernel, 'DDMLRunAction/runaction')
+kernel.registerGlobalAction(run1)
+kernel.runAction().add(run1)
+event1 = DDG4.EventAction(kernel, 'DDMLEventAction/eventaction')
+kernel.registerGlobalAction(event1)
+kernel.eventAction().add(event1)
 
 ################################################################################
 ## Configuration for the magnetic field (stepper)
@@ -280,11 +289,11 @@ SIM.physics.rangecut = 0.1 * mm
 
 ## If True, calculate random seed for each event based on eventID and runID
 ## allows reproducibility even when SkippingEvents
-SIM.random.enableEventSeed = False
+SIM.random.enableEventSeed = True #False
 SIM.random.file = None
 SIM.random.luxury = 1
 SIM.random.replace_gRandom = True
-SIM.random.seed = None
+SIM.random.seed = 42 #None
 SIM.random.type = None
 
 # ---------------------------------------------
@@ -351,8 +360,6 @@ def aiDance(kernel):
     model.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     model.ApplicableParticles = {"e+", "e-", "gamma"}
-    # model.Etrigger = {'e+': 5. * GeV, 'e-': 5. * GeV, 'gamma': 5. * GeV}
-    model.Etrigger = {"e+": 1.0 * GeV, "e-": 1.0 * GeV, "gamma": 1.0 * GeV}
     model.Etrigger = {"e+": 5.0 * GeV, "e-": 5.0 * GeV, "gamma": 5.0 * GeV}
     model.ModelPath = ml_file
     model.OptimizeFlag = 1
@@ -389,10 +396,8 @@ def aiDance(kernel):
 
 def aiDanceTorch(kernel):
     ild = True
-    BIBAE = False  # True
-    Two_Angle = False  # True
-    CaloClouds = True
-    L2LFlows = False
+    BIBAE = True
+    Two_Angle = True #True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
 
     if ild == True:
@@ -416,16 +421,6 @@ def aiDanceTorch(kernel):
         )
         ml_model_1 = "RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
-    elif CaloClouds == True:
-        ml_file = "../models/CC3_SF_2A.pt"
-        ml_model = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch"
-        ml_model_1 = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/EndcapModelTorch"
-        ml_correct_angles = False
-    elif L2LFlows == True:
-        ml_file = "../models/L2LFlowsx9.pt"
-        ml_model = "L2LFlowsModelPolyhedraBarrelTorchModel/BarrelModelTorch"
-        ml_model_1 = "L2LFlowsModelEndcapTorchModel/EndcapModelTorch"
-        ml_correct_angles = True
     else:
         ml_file = "../models/francisca_gan_jit.pt"
         ml_model = "RegularGridGANPolyhedraBarrelTorchModel/BarrelModelTorch"
@@ -547,7 +542,8 @@ def LoadHdf5(kernel):
 
     if hadrons == True:
         ml_model_had = "LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel/BarrelModelTorch"
-        ml_had_file =  "../models/PionClouds_50GeV_sp.h5"
+        ml_had_file = "../models/PionClouds_50GeV_sp_scaled.h5" #"../models/gen_showers_for_reco_50GeV_2000.hdf5"
+        #"../models/gen_showers_50GeV_2000_Martina.hdf5" #"../models/PionClouds_50GeV_sp_scaled.h5" #"../models/PionClouds_50GeV_sp.h5" #
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
@@ -636,7 +632,7 @@ def LoadHdf5(kernel):
     modelHad1.CorrectForAngles = ml_correct_angles
     # Energy boundaries are optional: Units are GeV
     modelHad1.ApplicableParticles = {"pi+"}
-    modelHad1.Etrigger = {"pi+": 10.0 * GeV}  # trigger on lower training threshold
+    modelHad1.Etrigger = {"pi+": 30.0 * GeV} #{"pi+": 10.0 * GeV}  # trigger on lower training threshold
     modelHad1.FilePath = ml_had_file
     # model.OptimizeFlag = 1
     # model.IntraOpNumThreads = 1
@@ -656,6 +652,6 @@ def LoadHdf5(kernel):
     phys.dump()
 
 
-# SIM.physics.setupUserPhysics( aiDance)
-SIM.physics.setupUserPhysics(aiDanceTorch)
-# SIM.physics.setupUserPhysics(LoadHdf5)
+#SIM.physics.setupUserPhysics( aiDance)
+#SIM.physics.setupUserPhysics(aiDanceTorch)
+SIM.physics.setupUserPhysics(LoadHdf5)

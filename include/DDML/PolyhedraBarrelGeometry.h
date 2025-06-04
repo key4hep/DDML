@@ -12,6 +12,11 @@ namespace ddml {
  *
  *  @author F.Gaede, DESY
  *  @date Mar 2023
+ * 
+ * Addiional option included to support Hadronic shower simulation in ECAL + HCAL
+ *  @author P. McKeown, CERN
+ *  @date Feb 2025
+ * 
  */
 
 class PolyhedraBarrelGeometry : public GeometryInterface {
@@ -28,7 +33,10 @@ public:
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("isHadShower", this->m_isHadShower);
+    plugin->declareProperty("HadDetector", this->m_HadDetector);
     plugin->declareProperty("Symmetry", this->m_nSymmetry);
+    plugin->declareProperty("HadSymmetry", this->m_nHadSymmetry);
     plugin->declareProperty("CorrectForAngles", this->m_correctForAngles);
   }
 
@@ -52,6 +60,9 @@ private:
   std::string m_detector = {"EcalBarrel"};
   int m_nSymmetry = 8;
   bool m_correctForAngles = false;
+  bool m_isHadShower = true;
+  std::string m_HadDetector = {"HcalBarrel"};
+  int m_nHadSymmetry = m_nSymmetry;
 };
 
 } // namespace ddml

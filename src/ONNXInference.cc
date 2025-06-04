@@ -56,7 +56,7 @@ void ONNXInference::initialize() {
   std::vector<const char*> input_node_names(num_input_nodes);
   for (std::size_t i = 0; i < num_input_nodes; i++) {
 #if ORT_API_VERSION < 13
-    const auto input_name = AllocatedStringPtr(fSession->GetInputName(i, allocator), allocDeleter).release();
+    const auto input_name = AllocatedStringPtr(m_session->GetInputName(i, allocator), allocDeleter).release();
 #else
     const auto input_name = m_session->GetInputNameAllocated(i, allocator).release();
 #endif
@@ -87,7 +87,7 @@ void ONNXInference::initialize() {
   std::vector<const char*> output_node_names(num_output_nodes);
   for (std::size_t i = 0; i < num_output_nodes; i++) {
 #if ORT_API_VERSION < 12
-    const auto output_name = AllocatedStringPtr(fSession->GetOutputName(i, allocator), allocDeleter).release();
+    const auto output_name = AllocatedStringPtr(m_session->GetOutputName(i, allocator), allocDeleter).release();
 #else
     const auto output_name = m_session->GetOutputNameAllocated(i, allocator).release();
 #endif

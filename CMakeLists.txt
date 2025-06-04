@@ -58,6 +58,8 @@ endif()
 
 option(INSTRUMENT_MODEL "Instrument the steps of the showerModel call" OFF)
 
+option(RECORD_CALO_IMPACT "Record properties of particle that triggers modelShower call" OFF)
+
 option(DOWNLOAD_MODELS "Download and install the models that are stored externally" ON)
 
 #---------------------------------------------------
