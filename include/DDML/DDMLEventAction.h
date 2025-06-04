@@ -27,10 +27,6 @@ public:
     virtual ~DDMLEventAction();
     /// End-of-event callback
     void end(const G4Event*) override;
-    /// begin-of-run callback
-    void beginRun(const G4Run*);
-    /// End-of-run callback
-    void endRun(const G4Run*);
 
     //// Get and Set methods for Calo Face info
     inline std::vector<G4int>& GetCaloMC_PDG() {return m_CaloMCPDG;}
