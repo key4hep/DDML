@@ -25,8 +25,6 @@ public:
     DDMLEventAction(dd4hep::sim::Geant4Context* c, const std::string& n);
     /// Default destructor
     virtual ~DDMLEventAction();
-    /// begin-of-event callback
-    inline virtual void begin(const G4Event*) override;
     /// End-of-event callback
     virtual void end(const G4Event*) override;
     /// begin-of-run callback
