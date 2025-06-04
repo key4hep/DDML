@@ -26,7 +26,7 @@ public:
     /// Default destructor
     virtual ~DDMLEventAction();
     /// End-of-event callback
-    virtual void end(const G4Event*) override;
+    void end(const G4Event*) override;
     /// begin-of-run callback
     void beginRun(const G4Run*);
     /// End-of-run callback
