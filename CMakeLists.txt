@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 3.15)
-project(DDML)
+project(DDML LANGUAGES CXX)
 
 # Provides install directory variables as defined for GNU software
 include(GNUInstallDirs)
