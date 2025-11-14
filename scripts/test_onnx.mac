@@ -75,5 +75,5 @@
 #/gps/direction  0.1 -0.8 .1
 
 
-/run/beamOn 100 #2000 #100
+/run/beamOn 2000 #100
 
