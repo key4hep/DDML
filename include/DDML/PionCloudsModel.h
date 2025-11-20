@@ -49,11 +49,6 @@ private:
   int m_maxNumElements = m_numPoints * 4; // number of space points in the output multiplied by 4 (x,y,z,energy)
   int m_nLayer = 78;
 
-  struct Vector3d {
-    double x;
-    double y;
-    double z;
-  };
 
   Vector3d crossProduct(const Vector3d& v1, const Vector3d& v2);
 
