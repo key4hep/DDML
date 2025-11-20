@@ -44,21 +44,12 @@ public:
 
 private:
   /// model properties for plugin
-  // These grid sizes were used for the two angle BIBAE
   int m_numPoints = 2600;                 // 4148; //2600; //number of points in the shower
   int m_latentSize = 3;                   // number of input features (energy, theta, phi)
   int m_maxNumElements = m_numPoints * 4; // number of space points in the output multiplied by 4 (x,y,z,energy)
   int m_nLayer = 78;
 
-  struct Vector3d {
-    double x;
-    double y;
-    double z;
-  };
 
-  Vector3d crossProduct(const Vector3d& v1, const Vector3d& v2);
-
-  Vector3d normalize(const Vector3d& v);
 
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
