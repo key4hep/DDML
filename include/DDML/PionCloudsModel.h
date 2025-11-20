@@ -50,9 +50,6 @@ private:
   int m_nLayer = 78;
 
 
-  Vector3d crossProduct(const Vector3d& v1, const Vector3d& v2);
-
-  Vector3d normalize(const Vector3d& v);
 
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
