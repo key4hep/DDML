@@ -57,7 +57,7 @@ void PionCloudsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
 }
 
 // For array structure: (No. showers, No. points, dimensions(4))
-void PionCloudsModel::convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
+void PionCloudsModel::convertOutput(G4FastTrack const&, G4ThreeVector const&,
                                     const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
   // int nPoints = m_numPoints ; // number of points in shower
 
