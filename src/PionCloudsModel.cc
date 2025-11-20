@@ -18,7 +18,6 @@ void PionCloudsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
   G4RotationMatrix rotX;
   rotX.rotateX(M_PI / 2.);
   // this convention is used for the local coordinates in the dataset (model was trained in this convention)
-  // G4ThreeVector localDir_ = rotZ * (rotX * direction) ;
 
   G4ThreeVector localDir_ = localDir;
   localDir_.setX(-1. * localDir_.x()); // *(-1) to align local to global convention in ddml
@@ -33,7 +32,6 @@ void PionCloudsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
   double phi = atan2(localDir_.y(), localDir_.x()) / M_PI * 180.;
 
   dd4hep::printout(dd4hep::DEBUG, "PionCloudsModel::prepareInput", "DDML::localDir: (%f, %f)", theta, phi);
-  // std::cout << "PionClouds::localDir:" << " theta = " << theta << " phi = " << phi << std::endl;
 
   // the input for the PionClouds is one energy and two angles (local Theta and Phi)
   inputs.resize(m_latentSize);
@@ -59,7 +57,6 @@ void PionCloudsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
 // For array structure: (No. showers, No. points, dimensions(4))
 void PionCloudsModel::convertOutput(G4FastTrack const&, G4ThreeVector const&,
                                     const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
-  // int nPoints = m_numPoints ; // number of points in shower
 
   int layerNum = 0;
 

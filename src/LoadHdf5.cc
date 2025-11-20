@@ -76,8 +76,6 @@ void LoadHdf5::runInference(const InputVecs&, const TensorDimVecs&, std::vector<
     m_isInitialized = true;
   }
 
-  // keep track of shower index in file
-  // LoadHdf5::incrementCounter();
 
   // If counter exceeds number of showers in file, reset
   if (m_count > m_totalSize) {
@@ -92,8 +90,6 @@ void LoadHdf5::runInference(const InputVecs&, const TensorDimVecs&, std::vector<
   std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2],
                             m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2]);
 
-  // enforce length of shower
-  // assert(shower.size() == m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
 
   assert(shower.size() == m_dimsOut[1] * m_dimsOut[2]);
 

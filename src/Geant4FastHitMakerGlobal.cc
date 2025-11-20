@@ -48,10 +48,6 @@ Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aTrack) {
-  // std::cout << "Geant4FastHitMakerGlobal::make - aHit.GetPosition().x() " << aHit.GetPosition().x() << "
-  // aHit.GetPosition().y() " <<
-  //             aHit.GetPosition().y() << " aHit.GetPosition().z() " << aHit.GetPosition().z() << std::endl;
-  //  do not make empty deposit
   if (aHit.GetEnergy() <= 0) {
     return;
   }
@@ -68,32 +64,23 @@ void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aT
     m_navigator->SetWorldVolume(worldWithSD);
     // use track global position
     m_navigator->LocateGlobalPointAndUpdateTouchable(
-        //      aTrack.GetPrimaryTrack()->GetPosition(),
         aHit.GetPosition(), m_touchableHandle(), false);
     m_naviSetup = true;
   } else {
     // for further deposits use hit (local) position and local->global
     // transformation
     m_navigator->LocateGlobalPointAndUpdateTouchable(
-        //      aTrack.GetInverseAffineTransformation()->TransformPoint(
-        //      aHit.GetPosition()),
         aHit.GetPosition(), m_touchableHandle());
   }
   G4VPhysicalVolume* currentVolume = m_touchableHandle()->GetVolume();
 
   G4VSensitiveDetector* sensitive;
   if (currentVolume != 0) {
-    // std::cout << "IN FULL Sim Sensitive Geant4FastHitMakerGlobal::make - aHit.GetPosition().x() " <<
-    // aHit.GetPosition().x() << " aHit.GetPosition().y() " <<
-    //           aHit.GetPosition().y() << " aHit.GetPosition().z() " << aHit.GetPosition().z() << " Energy: " <<
-    //           aHit.GetEnergy()  << std::endl;
+    // In full sim sensitive detector
     sensitive = currentVolume->GetLogicalVolume()->GetSensitiveDetector();
     G4VFastSimSensitiveDetector* fastSimSensitive = dynamic_cast<G4VFastSimSensitiveDetector*>(sensitive);
     if (fastSimSensitive) {
-      // std::cout << "IN FAST Sim Sensitive Geant4FastHitMakerGlobal::make - aHit.GetPosition().x() " <<
-      // aHit.GetPosition().x() << " aHit.GetPosition().y() " <<
-      //         aHit.GetPosition().y() << " aHit.GetPosition().z() " << aHit.GetPosition().z() << " Energy: " <<
-      //         aHit.GetEnergy() << std::endl;
+      // In fast sim sensitive detector
       fastSimSensitive->Hit(&aHit, &aTrack, &m_touchableHandle);
     } else if (sensitive && currentVolume->GetLogicalVolume()->GetFastSimulationManager()) {
       G4cerr << "ERROR - Geant4FastHitMakerGlobal::make()" << G4endl << "        It is required to derive from the "
