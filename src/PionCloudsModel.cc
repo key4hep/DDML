@@ -1,6 +1,7 @@
 #include "DDML/PionCloudsModel.h"
 
 #include <G4FastTrack.hh> // for G4FastTrack
+#include <ranges>
 
 #define DEBUGPRINT 0
 
@@ -57,31 +58,25 @@ void PionCloudsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
 // For array structure: (No. showers, No. points, dimensions(4))
 void PionCloudsModel::convertOutput(G4FastTrack const&, G4ThreeVector const&,
                                     const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
-
+  const int nPoints = output.size() / m_nDims;
   int layerNum = 0;
-
-  std::vector<std::vector<float>> reshaped(m_numPoints, std::vector<float>(4));
-
-  // Fill the 3D array-like vector using the flattened vector
-  int index = 0;
-  for (int j = 0; j < m_numPoints; ++j) {
-    for (int k = 0; k < 4; ++k) {
-      reshaped[j][k] = output[index];
-      index++;
-    }
-  }
-
-  spacepoints.resize(m_nLayer);
-
-  for (int i = 0; i < m_numPoints; i++) {
-    ddml::SpacePoint sp(reshaped[i][0], // x // *(-1) to align local to global convention in ddml
-                        reshaped[i][2], // y // *(-1) to align local to global convention in ddml
-                        0.,             // z
-                        reshaped[i][3], // energy
-                        0.              // time
+  // Reshape into intermediate representation
+  auto reshaped = 
+        std::views::iota(0,nPoints) |
+        std::views::transform([&output](int i){
+          return std::span<const float, 4>{output.data() + i * 4, 4};
+        });
+      
+  spacepoints.resize(nPoints);
+  for (const auto& values : reshaped) {
+    ddml::SpacePoint sp(values[0], // x // *(-1) to align local to global convention in ddml
+                     values[2],    // y // *(-1) to align local to global convention in ddml
+                     0.,           // z
+                     values[3],    // energy
+                     0.            // time
     );
-    layerNum = reshaped[i][1];
+    layerNum = int(values[1]);
     spacepoints[layerNum].emplace_back(sp);
-  }
+  }  
 }
 } // namespace ddml

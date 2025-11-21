@@ -45,6 +45,7 @@ public:
 private:
   /// model properties for plugin
   int m_numPoints = 2600;                 // 4148; //2600; //number of points in the shower
+  size_t m_nDims = 4;                     // Number of dimensions
   int m_latentSize = 3;                   // number of input features (energy, theta, phi)
   int m_maxNumElements = m_numPoints * 4; // number of space points in the output multiplied by 4 (x,y,z,energy)
   int m_nLayer = 78;
