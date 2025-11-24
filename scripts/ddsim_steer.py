@@ -394,15 +394,26 @@ def aiDanceTorch(kernel):
     CaloClouds = True
     L2LFlows = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
+    hadrons=False
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8
         ml_endcap_name = "EcalEndcap"
+
+        ## For hadron shower fast simulation
+        ml_had_barrel_name = "HcalBarrel"
+        ml_had_barrel_symmetry = 8
+        ml_had_endcap_name = "HcalEndcap"
     else:
         ml_barrel_name = "ECalBarrel"
         ml_barrel_symmetry = 12
         ml_endcap_name = "ECalEndcap"
+
+        ## For hadron shower fast simulation is needed
+        ml_had_barrel_name = "HCalBarrel"
+        ml_had_barrel_symmetry = 12
+        ml_had_endcap_name = "HCalEndcap"
 
     if BIBAE == True and Two_Angle == False:
         ml_file = "../models/BIBAE_Full_PP_cut.pt"
@@ -459,6 +470,7 @@ def aiDanceTorch(kernel):
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
+    model.isHadShower = False
     model.RegionName = "EcalBarrelRegion"
     model.Detector = ml_barrel_name
     model.Symmetry = ml_barrel_symmetry
@@ -660,4 +672,4 @@ def LoadHdf5(kernel):
 
 # SIM.physics.setupUserPhysics( aiDance)
 SIM.physics.setupUserPhysics(aiDanceTorch)
-# SIM.physics.setupUserPhysics(LoadHdf5)
+#SIM.physics.setupUserPhysics(LoadHdf5)
