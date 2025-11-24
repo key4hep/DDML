@@ -21,11 +21,15 @@ void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
   // compute local incident angle
   double theta = acos(localDir.z());
 
-  if (DEBUGPRINT) {
-    std::cout << "  Par04ExampleVAE::prepareInput   pos0 = " << position << " - dir = " << direction
-              << " - E = " << energy / CLHEP::GeV << " theta = " << theta * 180. / M_PI << std::endl;
-  }
-
+  dd4hep::printout(dd4hep::DEBUG, "Par04ExampleVAE::prepareInput", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - theta = %f",
+                  position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), 
+                  energy/ CLHEP::GeV, theta * 180. / M_PI);
+  /*
+  //if (DEBUGPRINT) {
+  //  std::cout << "  Par04ExampleVAE::prepareInput   pos0 = " << position << " - dir = " << direction
+  //            << " - E = " << energy / CLHEP::GeV << " theta = " << theta * 180. / M_PI << std::endl;
+  //}
+  */
   // the input for this model is the latent space and the energy conditioning
 
   if (inputs.size() != 1) {
