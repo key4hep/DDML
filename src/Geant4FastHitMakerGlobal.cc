@@ -48,6 +48,7 @@ Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aTrack) {
+  // do not make empty deposit
   if (aHit.GetEnergy() <= 0) {
     return;
   }
@@ -77,10 +78,18 @@ void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aT
   G4VSensitiveDetector* sensitive;
   if (currentVolume != 0) {
     // In full sim sensitive detector
+    //dd4hep::printout(dd4hep::DEBUG, "Geant4FastHitMakerGlobal::make", "In full sim sensitive: aHit.GetPosition() x: %f,  y: %f, z: %f ", 
+    //                aHit.GetPosition().x(), aHit.GetPosition().y(), aHit.GetPosition().z());
+    G4debug << "DEBUG - Geant4FastHitMakerGlobal::make- In full sim sensitive: aHit.GetPosition() x: " << aHit.GetPosition().x() << " y: " <<
+              aHit.GetPosition().y() << " z: " << aHit.GetPosition().z() << G4endl;
     sensitive = currentVolume->GetLogicalVolume()->GetSensitiveDetector();
     G4VFastSimSensitiveDetector* fastSimSensitive = dynamic_cast<G4VFastSimSensitiveDetector*>(sensitive);
     if (fastSimSensitive) {
       // In fast sim sensitive detector
+      //dd4hep::printout(dd4hep::DEBUG, "Geant4FastHitMakerGlobal::make", "In fast sim sensitive: aHit.GetPosition() x: %f,  y: %f, z: %f ", 
+      //              aHit.GetPosition().x(), aHit.GetPosition().y(), aHit.GetPosition().z());
+      G4debug << "DEBUG - Geant4FastHitMakerGlobal::make- In fast sim sensitive: aHit.GetPosition() x: " << aHit.GetPosition().x() << " y: " <<
+              aHit.GetPosition().y() << " z: " << aHit.GetPosition().z() << G4endl;
       fastSimSensitive->Hit(&aHit, &aTrack, &m_touchableHandle);
     } else if (sensitive && currentVolume->GetLogicalVolume()->GetFastSimulationManager()) {
       G4cerr << "ERROR - Geant4FastHitMakerGlobal::make()" << G4endl << "        It is required to derive from the "
