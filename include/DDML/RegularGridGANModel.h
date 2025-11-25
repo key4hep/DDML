@@ -16,9 +16,9 @@ namespace ddml {
 
 class RegularGridGANModel : public ModelInterface {
 public:
-  RegularGridGANModel() {};
+  RegularGridGANModel() = default;
 
-  virtual ~RegularGridGANModel() {};
+  virtual ~RegularGridGANModel() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {

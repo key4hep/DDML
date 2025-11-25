@@ -6,7 +6,7 @@
 
 namespace ddml {
 
-TorchInference::TorchInference() {}
+TorchInference::TorchInference() = default;
 
 /// declare the proerties needed for the plugin
 void TorchInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {

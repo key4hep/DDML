@@ -18,7 +18,7 @@ class PolyhedraBarrelGeometry : public GeometryInterface {
 public:
   PolyhedraBarrelGeometry() { initialize(); };
 
-  virtual ~PolyhedraBarrelGeometry() {};
+  virtual ~PolyhedraBarrelGeometry() = default;
 
   /// initialize the plugin - after properties have been set
   void initialize();
