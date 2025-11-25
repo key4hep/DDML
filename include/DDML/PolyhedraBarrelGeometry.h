@@ -25,7 +25,7 @@ public:
     initialize();
   };
 
-  virtual ~PolyhedraBarrelGeometry(){};
+  virtual ~PolyhedraBarrelGeometry() {};
 
   /// initialize the plugin - after properties have been set
   void initialize();

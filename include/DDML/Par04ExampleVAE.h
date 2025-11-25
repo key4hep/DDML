@@ -16,9 +16,9 @@ namespace ddml {
 
 class Par04ExampleVAE : public ModelInterface {
 public:
-  Par04ExampleVAE(){};
+  Par04ExampleVAE() {};
 
-  virtual ~Par04ExampleVAE(){};
+  virtual ~Par04ExampleVAE() {};
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {

@@ -394,7 +394,7 @@ def aiDanceTorch(kernel):
     CaloClouds = True
     L2LFlows = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-    hadrons=False
+    hadrons = False
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -672,4 +672,4 @@ def LoadHdf5(kernel):
 
 # SIM.physics.setupUserPhysics( aiDance)
 SIM.physics.setupUserPhysics(aiDanceTorch)
-#SIM.physics.setupUserPhysics(LoadHdf5)
+# SIM.physics.setupUserPhysics(LoadHdf5)

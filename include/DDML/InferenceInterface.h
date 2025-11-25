@@ -16,7 +16,7 @@ namespace ddml {
 
 class InferenceInterface {
 public:
-  virtual ~InferenceInterface(){};
+  virtual ~InferenceInterface() {};
 
   /// run the inference model - based on input vector and resized outputvector
   virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) = 0;

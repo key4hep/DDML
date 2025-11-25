@@ -61,9 +61,8 @@ void PionCloudsModel::convertOutput(G4FastTrack const&, G4ThreeVector const&, co
   const int nPoints = output.size() / m_nDims;
   int layerNum = 0;
   // Reshape into intermediate representation
-  auto reshaped = std::views::iota(0, nPoints) | std::views::transform([&output](int i) {
-                    return std::span<const float, 4>{output.data() + i * 4, 4};
-                  });
+  auto reshaped = std::views::iota(0, nPoints) |
+      std::views::transform([&output](int i) { return std::span<const float, 4>{output.data() + i * 4, 4}; });
 
   spacepoints.resize(nPoints);
   for (const auto& values : reshaped) {
