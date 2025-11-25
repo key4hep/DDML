@@ -103,17 +103,6 @@ void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, 
   dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_Flow_theta : %f", inputs[3][1]);
   dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_Flow_phi : %f", inputs[3][2]);
 
-  /*
-  //if (DEBUGPRINT) {
-  //  std::cout << " Input_energy_tensor : " << inputs[0][0] << std::endl;
-  //  std::cout << " Input_theta_tensor : " << inputs[1][0] << std::endl;
-  //  std::cout << " Input_phi_tensor : " << inputs[2][0] << std::endl;
-  //  std::cout << " Input_Flow_energy : " << inputs[3][0] << std::endl;
-  //  std::cout << " Input_Flow_theta : " << inputs[3][1] << std::endl;
-  //  std::cout << " Input_Flow_phi : " << inputs[3][2] << std::endl;
-  //}
-  */
-
   // ----  resize output vector
 
   int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;
@@ -246,13 +235,6 @@ std::vector<double> RegularGridTwoAngleBIBAEModel::getIncidentCell(const double&
                    pos_X);
   dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "Y position of intersection: %f",
                    pos_Y);
-  /*
-  //if (DEBUGPRINT) {
-  //  std::cout << "X position of intersection: " << pos_X << std::endl;
-
-  //  std::cout << "Y position of intersection: " << pos_Y << std::endl;
-  //}
-  */
 
   // equivalent of np.arange(-77, 78, 5.088333)
   std::vector<double> binX;
