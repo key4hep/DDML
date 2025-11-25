@@ -64,17 +64,12 @@ void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aT
     }
     m_navigator->SetWorldVolume(worldWithSD);
     // use track global position
-    m_navigator->LocateGlobalPointAndUpdateTouchable(
-        //      aTrack.GetPrimaryTrack()->GetPosition(),
-        aHit.GetPosition(), m_touchableHandle(), false);
+    m_navigator->LocateGlobalPointAndUpdateTouchable(aHit.GetPosition(), m_touchableHandle(), false);
     m_naviSetup = true;
   } else {
     // for further deposits use hit (local) position and local->global
     // transformation
-    m_navigator->LocateGlobalPointAndUpdateTouchable(
-        //      aTrack.GetInverseAffineTransformation()->TransformPoint(
-        //      aHit.GetPosition()),
-        aHit.GetPosition(), m_touchableHandle());
+    m_navigator->LocateGlobalPointAndUpdateTouchable(aHit.GetPosition(), m_touchableHandle());
   }
   G4VPhysicalVolume* currentVolume = m_touchableHandle()->GetVolume();
 

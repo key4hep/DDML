@@ -41,8 +41,9 @@ G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack) cons
     localDir = {-direction.x(), direction.y(), -direction.z()};
   }
 
-  dd4hep::printout(dd4hep::DEBUG, "EndcapGeometry::localDirection", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f" , 
-                  position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), aFastTrack.GetPrimaryTrack()->GetKineticEnergy());
+  dd4hep::printout(dd4hep::DEBUG, "EndcapGeometry::localDirection", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f",
+                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(),
+                   aFastTrack.GetPrimaryTrack()->GetKineticEnergy());
 
   return localDir;
 }
@@ -53,8 +54,8 @@ void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack, std::vector<Sp
   G4ThreeVector position = aFastTrack.GetPrimaryTrack()->GetPosition();
   G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
-  dd4hep::printout(dd4hep::DEBUG, "EndcapGeometry::localToGlobal", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f", 
-                                  position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), energy);
+  dd4hep::printout(dd4hep::DEBUG, "EndcapGeometry::localToGlobal", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f",
+                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), energy);
 
   float signZ = (position.z() > 0. ? 1.0 : -1.0);
 

@@ -65,13 +65,14 @@ void ONNXInference::initialize() {
     Ort::TypeInfo type_info = m_session->GetInputTypeInfo(i);
     auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
     input_node_dims = tensor_info.GetShape();
-    dd4hep::printout(dd4hep::DEBUG, "ONNXInference::initialize", "input_node_dims : %i = %i", i, input_node_dims.size());
-    
+    dd4hep::printout(dd4hep::DEBUG, "ONNXInference::initialize", "input_node_dims : %i = %i", i,
+                     input_node_dims.size());
+
     for (std::size_t j = 0; j < input_node_dims.size(); j++) {
       if (input_node_dims[j] < 0) {
         input_node_dims[j] = 1;
       }
-      dd4hep::printout(dd4hep::DEBUG, "ONNXInference::initialize", "dim %i : %i",j, input_node_dims[j] );
+      dd4hep::printout(dd4hep::DEBUG, "ONNXInference::initialize", "dim %i : %i", j, input_node_dims[j]);
     }
   }
   // output nodes
@@ -91,7 +92,8 @@ void ONNXInference::initialize() {
     Ort::TypeInfo type_info = m_session->GetOutputTypeInfo(i);
     auto tensor_info = type_info.GetTensorTypeAndShapeInfo();
     output_node_dims = tensor_info.GetShape();
-    dd4hep::printout(dd4hep::DEBUG, "ONNXInference::initialize", "output_node_dims : %i = %i", i, output_node_dims.size());
+    dd4hep::printout(dd4hep::DEBUG, "ONNXInference::initialize", "output_node_dims : %i = %i", i,
+                     output_node_dims.size());
 
     for (std::size_t j = 0; j < output_node_dims.size(); j++) {
       if (output_node_dims[j] < 0) {
