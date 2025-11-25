@@ -32,6 +32,8 @@
 
 #include "G4VFastSimSensitiveDetector.hh"
 
+#include <DD4hep/Printout.h>
+
 Geant4FastHitMakerGlobal::Geant4FastHitMakerGlobal() {
   m_touchableHandle = new G4TouchableHistory();
   m_navigator = new G4Navigator();
@@ -78,9 +80,17 @@ void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aT
 
   G4VSensitiveDetector* sensitive;
   if (currentVolume != 0) {
+    // In full sim sensitive detector
+    dd4hep::printout(dd4hep::DEBUG, "Geant4FastHitMakerGlobal::make",
+                     "In full sim sensitive: aHit.GetPosition() x: %f,  y: %f, z: %f ", aHit.GetPosition().x(),
+                     aHit.GetPosition().y(), aHit.GetPosition().z());
     sensitive = currentVolume->GetLogicalVolume()->GetSensitiveDetector();
     G4VFastSimSensitiveDetector* fastSimSensitive = dynamic_cast<G4VFastSimSensitiveDetector*>(sensitive);
     if (fastSimSensitive) {
+      // In fast sim sensitive detector
+      dd4hep::printout(dd4hep::DEBUG, "Geant4FastHitMakerGlobal::make",
+                       "In fast sim sensitive: aHit.GetPosition() x: %f,  y: %f, z: %f ", aHit.GetPosition().x(),
+                       aHit.GetPosition().y(), aHit.GetPosition().z());
       fastSimSensitive->Hit(&aHit, &aTrack, &m_touchableHandle);
     } else if (sensitive && currentVolume->GetLogicalVolume()->GetFastSimulationManager()) {
       G4cerr << "ERROR - Geant4FastHitMakerGlobal::make()" << G4endl << "        It is required to derive from the "

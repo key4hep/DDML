@@ -25,12 +25,6 @@ void RegularGridGANModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVec
   dd4hep::printout(dd4hep::DEBUG, "RegularGridGANModel::prepareInput", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f",
                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), 
                   energy/ CLHEP::GeV);
-  /*REMOVE!
-  //if (DEBUGPRINT) {
-  //  std::cout << "  RegularGridGANModel::prepareInput   pos0 = " << position << " - dir = " << direction
-  //            << " - E = " << energy / CLHEP::GeV << std::endl;
-  //}
-  */
 
   // the input for this model is the latent space and the energy conditioning
 
