@@ -48,7 +48,6 @@ void CaloCloudsTwoAngleModel::prepareInput(G4FastTrack const& aFastTrack, G4Thre
   inputs[1][0] = theta;               // 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
   inputs[2][0] = phi;
 
-
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "Input_energy_tensor : %f", inputs[0][0]);
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "Input_theta_tensor : %f", inputs[1][0]);
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "Input_phi_tensor : %f", inputs[2][0]);

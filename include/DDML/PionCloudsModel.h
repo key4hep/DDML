@@ -50,8 +50,6 @@ private:
   int m_maxNumElements = m_numPoints * 4; // number of space points in the output multiplied by 4 (x,y,z,energy)
   int m_nLayer = 78;
 
-
-
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
 

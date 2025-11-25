@@ -19,13 +19,15 @@ void PolyhedraBarrelGeometry::initialize() {
   if (cal) {
     for (auto l : cal->layers) {
       m_caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
-      dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::initialize", "ECAL Layer distances %f", l.distance + l.inner_thickness);
+      dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::initialize", "ECAL Layer distances %f",
+                       l.distance + l.inner_thickness);
       /*REMOVE!
       //std::cout << " ECAL Layer distances " << l.distance + l.inner_thickness << std::endl;
       */
     }
   } else {
-    dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!", m_detector.c_str());
+    dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!",
+                     m_detector.c_str());
     /*REMOVE!
     //std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
     */
@@ -38,13 +40,15 @@ void PolyhedraBarrelGeometry::initialize() {
     if (cal_had) {
       for (auto l_had : cal_had->layers) {
         m_caloLayerDistances.push_back((l_had.distance + l_had.inner_thickness) / dd4hep::mm);
-        dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::initialize", "HCAL Layer distances %f", l_had.distance + l_had.inner_thickness);
+        dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::initialize", "HCAL Layer distances %f",
+                         l_had.distance + l_had.inner_thickness);
         /*REMOVE!
         //std::cout << " HCAL Layer distances " << l_had.distance + l_had.inner_thickness << std::endl;
-        */      
+        */
       }
     } else {
-      dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!", m_hadDetector.c_str());
+      dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!",
+                       m_hadDetector.c_str());
       /*REMOVE!
       //std::cout << " ###### error:  detector " << m_hadDetector << " not found !" << std::endl;
       */
@@ -97,11 +101,12 @@ G4ThreeVector PolyhedraBarrelGeometry::localDirection(G4FastTrack const& aFastTr
   // the z-axis pointing into the calo
   G4ThreeVector localDir(-dirR.z(), dirR.y(), dirR.x());
 
-  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localDirection", "symmetry = %i - pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - localDir = (%f, %f, %f)", 
-    m_nSymmetry, position.x(), position.y(), position.z(), 
-                  direction.x(), direction.y(), direction.z(), aFastTrack.GetPrimaryTrack()->GetKineticEnergy(), localDir.x(), localDir.y(), localDir.z());
-  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localDirection", "phi = %f - theta = %f", 
-                  atan2(localDir.y(), localDir.x()) / M_PI * 180., acos(localDir.z()) / M_PI * 180.);
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localDirection",
+                   "symmetry = %i - pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - localDir = (%f, %f, %f)",
+                   m_nSymmetry, position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(),
+                   aFastTrack.GetPrimaryTrack()->GetKineticEnergy(), localDir.x(), localDir.y(), localDir.z());
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localDirection", "phi = %f - theta = %f",
+                   atan2(localDir.y(), localDir.x()) / M_PI * 180., acos(localDir.z()) / M_PI * 180.);
   /*REMOVE!
   //if (DEBUGPRINT) {
   //  G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
@@ -125,8 +130,10 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
 
   int phiSec = phiSector(position);
 
-  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal", "symmetry = %i - pos0= (%f, %f, %f) - dir = (%f, %f, %f) - E = %f",
-                   m_nSymmetry, position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), aFastTrack.GetPrimaryTrack()->GetKineticEnergy());
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal",
+                   "symmetry = %i - pos0= (%f, %f, %f) - dir = (%f, %f, %f) - E = %f", m_nSymmetry, position.x(),
+                   position.y(), position.z(), direction.x(), direction.y(), direction.z(),
+                   aFastTrack.GetPrimaryTrack()->GetKineticEnergy());
   /*REMOVE!
   //if (DEBUGPRINT) {
   //  G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
@@ -152,9 +159,10 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
     dirR = {1., 0., 0.}; // position layers w/ impact normal to the plane
   }
 
-  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal", "pos0= (%f, %f, %f) - dir = (%f, %f, %f) - phiSec = %i - posR = (%f, %f, %f) - dirR = (%f, %f, %f)", 
-                position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(),
-                phiSec, posR.x(), posR.y(), posR.z(), dirR.x(), dirR.y(), dirR.z());
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal",
+                   "pos0= (%f, %f, %f) - dir = (%f, %f, %f) - phiSec = %i - posR = (%f, %f, %f) - dirR = (%f, %f, %f)",
+                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), phiSec,
+                   posR.x(), posR.y(), posR.z(), dirR.x(), dirR.y(), dirR.z());
   /*REMOVE!
   //if (DEBUGPRINT) {
   //  std::cout << "  PolyhedraBarrelGeometry::localToGlobal -  position " << position << " - direction " << direction
@@ -216,11 +224,12 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
       sp.Y = global.y();
       sp.Z = global.z();
 
-      dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal", "global.x() = %f, global.y() = %f, global.z() = %f",
-                       global.x(), global.y(), global.z()); 
+      dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal",
+                       "global.x() = %f, global.y() = %f, global.z() = %f", global.x(), global.y(), global.z());
       /*REMOVE!
       //std::cout << "  PolyhedraBarrelGeometry::localToGlobal - global.x() = " << global.x()
-      //          << "  global.y() = " << global.y() << "  global.z() " << global.z() << " Energy: " << sp.E << std::endl;
+      //          << "  global.y() = " << global.y() << "  global.z() " << global.z() << " Energy: " << sp.E <<
+      std::endl;
       */
     }
   }

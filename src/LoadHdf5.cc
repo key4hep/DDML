@@ -43,7 +43,7 @@ void LoadHdf5::initialize() {
   // if m_rank == 4
   // index 0: shower number
   // index 1, 2, 3: x, y, z cell number
-  
+
   // else if m_rank == 3
   // index 0: shower number
   // index 1: number of points
@@ -77,7 +77,6 @@ void LoadHdf5::runInference(const InputVecs&, const TensorDimVecs&, std::vector<
     m_isInitialized = true;
   }
 
-
   // If counter exceeds number of showers in file, reset
   if (m_count > m_totalSize) {
     m_count = 0;
@@ -85,22 +84,22 @@ void LoadHdf5::runInference(const InputVecs&, const TensorDimVecs&, std::vector<
 
   // select shower from library
   if (m_rank == 4) {
-      std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3],
-                            m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
-      assert(shower.size() == m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
+    std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3],
+                              m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
+    assert(shower.size() == m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
 
-      // write output
-      output = std::move(shower);
-  }
-  else if (m_rank == 3 ){
-      std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2],
-                            m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2]);
-      assert(shower.size() == m_dimsOut[1] * m_dimsOut[2]);
+    // write output
+    output = std::move(shower);
+  } else if (m_rank == 3) {
+    std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2],
+                              m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2]);
+    assert(shower.size() == m_dimsOut[1] * m_dimsOut[2]);
 
-      // write output
-      output = std::move(shower);
+    // write output
+    output = std::move(shower);
+  } else {
+    throw std::runtime_error("Shower library does not have the correct dimensions!");
   }
-  else{throw std::runtime_error("Shower library does not have the correct dimensions!");}
 
   ++m_count;
 }

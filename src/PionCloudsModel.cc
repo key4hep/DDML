@@ -56,27 +56,25 @@ void PionCloudsModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
 }
 
 // For array structure: (No. showers, No. points, dimensions(4))
-void PionCloudsModel::convertOutput(G4FastTrack const&, G4ThreeVector const&,
-                                    const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints) {
+void PionCloudsModel::convertOutput(G4FastTrack const&, G4ThreeVector const&, const std::vector<float>& output,
+                                    std::vector<SpacePointVec>& spacepoints) {
   const int nPoints = output.size() / m_nDims;
   int layerNum = 0;
   // Reshape into intermediate representation
-  auto reshaped = 
-        std::views::iota(0,nPoints) |
-        std::views::transform([&output](int i){
-          return std::span<const float, 4>{output.data() + i * 4, 4};
-        });
-      
+  auto reshaped = std::views::iota(0, nPoints) | std::views::transform([&output](int i) {
+                    return std::span<const float, 4>{output.data() + i * 4, 4};
+                  });
+
   spacepoints.resize(nPoints);
   for (const auto& values : reshaped) {
     ddml::SpacePoint sp(values[0], // x // *(-1) to align local to global convention in ddml
-                     values[2],    // y // *(-1) to align local to global convention in ddml
-                     0.,           // z
-                     values[3],    // energy
-                     0.            // time
+                        values[2], // y // *(-1) to align local to global convention in ddml
+                        0.,        // z
+                        values[3], // energy
+                        0.         // time
     );
     layerNum = int(values[1]);
     spacepoints[layerNum].emplace_back(sp);
-  }  
+  }
 }
 } // namespace ddml

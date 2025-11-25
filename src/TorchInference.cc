@@ -45,20 +45,19 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     m_isInitialized = true;
   }
 
-  if (dd4hep::printLevel() <= dd4hep::DEBUG){
+  if (dd4hep::printLevel() <= dd4hep::DEBUG) {
     dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", " ----- TorchInference::runInference -----");
-    dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "# inputs = %f : ", inputs.size() );
+    dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "# inputs = %f : ", inputs.size());
 
     for (auto iv : inputs) {
       dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "%f, ", iv.size());
     }
 
     dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "# dims = %f :", tensDims.size());
-    
+
     for (auto iv : tensDims) {
       dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "%f, ", iv.size());
     }
-    
   }
 
   assert(inputs.size() == tensDims.size());
@@ -70,7 +69,6 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     tensors.emplace_back(inTens);
 
     dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "inTensor %i: %f", i, inTens);
-
   }
 
   at::Tensor outTensor = m_jitModule.forward(tensors).toTensor(); //.contiguous();

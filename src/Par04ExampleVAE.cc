@@ -21,9 +21,9 @@ void Par04ExampleVAE::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector 
   // compute local incident angle
   double theta = acos(localDir.z());
 
-  dd4hep::printout(dd4hep::DEBUG, "Par04ExampleVAE::prepareInput", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - theta = %f",
-                  position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), 
-                  energy/ CLHEP::GeV, theta * 180. / M_PI);
+  dd4hep::printout(dd4hep::DEBUG, "Par04ExampleVAE::prepareInput",
+                   "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - theta = %f", position.x(), position.y(),
+                   position.z(), direction.x(), direction.y(), direction.z(), energy / CLHEP::GeV, theta * 180. / M_PI);
   /*
   //if (DEBUGPRINT) {
   //  std::cout << "  Par04ExampleVAE::prepareInput   pos0 = " << position << " - dir = " << direction

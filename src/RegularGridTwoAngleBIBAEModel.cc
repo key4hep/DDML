@@ -68,11 +68,14 @@ void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, 
   // compute local incident angles
   double theta = acos(localDir.x());
   double phi = atan2(localDir.y(), localDir.x());
-  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - local dir =(%f, %f, %f) - theta = %f - phi=%f",
-                  position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), 
-                  energy/ CLHEP::GeV, localDir.x(), localDir.y(), localDir.z(), theta, phi);
-  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "theta_cond = %f / %f - phi_cond = %f / %f - Global phi = %f / %f - Global theta = %f / %f",
-                  theta_cond, theta_cond / M_PI * 180., phi_cond, phi_cond / M_PI * 180., direction.phi(), direction.phi() / M_PI * 180., direction.theta(), direction.theta() / M_PI * 180);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput",
+                   "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - local dir =(%f, %f, %f) - theta = %f - phi=%f",
+                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(),
+                   energy / CLHEP::GeV, localDir.x(), localDir.y(), localDir.z(), theta, phi);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput",
+                   "theta_cond = %f / %f - phi_cond = %f / %f - Global phi = %f / %f - Global theta = %f / %f",
+                   theta_cond, theta_cond / M_PI * 180., phi_cond, phi_cond / M_PI * 180., direction.phi(),
+                   direction.phi() / M_PI * 180., direction.theta(), direction.theta() / M_PI * 180);
 
   // the input for the BIB-AE is one energy and two angles (plus cond tensor)
   inputs.resize(m_latentSize);
@@ -90,10 +93,13 @@ void RegularGridTwoAngleBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, 
   inputs[3][1] = (inputs[1][0]) / (95. * (M_PI / 180.));
   inputs[3][2] = (inputs[2][0]) / (95. * (M_PI / 180.));
 
-  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_energy_tensor : %f", inputs[0][0]);
-  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_theta_tensor : %f", inputs[1][0]);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_energy_tensor : %f",
+                   inputs[0][0]);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_theta_tensor : %f",
+                   inputs[1][0]);
   dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_phi_tensor : %f", inputs[2][0]);
-  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_Flow_energy : %f", inputs[3][0]);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_Flow_energy : %f",
+                   inputs[3][0]);
   dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_Flow_theta : %f", inputs[3][1]);
   dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::prepareInput", "Input_Flow_phi : %f", inputs[3][2]);
 
@@ -236,8 +242,10 @@ std::vector<double> RegularGridTwoAngleBIBAEModel::getIncidentCell(const double&
   double pos_X = intersect[0];
   double pos_Y = intersect[2];
 
-  dd4hep::printout(dd4hep::DEBUG,"RegularGridTwoAngleBIBAEModel::getIncidentCell", "X position of intersection: %f", pos_X);
-  dd4hep::printout(dd4hep::DEBUG,"RegularGridTwoAngleBIBAEModel::getIncidentCell", "Y position of intersection: %f", pos_Y);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "X position of intersection: %f",
+                   pos_X);
+  dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "Y position of intersection: %f",
+                   pos_Y);
   /*
   //if (DEBUGPRINT) {
   //  std::cout << "X position of intersection: " << pos_X << std::endl;
@@ -266,25 +274,27 @@ std::vector<double> RegularGridTwoAngleBIBAEModel::getIncidentCell(const double&
   // binX.size() <<std::endl;
 
   for (size_t i = 0; i < binX.size(); ++i) {
-    dd4hep::printout(dd4hep::DEBUG,"RegularGridTwoAngleBIBAEModel::getIncidentCell", "binX[i]: %f - binX[i+1]: %f - i: %i", binX[i], binX[i+1], i);
+    dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
+                     "binX[i]: %f - binX[i+1]: %f - i: %i", binX[i], binX[i + 1], i);
 
     if (i + 1 > binX.size()) {
-      dd4hep::printout(dd4hep::PrintLevel::WARNING,"RegularGridTwoAngleBIBAEModel::getIncidentCell", "Incident position not found in grid X!");
+      dd4hep::printout(dd4hep::PrintLevel::WARNING, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
+                       "Incident position not found in grid X!");
     }
 
     else if (binX[i] <= pos_X && pos_X < binX[i + 1]) {
       double frac = (pos_X - binX[i]) / 5.088333;
 
       if (frac < 0) {
-        dd4hep::printout(dd4hep::PrintLevel::WARNING,"RegularGridTwoAngleBIBAEModel::getIncidentCell", "Incident cell fraction wrong X!");
+        dd4hep::printout(dd4hep::PrintLevel::WARNING, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
+                         "Incident cell fraction wrong X!");
       }
 
       gridX = static_cast<double>(i) + frac;
 
-      dd4hep::printout(dd4hep::DEBUG,"RegularGridTwoAngleBIBAEModel::getIncidentCell", "gridX = %f", gridX);
+      dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "gridX = %f", gridX);
 
       i = binX.size(); // break;
-
     }
   }
 
@@ -292,18 +302,20 @@ std::vector<double> RegularGridTwoAngleBIBAEModel::getIncidentCell(const double&
 
   // Y
   for (size_t j = 0; j < binY.size(); ++j) {
-    dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "binY[j] = %f - binY[j+1] = %f - j = %i", 
-                    binY[j], binY[j+1], j);
+    dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
+                     "binY[j] = %f - binY[j+1] = %f - j = %i", binY[j], binY[j + 1], j);
 
     if (j + 1 > binY.size()) {
-      dd4hep::printout(dd4hep::PrintLevel::WARNING, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "Incident position not found in grid Y!");
+      dd4hep::printout(dd4hep::PrintLevel::WARNING, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
+                       "Incident position not found in grid Y!");
     }
 
     else if (binY[j] <= pos_Y && pos_Y < binY[j + 1]) {
       double frac = (pos_Y - binY[j]) / 5.088333;
 
       if (frac < 0) {
-        dd4hep::printout(dd4hep::PrintLevel::WARNING, "RegularGridTwoAngleBIBAEModel::getIncidentCell", "Incident cell fraction wrong Y!");
+        dd4hep::printout(dd4hep::PrintLevel::WARNING, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
+                         "Incident cell fraction wrong Y!");
       }
 
       gridY = static_cast<double>(j) + frac;
