@@ -7,7 +7,7 @@
 
 namespace ddml {
 
-ONNXInference::ONNXInference() {}
+ONNXInference::ONNXInference() = default;
 
 /// declare the proerties needed for the plugin
 void ONNXInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {

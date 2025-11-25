@@ -22,7 +22,7 @@ namespace ddml {
 
 class GeometryInterface {
 public:
-  virtual ~GeometryInterface() {};
+  virtual ~GeometryInterface() = default;
 
   /** compute local direction in coordinate system that has the z-axis pointing
    * into the calorimeter, normal to the layers
