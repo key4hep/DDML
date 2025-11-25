@@ -3,7 +3,7 @@ name: pre-commit
 on:
   push:
     branches:
-    - master
+    - main
   pull_request:
   workflow_dispatch:
 
@@ -28,6 +28,9 @@ jobs:
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -G Ninja -S . -B build
           ln -s build/compile_commands.json compile_commands.json
+          # Filter compiler flags that are injected by Geant4 IPO that are not
+          # understood by clang
+          sed -i 's/-fipa-icf//g ; s/-flto-odr-type-merging//g' compile_commands.json
           echo "::endgroup::"
           echo "::group::Run pre-commit"
           pre-commit run --show-diff-on-failure \
