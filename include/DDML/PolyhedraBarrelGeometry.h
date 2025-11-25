@@ -16,11 +16,9 @@ namespace ddml {
 
 class PolyhedraBarrelGeometry : public GeometryInterface {
 public:
-  PolyhedraBarrelGeometry() {
-    initialize();
-  };
+  PolyhedraBarrelGeometry() { initialize(); };
 
-  virtual ~PolyhedraBarrelGeometry(){};
+  virtual ~PolyhedraBarrelGeometry() {};
 
   /// initialize the plugin - after properties have been set
   void initialize();

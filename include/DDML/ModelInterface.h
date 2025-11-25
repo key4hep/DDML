@@ -19,7 +19,7 @@ namespace ddml {
 
 class ModelInterface {
 public:
-  virtual ~ModelInterface(){};
+  virtual ~ModelInterface() {};
 
   /** prepare the input vector and resize the output vector for this model
    *  based on the current FastTrack (e.g. extract kinetic energy and incident

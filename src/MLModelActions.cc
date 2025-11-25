@@ -1,17 +1,17 @@
 #ifdef DDML_USE_TORCH_INFERENCE
-  // -- includes this before any ROOT stuff - as it defines a struct ClassDef that
-  // is otherwise overwritten by Rtypes.h
-  #include "DDML/TorchInference.h"
+// -- includes this before any ROOT stuff - as it defines a struct ClassDef that
+// is otherwise overwritten by Rtypes.h
+#include "DDML/TorchInference.h"
 #endif
 
 #include "DDML/FastMLShower.h"
 
 #ifdef DDML_USE_ONNX_INFERENCE
-  #include "DDML/ONNXInference.h"
+#include "DDML/ONNXInference.h"
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
-  #include "DDML/LoadHdf5.h"
+#include "DDML/LoadHdf5.h"
 #endif
 
 #include "DDML/CaloCloudsTwoAngleModel.h"
