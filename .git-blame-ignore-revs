@@ -1,2 +1,4 @@
 # Introduction of clang-format and black for formatting
 b580be979247761e185ae729a8ea3680c2618c39
+# Update of .clang-format to conform to Key4hep config
+9479a074f2b43ae5fa63ecf28ba9964d7ac8b3e0
