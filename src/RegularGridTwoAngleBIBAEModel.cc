@@ -249,12 +249,6 @@ std::vector<double> RegularGridTwoAngleBIBAEModel::getIncidentCell(const double&
   }
 
   double gridX = 0;
-
-  // find bin index of incident cell and fraction in X/Y
-  // X
-  // std::cout << "RegularGridTwoAngleBIBAEModel::getIncidentCell binX.size " <<
-  // binX.size() <<std::endl;
-
   for (size_t i = 0; i < binX.size(); ++i) {
     dd4hep::printout(dd4hep::DEBUG, "RegularGridTwoAngleBIBAEModel::getIncidentCell",
                      "binX[i]: %f - binX[i+1]: %f - i: %i", binX[i], binX[i + 1], i);

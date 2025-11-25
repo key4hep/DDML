@@ -135,8 +135,6 @@ void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& t
   //  output.assign(outputSize, 0);
   for (int i = 0, N = output.size(); i < N; ++i) {
     output[i] = floatarr[i];
-    //    if(DEBUGPRINT) std::cout << " e = " << output[i] << ", " ;
   }
-  // if(DEBUGPRINT) std::cout << std::endl ;
 }
 } // namespace ddml
