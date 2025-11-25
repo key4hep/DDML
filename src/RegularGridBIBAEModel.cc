@@ -23,12 +23,6 @@ void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeV
   dd4hep::printout(dd4hep::DEBUG, "RegularGridBIBAEModel::prepareInput", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - theta = %f",
                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), 
                   energy/ CLHEP::GeV, theta * 180. / M_PI);
-  /*REMOVE!
-  //if (DEBUGPRINT) {
-  //  std::cout << "  RegularGridBIBAEModel::prepareInput   pos0 = " << position << " - dir = " << direction
-  //            << " - E = " << energy / CLHEP::GeV << " theta = " << theta << std::endl;
-  //}
-  */
 
   // the input for the BIB-AE is one energy and an angle (plus cond tensor)
   inputs.resize(m_latentSize);
@@ -44,11 +38,7 @@ void RegularGridBIBAEModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeV
   inputs[2][1] = (inputs[1][0]) / (90. * (M_PI / 180.));
 
   dd4hep::printout(dd4hep::DEBUG, "RegularGridBIBAEModel::prepareInput", "Input_energy_tensor : %f", inputs[0][0] * 100.);
-  /*REMOVE!
-  //if (DEBUGPRINT) {
-  //  std::cout << " Input_energy_tensor : " << inputs[0][0] * 100. << std::endl;
- // }
-  */
+
   // ----  resize output vector
 
   int outputSize = m_nCellsX * m_nCellsY * m_nCellsZ;

@@ -23,9 +23,6 @@ void EndcapGeometry::initialize() {
 
   } else {
     dd4hep::printout(dd4hep::ERROR, "EndcapGeometry::initialize", "Detector %s not found!", m_detector.c_str());
-    /* REMOVE!
-    //std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
-    */
   }
 }
 
@@ -46,15 +43,6 @@ G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack) cons
 
   dd4hep::printout(dd4hep::DEBUG, "EndcapGeometry::localDirection", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f" , 
                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), aFastTrack.GetPrimaryTrack()->GetKineticEnergy());
-  /* REMOVE!
-  //if (DEBUGPRINT) {
-  //  G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
-
-  //  std::cout << "  EndcapGeometry::localDirection "
-  //            << " pos0 = " << position << " - dir = " << direction << " - E = "
-  //            << " - localDir = " << localDir << energy << std::endl;
-  //}
-  */
 
   return localDir;
 }
@@ -67,12 +55,6 @@ void EndcapGeometry::localToGlobal(G4FastTrack const& aFastTrack, std::vector<Sp
 
   dd4hep::printout(dd4hep::DEBUG, "EndcapGeometry::localToGlobal", "pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f", 
                                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), energy);
-  /* REMOVE!
-  //if (DEBUGPRINT) {
-  //  std::cout << "  EndcapGeometry::localToGlobal   pos0 = " << position << " - dir = " << direction
-  //            << " - E = " << energy << std::endl;
-  //}
-  */
 
   float signZ = (position.z() > 0. ? 1.0 : -1.0);
 
