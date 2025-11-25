@@ -16,14 +16,12 @@ namespace ddml {
 
 class EndcapGeometry : public GeometryInterface {
 public:
-  EndcapGeometry() {
-    initialize();
-  };
+  EndcapGeometry() { initialize(); };
 
   /// initialize the plugin - after properties have been set
   void initialize();
 
-  virtual ~EndcapGeometry(){};
+  virtual ~EndcapGeometry() {};
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {

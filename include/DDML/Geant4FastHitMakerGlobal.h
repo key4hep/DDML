@@ -61,9 +61,7 @@ public:
   /// specified, otherwise no sensitive detector will be found (mass geometry
   /// will be checked).
   /// @param[in] aName Name of the parallel world
-  inline void SetNameOfWorldWithSD(const G4String& aName) {
-    m_worldWithSdName = aName;
-  };
+  inline void SetNameOfWorldWithSD(const G4String& aName) { m_worldWithSdName = aName; };
 
 private:
   /// Touchable

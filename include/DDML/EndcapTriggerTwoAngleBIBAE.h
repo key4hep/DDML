@@ -18,9 +18,9 @@ namespace ddml {
 
 class EndcapTriggerTwoAngleBIBAE : public TriggerInterface {
 public:
-  EndcapTriggerTwoAngleBIBAE(){};
+  EndcapTriggerTwoAngleBIBAE() {};
 
-  virtual ~EndcapTriggerTwoAngleBIBAE(){};
+  virtual ~EndcapTriggerTwoAngleBIBAE() {};
 
   // check trigger
 

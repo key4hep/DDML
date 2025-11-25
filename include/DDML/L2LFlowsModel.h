@@ -18,7 +18,7 @@ namespace ddml {
  */
 class L2LFlowsModel : public ModelInterface {
 public:
-  L2LFlowsModel(){};
+  L2LFlowsModel() {};
 
   virtual ~L2LFlowsModel() = default;
 

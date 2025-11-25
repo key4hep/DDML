@@ -20,9 +20,9 @@ namespace ddml {
 
 class CaloCloudsTwoAngleModel : public ModelInterface {
 public:
-  CaloCloudsTwoAngleModel(){};
+  CaloCloudsTwoAngleModel() {};
 
-  virtual ~CaloCloudsTwoAngleModel(){};
+  virtual ~CaloCloudsTwoAngleModel() {};
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {

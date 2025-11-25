@@ -18,9 +18,9 @@ namespace ddml {
 
 class OctogonalBarrelTrigger : public TriggerInterface {
 public:
-  OctogonalBarrelTrigger(){};
+  OctogonalBarrelTrigger() {};
 
-  virtual ~OctogonalBarrelTrigger(){};
+  virtual ~OctogonalBarrelTrigger() {};
 
   // check trigger
 
