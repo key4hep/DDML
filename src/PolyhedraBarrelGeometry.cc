@@ -19,9 +19,12 @@ void PolyhedraBarrelGeometry::initialize() {
   if (cal) {
     for (auto l : cal->layers) {
       m_caloLayerDistances.push_back((l.distance + l.inner_thickness) / dd4hep::mm);
+      dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::initialize", "ECAL Layer distances %f",
+                       l.distance + l.inner_thickness);
     }
   } else {
-    std::cout << " ###### error:  detector " << m_detector << " not found !" << std::endl;
+    dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!",
+                     m_detector.c_str());
   }
 }
 
@@ -70,16 +73,12 @@ G4ThreeVector PolyhedraBarrelGeometry::localDirection(G4FastTrack const& aFastTr
   // the z-axis pointing into the calo
   G4ThreeVector localDir(-dirR.z(), dirR.y(), dirR.x());
 
-  if (DEBUGPRINT) {
-    G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
-
-    std::cout << "  PolyhedraBarrelGeometry::localDirection  - symmetry = " << m_nSymmetry << " pos0 = " << position
-              << " - dir = " << direction << " - E = "
-              << " - localDir = " << localDir << energy << std::endl;
-    std::cout << "  PolyhedraBarrelGeometry::localDirection  - phi = "
-              << atan2(localDir.y(), localDir.x()) / M_PI * 180. << "   theta : " << acos(localDir.z()) / M_PI * 180.
-              << std::endl;
-  }
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localDirection",
+                   "symmetry = %i - pos0 = (%f, %f, %f) - dir = (%f, %f, %f) - E = %f - localDir = (%f, %f, %f)",
+                   m_nSymmetry, position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(),
+                   aFastTrack.GetPrimaryTrack()->GetKineticEnergy(), localDir.x(), localDir.y(), localDir.z());
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localDirection", "phi = %f - theta = %f",
+                   atan2(localDir.y(), localDir.x()) / M_PI * 180., acos(localDir.z()) / M_PI * 180.);
 
   return localDir;
 }
@@ -91,12 +90,10 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
 
   int phiSec = phiSector(position);
 
-  if (DEBUGPRINT) {
-    G4double energy = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
-
-    std::cout << "  PolyhedraBarrelGeometry::localToGlobal  - symmetry = " << m_nSymmetry << " pos0 = " << position
-              << " - dir = " << direction << " - E = " << energy << std::endl;
-  }
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal",
+                   "symmetry = %i - pos0= (%f, %f, %f) - dir = (%f, %f, %f) - E = %f", m_nSymmetry, position.x(),
+                   position.y(), position.z(), direction.x(), direction.y(), direction.z(),
+                   aFastTrack.GetPrimaryTrack()->GetKineticEnergy());
 
   // --- rotate position and direction to phi sector 0  (calo plane parallel to
   // y-axis at positive x )
@@ -114,16 +111,17 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
     dirR = {1., 0., 0.}; // position layers w/ impact normal to the plane
   }
 
-  if (DEBUGPRINT) {
-    std::cout << "  PolyhedraBarrelGeometry::localToGlobal -  position " << position << " - direction " << direction
-              << " phiSec: " << phiSec << " posR " << posR << " dirR " << dirR << std::endl;
-  }
+  dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal",
+                   "pos0= (%f, %f, %f) - dir = (%f, %f, %f) - phiSec = %i - posR = (%f, %f, %f) - dirR = (%f, %f, %f)",
+                   position.x(), position.y(), position.z(), direction.x(), direction.y(), direction.z(), phiSec,
+                   posR.x(), posR.y(), posR.z(), dirR.x(), dirR.y(), dirR.z());
 
   // find the first layer that will have signals as sometimes particles are
   // create in the calorimeter !
   int firstLayer = 0;
   int nLayer = m_caloLayerDistances.size();
 
+  dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::localToGlobal", "nLayer = %i", nLayer);
   for (int l = 0; l < nLayer; ++l) {
     double r = m_caloLayerDistances[l];
     firstLayer = l;
@@ -167,6 +165,9 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
       sp.X = global.x();
       sp.Y = global.y();
       sp.Z = global.z();
+
+      dd4hep::printout(dd4hep::DEBUG, "PolyhedraBarrelGeometry::localToGlobal",
+                       "global.x() = %f, global.y() = %f, global.z() = %f", global.x(), global.y(), global.z());
     }
   }
 }

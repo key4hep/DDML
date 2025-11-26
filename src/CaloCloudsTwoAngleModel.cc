@@ -28,8 +28,6 @@ void CaloCloudsTwoAngleModel::prepareInput(G4FastTrack const& aFastTrack, G4Thre
 
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "DDML::localDir: (%f, %f, %f)",
                    localDir_.x(), localDir_.y(), localDir_.z());
-  // std::cout << "CaloClouds::localDir:" << "(" << localDir_.x() << "," << localDir_.y() << "," << localDir_.z() << ")"
-  //           << std::endl;
 
   // compute local incident angles
   double r = sqrt(localDir_.x() * localDir_.x() + localDir_.y() * localDir_.y() + localDir_.z() * localDir_.z());
@@ -37,7 +35,6 @@ void CaloCloudsTwoAngleModel::prepareInput(G4FastTrack const& aFastTrack, G4Thre
   double phi = atan2(localDir_.y(), localDir_.x()) / M_PI * 180.;
 
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "DDML::localDir: (%f, %f)", theta, phi);
-  // std::cout << "CaloClouds::localDir:" << " theta = " << theta << " phi = " << phi << std::endl;
 
   // the input for the CaloCLouds is one energy and two angles (local Theta and Phi)
   inputs.resize(m_latentSize);
@@ -50,12 +47,6 @@ void CaloCloudsTwoAngleModel::prepareInput(G4FastTrack const& aFastTrack, G4Thre
   inputs[0][0] = energy / CLHEP::GeV; // E_vec[0]/100.;
   inputs[1][0] = theta;               // 89.*(M_PI/180.) ; //Theta_vec[0]/(90.*(M_PI/180.));
   inputs[2][0] = phi;
-
-  // if (DEBUGPRINT) {
-  //   std::cout << " Input_energy_tensor : " << inputs[0][0] << std::endl;
-  //   std::cout << " Input_theta_tensor : " << inputs[1][0] << std::endl;
-  //   std::cout << " Input_phi_tensor : " << inputs[2][0] << std::endl;
-  // }
 
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "Input_energy_tensor : %f", inputs[0][0]);
   dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::prepareInput", "Input_theta_tensor : %f", inputs[1][0]);

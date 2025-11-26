@@ -44,23 +44,19 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     m_isInitialized = true;
   }
 
-  if (DEBUGPRINT) {
-    std::cout << " ----- TorchInference::runInference \n"
-              << "    # inputs = " << inputs.size() << " : ";
+  if (dd4hep::printLevel() <= dd4hep::DEBUG) {
+    dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", " ----- TorchInference::runInference -----");
+    dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "# inputs = %f : ", inputs.size());
 
     for (auto iv : inputs) {
-      std::cout << " " << iv.size() << ", ";
+      dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "%f, ", iv.size());
     }
 
-    std::cout << std::endl;
-
-    std::cout << "    # dims = " << tensDims.size() << " : ";
+    dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "# dims = %f :", tensDims.size());
 
     for (auto iv : tensDims) {
-      std::cout << " " << iv.size() << ", ";
+      dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "%f, ", iv.size());
     }
-
-    std::cout << std::endl;
   }
 
   assert(inputs.size() == tensDims.size());
@@ -71,21 +67,21 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     torch::Tensor inTens = torch::tensor(inputs[i], m_options).view(tensDims[i]);
     tensors.emplace_back(inTens);
 
-    if (DEBUGPRINT) {
-      std::cout << " inTensor " << i << " : " << inTens << std::endl;
+    if (dd4hep::printLevel() <= dd4hep::DEBUG) {
+      torch::IntArrayRef sizes = inTens.sizes();
+      for (unsigned iv = 0; iv < sizes.size(); ++iv) {
+        dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "inTens.size()[%i]: %i", iv, sizes[iv]);
+      }
     }
   }
 
   at::Tensor outTensor = m_jitModule.forward(tensors).toTensor(); //.contiguous();
-
-  if (DEBUGPRINT) {
-    std::cout << " outTensor : " << outTensor << std::endl;
+  if (dd4hep::printLevel() <= dd4hep::DEBUG) {
+    torch::IntArrayRef sizes_out = outTensor.sizes();
+    for (unsigned iv = 0; iv < sizes_out.size(); ++iv) {
+      dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "outTensor.size()[%i]: %i", iv, sizes_out[iv]);
+    }
   }
-
-  // torch.flatten(outTensor);
-  // std::cout << "**" << outTensor << std::endl;
-  // std::vector<float> output( outTensor.data_ptr<float>(),
-  // outTensor.data_ptr<float>() + outTensor.numel() );
 
   for (unsigned j = 0; j < output.size(); ++j) {
     output[j] = *(outTensor.data_ptr<float>() + j);
