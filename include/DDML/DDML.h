@@ -22,8 +22,7 @@ typedef std::vector<std::vector<int64_t>> TensorDimVecs;
  *  with cartesian position, energy and time;
  */
 struct SpacePoint {
-  SpacePoint(float x, float y, float z, float e, float t) : X(x), Y(y), Z(z), E(e), T(t) {
-  }
+  SpacePoint(float x, float y, float z, float e, float t) : X(x), Y(y), Z(z), E(e), T(t) {}
   float X = 0;
   float Y = 0;
   float Z = 0;

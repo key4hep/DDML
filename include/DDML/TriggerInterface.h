@@ -15,7 +15,7 @@ namespace ddml {
 
 class TriggerInterface {
 public:
-  virtual ~TriggerInterface() {};
+  virtual ~TriggerInterface() = default;
 
   virtual bool check_trigger(const G4FastTrack&) = 0;
 };

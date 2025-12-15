@@ -43,9 +43,7 @@ Geant4FastHitMakerGlobal::Geant4FastHitMakerGlobal() {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() {
-  delete m_navigator;
-}
+Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() { delete m_navigator; }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

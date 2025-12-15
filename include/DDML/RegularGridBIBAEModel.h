@@ -21,9 +21,9 @@ namespace ddml {
 
 class RegularGridBIBAEModel : public ModelInterface {
 public:
-  RegularGridBIBAEModel() {};
+  RegularGridBIBAEModel() = default;
 
-  virtual ~RegularGridBIBAEModel() {};
+  virtual ~RegularGridBIBAEModel() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {

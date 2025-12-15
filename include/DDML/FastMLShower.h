@@ -11,17 +11,17 @@
 #include "DDML/DDML.h"
 
 #ifndef DDML_INSTRUMENT_MODEL_SHOWER
-  #define DDML_INSTRUMENT_MODEL_SHOWER 0
+#define DDML_INSTRUMENT_MODEL_SHOWER 0
 #endif
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
-  #include "podio/Frame.h"
-  #include "podio/ROOTFrameWriter.h"
-  #include "podio/UserDataCollection.h"
+#include "podio/Frame.h"
+#include "podio/ROOTFrameWriter.h"
+#include "podio/UserDataCollection.h"
 
-  #include <chrono>
-  #include <functional>
-  #include <numeric>
+#include <chrono>
+#include <functional>
+#include <numeric>
 
 using ClockT = std::chrono::high_resolution_clock;
 
@@ -61,11 +61,11 @@ public:
   /** C'tor that calls initialize of the concrete model implementation in order
    * to allow for dedicated properties to be declared.
    */
-  FastMLShower(dd4hep::sim::Geant4Context* context, const std::string& nam) :
-      Geant4FastSimShowerModel(context, nam)
+  FastMLShower(dd4hep::sim::Geant4Context* context, const std::string& nam)
+      : Geant4FastSimShowerModel(context, nam)
 #if DDML_INSTRUMENT_MODEL_SHOWER
-      ,
-      m_timeWriter("times_" + nam + ".root")
+        ,
+        m_timeWriter("times_" + nam + ".root")
 #endif
   {
 
@@ -204,9 +204,7 @@ public:
 };
 
 struct AlwaysTrueTrigger {
-  bool check_trigger(const G4FastTrack&) {
-    return true;
-  }
+  bool check_trigger(const G4FastTrack&) { return true; }
 };
 
 /** Template class to put together a complete ML model by specifying
@@ -228,8 +226,7 @@ struct FastMLModel {
   HitMaker* hitMaker = {};
   Trigger trigger{};
 
-  FastMLModel() : hitMaker(new HitMaker) {
-  }
+  FastMLModel() : hitMaker(new HitMaker) {}
 
   const bool has_constructGeo = false;
   const bool has_constructField = false;

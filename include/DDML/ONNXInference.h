@@ -21,7 +21,7 @@ class ONNXInference : public InferenceInterface {
 public:
   ONNXInference();
 
-  virtual ~ONNXInference() {};
+  virtual ~ONNXInference() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin);

@@ -138,7 +138,6 @@ void PolyhedraBarrelGeometry::localToGlobal(G4FastTrack const& aFastTrack,
   int nLayer = m_caloLayerDistances.size();
 
   dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::localToGlobal", "nLayer = %i", nLayer);
-
   for (int l = 0; l < nLayer; ++l) {
     double r = m_caloLayerDistances[l];
     firstLayer = l;

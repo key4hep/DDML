@@ -6,8 +6,7 @@
 
 namespace ddml {
 
-TorchInference::TorchInference() {
-}
+TorchInference::TorchInference() = default;
 
 /// declare the proerties needed for the plugin
 void TorchInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -83,11 +82,6 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
       dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "outTensor.size()[%i]: %i", iv, sizes_out[iv]);
     }
   }
-
-  // torch.flatten(outTensor);
-  // std::cout << "**" << outTensor << std::endl;
-  // std::vector<float> output( outTensor.data_ptr<float>(),
-  // outTensor.data_ptr<float>() + outTensor.numel() );
 
   for (unsigned j = 0; j < output.size(); ++j) {
     output[j] = *(outTensor.data_ptr<float>() + j);
