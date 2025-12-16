@@ -21,9 +21,9 @@ namespace ddml {
 
 class PionCloudsModel : public ModelInterface {
 public:
-  PionCloudsModel() {};
+  PionCloudsModel() = default;
 
-  virtual ~PionCloudsModel() {};
+  virtual ~PionCloudsModel() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
