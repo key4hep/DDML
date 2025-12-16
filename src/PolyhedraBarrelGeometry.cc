@@ -26,6 +26,22 @@ void PolyhedraBarrelGeometry::initialize() {
     dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!",
                      m_detector.c_str());
   }
+
+  // For hadronic shower simulation
+  if (m_isHadShower == true) {
+    auto det_had = theDetector.detector(m_hadDetector);
+    auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
+    if (cal_had) {
+      for (auto l_had : cal_had->layers) {
+        m_caloLayerDistances.push_back((l_had.distance + l_had.inner_thickness) / dd4hep::mm);
+        dd4hep::printout(dd4hep::INFO, "PolyhedraBarrelGeometry::initialize", "HCAL Layer distances %f",
+                         l_had.distance + l_had.inner_thickness);
+      }
+    } else {
+      dd4hep::printout(dd4hep::ERROR, "PolyhedraBarrelGeometry::initialize", "Detector %s not found!",
+                       m_hadDetector.c_str());
+    }
+  }
 }
 
 int PolyhedraBarrelGeometry::phiSector(G4ThreeVector const& position) const {

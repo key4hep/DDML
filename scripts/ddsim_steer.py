@@ -394,15 +394,26 @@ def aiDanceTorch(kernel):
     CaloClouds = True
     L2LFlows = False
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
+    hadrons = False
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8
         ml_endcap_name = "EcalEndcap"
+
+        ## For hadron shower fast simulation
+        ml_had_barrel_name = "HcalBarrel"
+        ml_had_barrel_symmetry = 8
+        ml_had_endcap_name = "HcalEndcap"
     else:
         ml_barrel_name = "ECalBarrel"
         ml_barrel_symmetry = 12
         ml_endcap_name = "ECalEndcap"
+
+        ## For hadron shower fast simulation is needed
+        ml_had_barrel_name = "HCalBarrel"
+        ml_had_barrel_symmetry = 12
+        ml_had_endcap_name = "HCalEndcap"
 
     if BIBAE == True and Two_Angle == False:
         ml_file = "../models/BIBAE_Full_PP_cut.pt"
@@ -459,6 +470,7 @@ def aiDanceTorch(kernel):
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
+    model.isHadShower = False
     model.RegionName = "EcalBarrelRegion"
     model.Detector = ml_barrel_name
     model.Symmetry = ml_barrel_symmetry
@@ -515,15 +527,27 @@ def LoadHdf5(kernel):
     BIBAE = True
     Two_Angle = True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
+    hadrons = True
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8
         ml_endcap_name = "EcalEndcap"
+
+        ## For hadron shower fast simulation
+        ml_had_barrel_name = "HcalBarrel"
+        ml_had_barrel_symmetry = 8
+        ml_had_endcap_name = "HcalEndcap"
+
     else:
         ml_barrel_name = "ECalBarrel"
         ml_barrel_symmetry = 12
         ml_endcap_name = "ECalEndcap"
+
+        ## For hadron shower fast simulation is needed
+        ml_had_barrel_name = "HCalBarrel"
+        ml_had_barrel_symmetry = 12
+        ml_had_endcap_name = "HCalEndcap"
 
     if BIBAE == True and Two_Angle == True:
         ml_file = "../models/photons-E5050A-theta9090A-phi9090-p1.hdf5"
@@ -531,6 +555,11 @@ def LoadHdf5(kernel):
             "LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel/BarrelModelTorch"
         )
         ml_model_1 = "LoadHDF5RegularGridTwoAngleBIBAEModelEndcap/EndcapModelTorch"
+        ml_correct_angles = False
+
+    if hadrons == True:
+        ml_model_had = "LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel/BarrelModelTorch"
+        ml_had_file = "../models/PionClouds_50GeV_sp_scaled.h5"
         ml_correct_angles = False
 
     from g4units import GeV, MeV  # DO NOT REMOVE OR MOVE!!!!! (EXCLAMATION MARK)
@@ -557,6 +586,8 @@ def LoadHdf5(kernel):
         seq.adopt(sensitives)
 
     # -----------------
+    """
+    ## EM in Barrel
     model = DetectorConstruction(kernel, str(ml_model))
 
     ##   # Mandatory model parameters
@@ -578,7 +609,9 @@ def LoadHdf5(kernel):
 
     model.enableUI()
     seq.adopt(model)
+    """
     # -------------------
+    ## EM in Endcap
     model1 = DetectorConstruction(kernel, str(ml_model_1))
 
     ##   # Mandatory model parameters
@@ -599,12 +632,38 @@ def LoadHdf5(kernel):
 
     model1.enableUI()
     seq.adopt(model1)
+
+    # -------------------
+    ## Hadrons in Barrel
+    modelHad1 = DetectorConstruction(kernel, str(ml_model_had))
+
+    ##   # Mandatory model parameters
+    modelHad1.isHadShower = True
+    modelHad1.RegionName = (
+        "EcalBarrelRegion"  # or "HcalBarrelRegion"  ## hadron model triggers in ecal
+    )
+    modelHad1.Detector = ml_barrel_name
+    modelHad1.HadDetector = ml_had_barrel_name
+    modelHad1.Symmetry = ml_barrel_symmetry
+    modelHad1.HadSymmetry = ml_had_barrel_symmetry
+    modelHad1.Enable = True
+    modelHad1.CorrectForAngles = ml_correct_angles
+    # Energy boundaries are optional: Units are GeV
+    modelHad1.ApplicableParticles = {"pi+"}
+    modelHad1.Etrigger = {"pi+": 10.0 * GeV}  # trigger on lower training threshold
+    modelHad1.FilePath = ml_had_file
+    # model.OptimizeFlag = 1
+    # model.IntraOpNumThreads = 1
+
+    modelHad1.enableUI()
+    seq.adopt(modelHad1)
+
     # -------------------
 
     # Now build the physics list:
     phys = kernel.physicsList()
     ph = PhysicsList(kernel, str("Geant4FastPhysics/FastPhysicsList"))
-    ph.EnabledParticles = ["e+", "e-", "gamma"]
+    ph.EnabledParticles = ["e+", "e-", "gamma", "pi+"]
     ph.BeVerbose = True
     ph.enableUI()
     phys.adopt(ph)

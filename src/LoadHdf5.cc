@@ -19,7 +19,7 @@ void LoadHdf5::initialize() {
   // inputs and TensorDimVecs unused
 
   // Open dataset + dataspace
-  std::string datasetName = "layers";
+  std::string datasetName = "spase_points"; //"events"; //"spase_points"; //"layers";
   H5::DataSet dataset = m_file.openDataSet(datasetName);
   dd4hep::printout(dd4hep::DEBUG, "LoadHdf5::initialize", "Accessed HDF5 dataset");
   H5::DataSpace dataspace = dataset.getSpace();
@@ -28,8 +28,8 @@ void LoadHdf5::initialize() {
   // bool H5::DataSpace::isSimple() const;
 
   // Get dimensions
-  int rank = dataspace.getSimpleExtentNdims();
-  std::vector<hsize_t> dims_out(rank);
+  m_rank = dataspace.getSimpleExtentNdims();
+  std::vector<hsize_t> dims_out(m_rank);
   dataspace.getSimpleExtentDims(dims_out.data(), nullptr);
 
   // Calculate the total number of elements
@@ -39,13 +39,19 @@ void LoadHdf5::initialize() {
 
   m_dimsOut = dims_out;
 
-  assert(rank == 4); // assuming 4 dimensional input
+  assert(m_rank == 3 || m_rank == 4); // ensure either 3 dimensional PionCloud input or 4 dimensional input
+  // if m_rank == 4
   // index 0: shower number
   // index 1, 2, 3: x, y, z cell number
 
-  dd4hep::printout(dd4hep::DEBUG, "LoadHdf5::initialize", "Rank %i", rank);
+  // else if m_rank == 3
+  // index 0: shower number
+  // index 1: number of points
+  // index 2: 4 point dimensions (x, y, z, E) - currently in ILD coordinates
 
-  for (int i = 0, N = rank; i < N; ++i) {
+  dd4hep::printout(dd4hep::DEBUG, "LoadHdf5::initialize", "Rank %i", m_rank);
+
+  for (int i = 0, N = m_rank; i < N; ++i) {
     dd4hep::printout(dd4hep::DEBUG, "LoadHdf5::initialize", "dimension %i: %lu", i, (unsigned long)(m_dimsOut[i]));
   }
 
@@ -71,23 +77,29 @@ void LoadHdf5::runInference(const InputVecs&, const TensorDimVecs&, std::vector<
     m_isInitialized = true;
   }
 
-  // keep track of shower index in file
-  // LoadHdf5::incrementCounter();
-
   // If counter exceeds number of showers in file, reset
   if (m_count > m_totalSize) {
     m_count = 0;
   }
 
   // select shower from library
-  std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3],
-                            m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
+  if (m_rank == 4) {
+    std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3],
+                              m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
+    assert(shower.size() == m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
 
-  // enforce length of shower
-  assert(shower.size() == m_dimsOut[1] * m_dimsOut[2] * m_dimsOut[3]);
+    // write output
+    output = std::move(shower);
+  } else if (m_rank == 3) {
+    std::vector<float> shower(m_library.begin() + m_count * m_dimsOut[1] * m_dimsOut[2],
+                              m_library.begin() + (m_count + 1) * m_dimsOut[1] * m_dimsOut[2]);
+    assert(shower.size() == m_dimsOut[1] * m_dimsOut[2]);
 
-  // write output
-  output = std::move(shower);
+    // write output
+    output = std::move(shower);
+  } else {
+    throw std::runtime_error("Shower library does not have the correct dimensions!");
+  }
 
   ++m_count;
 }

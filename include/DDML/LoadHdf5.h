@@ -51,6 +51,9 @@ private:
   // shower library dimensions
   std::vector<unsigned long> m_dimsOut{};
 
+  // dimensions of shower library
+  int m_rank;
+
   // properties for plugin
   std::string m_filePath = {};
 
