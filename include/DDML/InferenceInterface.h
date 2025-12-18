@@ -4,22 +4,21 @@
 #include "DDML/DDML.h"
 
 #include <vector>
+#include <concepts>
 
 namespace ddml {
 
-/** The basic interface for running inference with one input vector and one
+/** The basic concept for running inference with one input vector and one
  * output vector.
  *
  *  @author F.Gaede, DESY
  *  @date Mar 2023
  */
 
-class InferenceInterface {
-public:
-  virtual ~InferenceInterface() = default;
-
+template<typename T>
+concept InferenceInterface = requires(T t, const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
   /// run the inference model - based on input vector and resized outputvector
-  virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) = 0;
+  t.runInference(inputs, tensDims, output);
 };
 
 } // namespace ddml
