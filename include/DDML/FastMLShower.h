@@ -9,6 +9,7 @@
 #include <G4Track.hh>
 
 #include "DDML/DDML.h"
+#include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/GeometryInterface.h"
 #include "DDML/InferenceInterface.h"
 #include "DDML/ModelInterface.h"
@@ -25,6 +26,7 @@
 
 #include <chrono>
 #include <functional>
+#include <memory>
 #include <numeric>
 
 using ClockT = std::chrono::high_resolution_clock;
@@ -206,21 +208,20 @@ static_assert(TriggerInterface<AlwaysTrueTrigger>, "AlwaysTrueTrigger should mod
  * @author F.Gaede, DESY
  * @date Mar 2023
  */
-template <InferenceInterface Inference, ModelInterface MLModel, GeometryInterface Geometry, class HitMaker,
+template <InferenceInterface Inference, ModelInterface MLModel, GeometryInterface Geometry,
           TriggerInterface Trigger = AlwaysTrueTrigger>
 struct FastMLModel {
   using InferenceT = Inference;
   using MLModelT = MLModel;
   using GeometryT = Geometry;
-  using HitMakerT = HitMaker;
 
   Inference inference = {};
   MLModel model = {};
   Geometry geometry = {};
-  HitMaker* hitMaker = {};
+  std::unique_ptr<Geant4FastHitMakerGlobal> hitMaker = {};
   Trigger trigger{};
 
-  FastMLModel() : hitMaker(new HitMaker) {}
+  FastMLModel() : hitMaker(std::make_unique<Geant4FastHitMakerGlobal>()) {}
 
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);
