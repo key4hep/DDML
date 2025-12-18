@@ -14,7 +14,7 @@ namespace ddml {
  *  @date Mar 2023
  */
 
-class EndcapGeometry : public GeometryInterface {
+class EndcapGeometry {
 public:
   EndcapGeometry() { initialize(); };
 
@@ -36,7 +36,7 @@ public:
 
   /** convert the local spacepoints to global spacepoints
    */
-  virtual void localToGlobal(G4FastTrack const& aFastTrack, std::vector<SpacePointVec>& spacepoints) const;
+  void localToGlobal(G4FastTrack const& aFastTrack, std::vector<SpacePointVec>& spacepoints) const;
 
 private:
   std::vector<float> m_caloLayerDistances = {};
@@ -45,6 +45,9 @@ private:
   std::string m_detector = {"EcalEndcap"};
   bool m_correctForAngles = false;
 };
+
+// Static assert to ensure EndcapGeometry models the GeometryInterface concept
+static_assert(GeometryInterface<EndcapGeometry>, "EndcapGeometry should model the GeometryInterface concept");
 
 } // namespace ddml
 #endif

@@ -9,6 +9,7 @@
 #include <G4Track.hh>
 
 #include "DDML/DDML.h"
+#include "DDML/GeometryInterface.h"
 #include "DDML/InferenceInterface.h"
 #include "DDML/ModelInterface.h"
 #include "DDML/TriggerInterface.h"
@@ -205,7 +206,7 @@ static_assert(TriggerInterface<AlwaysTrueTrigger>, "AlwaysTrueTrigger should mod
  * @author F.Gaede, DESY
  * @date Mar 2023
  */
-template <InferenceInterface Inference, ModelInterface MLModel, class Geometry, class HitMaker,
+template <InferenceInterface Inference, ModelInterface MLModel, GeometryInterface Geometry, class HitMaker,
           TriggerInterface Trigger = AlwaysTrueTrigger>
 struct FastMLModel {
   using InferenceT = Inference;
