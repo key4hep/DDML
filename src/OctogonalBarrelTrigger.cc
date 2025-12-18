@@ -4,7 +4,7 @@
 
 namespace ddml {
 
-bool OctogonalBarrelTrigger::check_trigger(const G4FastTrack& aFastTrack) {
+bool OctogonalBarrelTrigger::check_trigger(const G4FastTrack& aFastTrack) const {
   G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
   G4double global_phi = direction.phi();

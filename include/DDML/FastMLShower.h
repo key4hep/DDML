@@ -11,6 +11,7 @@
 #include "DDML/DDML.h"
 #include "DDML/InferenceInterface.h"
 #include "DDML/ModelInterface.h"
+#include "DDML/TriggerInterface.h"
 
 #ifndef DDML_INSTRUMENT_MODEL_SHOWER
 #define DDML_INSTRUMENT_MODEL_SHOWER 0
@@ -194,8 +195,9 @@ public:
 };
 
 struct AlwaysTrueTrigger {
-  bool check_trigger(const G4FastTrack&) { return true; }
+  bool check_trigger(const G4FastTrack&) const { return true; }
 };
+static_assert(TriggerInterface<AlwaysTrueTrigger>, "AlwaysTrueTrigger should model the TriggerInterface concept");
 
 /** Template class to put together a complete ML model by specifying
  * implementations for the Inference, the Model, the Geometry and a HitMaker.
@@ -204,7 +206,7 @@ struct AlwaysTrueTrigger {
  * @date Mar 2023
  */
 template <InferenceInterface Inference, ModelInterface MLModel, class Geometry, class HitMaker,
-          class Trigger = AlwaysTrueTrigger>
+          TriggerInterface Trigger = AlwaysTrueTrigger>
 struct FastMLModel {
   using InferenceT = Inference;
   using MLModelT = MLModel;
