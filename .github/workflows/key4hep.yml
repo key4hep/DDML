@@ -37,3 +37,28 @@ jobs:
         build_type: ${{ matrix.build_type }}
         image: ${{ matrix.image }}
         stack: ${{ matrix.stack }}
+
+  build-with-instrumentation:
+    strategy:
+      matrix:
+        build_type: ["release", "nightly"]
+        image: ["alma9"]
+        stack: ["key4hep"]
+        include:
+          - build_type: nightly
+            image: ubuntu24
+            stack: key4hep
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: key4hep/key4hep-actions/cache-external-data@main
+    - name: "Create .key4hep-build-env"
+      shell: bash
+      run: |
+        echo "export K4_CMAKE_EXTRA_ARGS=-DINSTRUMENT_MODEL=ON" > ${GITHUB_WORKSPACE}/.github/workflows/.key4hep-build-env
+    - uses: key4hep/key4hep-actions/key4hep-build@main
+      with:
+        build_type: ${{ matrix.build_type }}
+        image: ${{ matrix.image }}
+        stack: ${{ matrix.stack }}
