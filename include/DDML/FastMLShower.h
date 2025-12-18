@@ -16,7 +16,7 @@
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
 #include "podio/Frame.h"
-#include "podio/ROOTFrameWriter.h"
+#include "podio/ROOTWriter.h"
 #include "podio/UserDataCollection.h"
 
 #include <chrono>
@@ -54,7 +54,7 @@ protected:
   std::vector<ddml::SpacePointVec> m_spacepoints;
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
-  podio::ROOTFrameWriter m_timeWriter;
+  podio::ROOTWriter m_timeWriter;
 #endif
 
 public:
@@ -156,19 +156,19 @@ public:
     G4ThreeVector localDir = m_fastsimML.geometry.localDirection(track);
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
-    prepareInputTime.push_back(run_void_member_timed(fastsimML.model, &ML_MODEL::MLModelT::prepareInput, track,
-                                                     localDir, _input, _dimVecs, _output)
+    prepareInputTime.push_back(run_void_member_timed(m_fastsimML.model, &ML_MODEL::MLModelT::prepareInput, track,
+                                                     localDir, m_input, m_dimVecs, m_output)
                                    .count());
     runInferenceTime.push_back(
-        run_void_member_timed(fastsimML.inference, &ML_MODEL::InferenceT::runInference, _input, _dimVecs, _output)
+        run_void_member_timed(m_fastsimML.inference, &ML_MODEL::InferenceT::runInference, m_input, m_dimVecs, m_output)
             .count());
-    convertOutputTime.push_back(run_void_member_timed(fastsimML.model, &ML_MODEL::MLModelT::convertOutput, track,
-                                                      localDir, _output, _spacepoints)
+    convertOutputTime.push_back(run_void_member_timed(m_fastsimML.model, &ML_MODEL::MLModelT::convertOutput, track,
+                                                      localDir, m_output, m_spacepoints)
                                     .count());
     localToGlobalTime.push_back(
-        run_void_member_timed(fastsimML.geometry, &ML_MODEL::GeometryT::localToGlobal, track, _spacepoints).count());
+        run_void_member_timed(m_fastsimML.geometry, &ML_MODEL::GeometryT::localToGlobal, track, m_spacepoints).count());
 
-    nHits.push_back(std::accumulate(_output.begin(), _output.end(), 0u,
+    nHits.push_back(std::accumulate(m_output.begin(), m_output.end(), 0u,
                                     [](const auto sum, const auto v) { return sum + (v != 0); }));
 #else
     m_fastsimML.model.prepareInput(track, localDir, m_input, m_dimVecs, m_output);
