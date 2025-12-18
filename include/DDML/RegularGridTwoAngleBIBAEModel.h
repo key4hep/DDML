@@ -21,11 +21,11 @@ namespace ddml {
  *  @date Aug. 2023
  */
 
-class RegularGridTwoAngleBIBAEModel : public ModelInterface {
+class RegularGridTwoAngleBIBAEModel {
 public:
   RegularGridTwoAngleBIBAEModel() = default;
 
-  virtual ~RegularGridTwoAngleBIBAEModel() = default;
+  ~RegularGridTwoAngleBIBAEModel() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -43,13 +43,13 @@ public:
    *  based on the current FastTrack (e.g. extract kinetic energy and incident
    *  angles.)
    */
-  virtual void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
-                            TensorDimVecs& tensDims, std::vector<float>& output);
+  void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                    TensorDimVecs& tensDims, std::vector<float>& output);
 
   /** create a vector of spacepoints per layer interpreting the model output
    */
-  virtual void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
-                             const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
+  void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, const std::vector<float>& output,
+                     std::vector<SpacePointVec>& spacepoints);
 
 private:
   /// model properties for plugin
@@ -82,6 +82,8 @@ private:
 
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
+
+static_assert(ModelInterface<RegularGridTwoAngleBIBAEModel>, "RegularGridTwoAngleBIBAEModel must fulfill the ModelInterface concept");
 
 } // namespace ddml
 #endif

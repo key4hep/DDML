@@ -9,6 +9,7 @@
 #include <G4Track.hh>
 
 #include "DDML/DDML.h"
+#include "DDML/ModelInterface.h"
 
 #ifndef DDML_INSTRUMENT_MODEL_SHOWER
 #define DDML_INSTRUMENT_MODEL_SHOWER 0
@@ -201,7 +202,7 @@ struct AlwaysTrueTrigger {
  * @author F.Gaede, DESY
  * @date Mar 2023
  */
-template <class Inference, class MLModel, class Geometry, class HitMaker, class Trigger = AlwaysTrueTrigger>
+template <class Inference, ModelInterface MLModel, class Geometry, class HitMaker, class Trigger = AlwaysTrueTrigger>
 struct FastMLModel {
   using InferenceT = Inference;
   using MLModelT = MLModel;
