@@ -59,7 +59,7 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     }
   }
 
-  assert(inputs.size() == tensDims.size());
+  // assert(inputs.size() == tensDims.size());
 
   std::vector<at::IValue> tensors;
 

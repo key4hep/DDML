@@ -24,10 +24,10 @@ SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
 SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
-SIM.numberOfEvents = 42
+SIM.numberOfEvents = 3
 ## Outputfile from the simulation,only lcio output is supported
 # SIM.outputFile = "dummyOutput_edm4hep.root" ##"dummyOutput.slcio"
-SIM.outputFile = "dummyOutput.slcio"
+SIM.outputFile = "dummyOutput.edm4hep.root"
 
 ## Physics list to use in simulation
 SIM.physicsList = None

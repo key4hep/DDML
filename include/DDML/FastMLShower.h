@@ -129,11 +129,13 @@ public:
   /// User callback to model the particle/energy shower - details defined in
   /// ML_MODEL
   virtual void modelShower(const G4FastTrack& track, G4FastStep& step) override {
+    dd4hep::printout(dd4hep::INFO, "FastMLShower::inference", "Running inference");
     // remove particle from further processing by G4
     step.KillPrimaryTrack();
     step.ProposePrimaryTrackPathLength(0.0);
     G4double energy = track.GetPrimaryTrack()->GetKineticEnergy();
     step.ProposeTotalEnergyDeposited(energy);
+    markHandledByFastSim(track);
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
     podio::UserDataCollection<double> prepareInputTime;
