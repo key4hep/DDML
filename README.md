@@ -1,4 +1,6 @@
-# DDFastShowerML
+# DDML
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17475368.svg)](https://doi.org/10.5281/zenodo.17475368)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/key4hep/DDML/key4hep.yml)](https://github.com/key4hep/DDML/actions/workflows/key4hep.yml)
 
 Library with utilities and plugins that allow running fast simulation in a Geant4 application using ML inference from within ddsim (DDG4).
 

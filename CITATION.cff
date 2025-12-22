@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+title: "key4hep/DDML"
+version: v0.2.0
+date-released: 2025-10-29
+authors:
+  - family-names: Gaede
+    given-names: Frank
+  - family-names: Madlener
+    given-names: Thomas
+  - family-names: McKeown
+    given-names: Peter
+  - family-names: Zaborowska
+    given-names: Anna
+  - family-names: Buss
+    given-names: Thorsten
+  - family-names: Korol
+    given-names: Anatolii
+doi: 10.5281/zenodo.17475368
+url: https://doi.org/10.5281/zenodo.17475368
+repository-code: https://github.com/key4hep/DDML
+abstract: "Library with utilities and plugins that allow running fast machine learning based calorimeter shower simulation within DDhep."
+keywords:
+  - fast-simulation
+  - machine-learning
+  - geant4
+  - calorimeter
+  - high-energy-physics
