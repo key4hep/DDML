@@ -1,6 +1,8 @@
 # DDML
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17475368.svg)](https://doi.org/10.5281/zenodo.17475368)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/key4hep/DDML/key4hep.yml)](https://github.com/key4hep/DDML/actions/workflows/key4hep.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/key4hep/DDML/key4hep.yml?branch=main&label=build&logo=github)](https://github.com/key4hep/DDML/actions/workflows/key4hep.yml)
+[![pre-commit](https://img.shields.io/github/actions/workflow/status/key4hep/DDML/pre-commit.yml?branch=main&label=pre-commit&logo=github)](https://github.com/key4hep/DDML/actions/workflows/pre-commit.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 Library with utilities and plugins that allow running fast simulation in a Geant4 application using ML inference from within ddsim (DDG4).
 
