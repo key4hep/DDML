@@ -18,7 +18,7 @@ namespace ddml {
 template<typename T>
 concept InferenceInterface = requires(T t, const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
   /// run the inference model - based on input vector and resized outputvector
-  t.runInference(inputs, tensDims, output);
+  { t.runInference(inputs, tensDims, output) } -> std::same_as<void>;
 };
 
 } // namespace ddml
