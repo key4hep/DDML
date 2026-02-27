@@ -1,8 +1,8 @@
 #ifndef ModelInterface_H
 #define ModelInterface_H
 
-#include <vector>
 #include <concepts>
+#include <vector>
 
 #include "DDML/DDML.h"
 
@@ -17,9 +17,9 @@ namespace ddml {
  *  @author F.Gaede, DESY
  *  @date Mar 2023
  */
-template<typename T>
-concept ModelInterface = requires(T t, G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, 
-                                  InputVecs& inputs, TensorDimVecs& tensDims, std::vector<float>& output,
+template <typename T>
+concept ModelInterface = requires(T t, G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                                  TensorDimVecs& tensDims, std::vector<float>& output,
                                   const std::vector<float>& constOutput, std::vector<SpacePointVec>& spacepoints) {
   /** prepare the input vector and resize the output vector for this model
    *  based on the current FastTrack (e.g. extract kinetic energy and incident

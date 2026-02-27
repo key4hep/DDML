@@ -62,7 +62,8 @@ private:
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
 
-static_assert(ModelInterface<CaloCloudsTwoAngleModel>, "CaloCloudsTwoAngleModel must fulfill the ModelInterface concept");
+static_assert(ModelInterface<CaloCloudsTwoAngleModel>,
+              "CaloCloudsTwoAngleModel must fulfill the ModelInterface concept");
 
 } // namespace ddml
 #endif

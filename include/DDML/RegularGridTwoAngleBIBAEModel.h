@@ -83,7 +83,8 @@ private:
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
 
-static_assert(ModelInterface<RegularGridTwoAngleBIBAEModel>, "RegularGridTwoAngleBIBAEModel must fulfill the ModelInterface concept");
+static_assert(ModelInterface<RegularGridTwoAngleBIBAEModel>,
+              "RegularGridTwoAngleBIBAEModel must fulfill the ModelInterface concept");
 
 } // namespace ddml
 #endif
