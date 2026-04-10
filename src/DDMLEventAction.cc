@@ -23,8 +23,6 @@ DDMLEventAction::~DDMLEventAction() {
     dd4hep::InstanceCount::decrement(this);
     }
 
-void DDMLEventAction::begin(const G4Event*){}
-
 void DDMLEventAction::end(const G4Event*) {
     // Get analysis manager
     auto analysisManager = G4AnalysisManager::Instance();
