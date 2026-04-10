@@ -29,11 +29,6 @@ class DDMLRunAction: public dd4hep::sim::Geant4RunAction {
         void begin(const G4Run*) override;
         /// End-of-run callback
         void end(const G4Run*) override;
-        /// begin-of-event callback
-        void beginEvent(const G4Event*) ;
-        /// End-of-event callback
-        void endEvent(const G4Event*) ;
-
 };
 
 } // namespace
