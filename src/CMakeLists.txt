@@ -12,6 +12,8 @@ set(sources
   EndcapTriggerTwoAngleBIBAE.cc
   CaloCloudsTwoAngleModel.cc
   L2LFlowsModel.cc
+  DDMLRunAction.cc
+  DDMLEventAction.cc
   )
 
 add_dd4hep_plugin(${PROJECT_NAME} SHARED ${sources})
@@ -35,15 +37,16 @@ if(INSTRUMENT_MODEL)
   )
 endif()
 
-if(RECORD_CALO_IMPACT)
-  target_sources(${PROJECT_NAME} PRIVATE
-    DDMLRunAction.cc
-    DDMLEventAction.cc
-  )
-  target_compile_definitions(${PROJECT_NAME} PUBLIC
-    DDML_RECORD_CALO_IMPACT=1
-  )
-endif()
+### Safe to remove
+#if(RECORD_CALO_IMPACT)
+#  target_sources(${PROJECT_NAME} PRIVATE
+#    DDMLRunAction.cc
+#    DDMLEventAction.cc
+#  )
+#  target_compile_definitions(${PROJECT_NAME} PUBLIC
+#    DDML_RECORD_CALO_IMPACT=1
+#  )
+#endif()
 
 
 
@@ -109,6 +112,8 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/DDML.h
   ${PROJECT_SOURCE_DIR}/include/DDML/CaloCloudsTwoAngleModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/L2LFlowsModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h 
+  ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h
   )
 
 if(OnnxRuntime_FOUND)
@@ -123,9 +128,10 @@ if(HDF5_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/LoadHdf5.h)
 endif()
 
-if(RECORD_CALO_IMPACT)
-  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h)
-endif()
+# SAFE TO REMOVE!
+#if(RECORD_CALO_IMPACT)
+#  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h)
+#endif()
 
 #install(FILES
 #  ${headers}

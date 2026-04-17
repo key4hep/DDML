@@ -14,9 +14,11 @@
 #define DDML_INSTRUMENT_MODEL_SHOWER 0
 #endif
 
+/*** Safe to remove?
 #ifndef DDML_RECORD_CALO_IMPACT
   #define DDML_RECORD_CALO_IMPACT 0
 #endif
+*/
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
 #include "podio/Frame.h"
@@ -39,11 +41,13 @@ inline auto run_void_member_timed(Obj& obj, MemberFunc func, Args&&... args) {
 }
 #endif
 
+/* TO REMOVE!
 #if DDML_RECORD_CALO_IMPACT
-  //#include "G4EventManager.hh"
-  //#include "DDML/DDMLEventAction.h"
   #include "G4AnalysisManager.hh"
 #endif
+*/
+// Required to record calo entry position
+#include "G4AnalysisManager.hh"
 
 namespace ddml {
 /** The templated base class for running fast shower simulation with ML.
@@ -154,7 +158,9 @@ public:
     podio::UserDataCollection<uint64_t> nHits;
 #endif
 
-#if DDML_RECORD_CALO_IMPACT
+// TO REMOVE!
+//#if DDML_RECORD_CALO_IMPACT
+if (m_fastsimML.m_record_calo_impact){
     // Create analysis manager
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
@@ -186,8 +192,10 @@ public:
     mEventAction->SetElCaloMC_DirY(direction.y());
     mEventAction->SetElCaloMC_DirZ(direction.z());
     */
+}
 
-#endif
+// TO REMOVE!
+//#endif
 
     for (auto& invec : m_input) {
       invec.clear();
@@ -279,10 +287,13 @@ struct FastMLModel {
   const bool has_check_applicability = false;
   const bool has_check_trigger = false;
 
+  bool m_record_calo_impact = false;
+
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);
     inference.declareProperties(plugin);
     geometry.declareProperties(plugin);
+    plugin->declareProperty("Record_Calo_Impact", this->m_record_calo_impact);
   }
 };
 
