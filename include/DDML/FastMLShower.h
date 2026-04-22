@@ -95,24 +95,18 @@ public:
 
   /// Geometry construction callback. Called at "Construct()"
   virtual void constructGeo(dd4hep::sim::Geant4DetectorConstructionContext* ctxt) override {
-    // if( fastsimML.has_constructGeo )      fastsimML.constructGeo( ctxt ) ;
-    // else
     this->Geant4FastSimShowerModel::constructGeo(ctxt);
   }
 
   /// Electromagnetic field construction callback. Called at
   /// "ConstructSDandField()"
   virtual void constructField(dd4hep::sim::Geant4DetectorConstructionContext* ctxt) override {
-    // if( fastsimML.has_constructField )      fastsimML.constructField( ctxt )
-    // ; else
     this->Geant4FastSimShowerModel::constructField(ctxt);
   }
 
   /// Sensitive detector construction callback. Called at
   /// "ConstructSDandField()"
   virtual void constructSensitives(dd4hep::sim::Geant4DetectorConstructionContext* ctxt) override {
-    // if( fastsimML.has_constructSensitives ) fastsimML.constructSensitives(
-    // ctxt ) ; else
     this->Geant4FastSimShowerModel::constructSensitives(ctxt);
   }
 
@@ -122,8 +116,6 @@ public:
    * 'ApplicableParticles'
    */
   virtual bool check_applicability(const G4ParticleDefinition& particle) override {
-    // if( fastsimML.has_check_applicability )   return
-    // fastsimML.check_applicability(particle) ; else
     return this->Geant4FastSimShowerModel::check_applicability(particle);
   }
 
@@ -132,8 +124,6 @@ public:
    * 'Etrigger' the kinetic energy is bigger than the value.
    */
   virtual bool check_trigger(const G4FastTrack& track) override {
-    // if( fastsimML.has_check_trigger ) return fastsimML.check_trigger(track )
-    // ; else
     if (this->Geant4FastSimShowerModel::check_trigger(track)) {
       return m_fastsimML.trigger.check_trigger(track);
     }
@@ -143,11 +133,9 @@ public:
   /// User callback to model the particle/energy shower - details defined in
   /// ML_MODEL
   virtual void modelShower(const G4FastTrack& track, G4FastStep& step) override {
-    // remove particle from further processing by G4
-    step.KillPrimaryTrack();
-    step.ProposePrimaryTrackPathLength(0.0);
     G4double energy = track.GetPrimaryTrack()->GetKineticEnergy();
-    step.ProposeTotalEnergyDeposited(energy);
+    // remove particle from further processing by G4
+    killParticle(step, energy);
 
 #if DDML_INSTRUMENT_MODEL_SHOWER
     podio::UserDataCollection<double> prepareInputTime;
