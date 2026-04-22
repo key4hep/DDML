@@ -45,15 +45,14 @@ void PolyhedraBarrelGeometry::initialize() {
 
   // For hadronic shower simulation
   if (m_isHadShower == true) {
-      auto det_had = theDetector.detector(m_HadDetector);
-      auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
+    auto det_had = theDetector.detector(m_HadDetector);
+    auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
     if (cal_had) {
       for (auto l_had : cal_had->layers) {
         m_caloLayerDistances.push_back((l_had.distance + l_had.inner_thickness) / dd4hep::mm);
         std::cout << " HCAL Layer distances " << l_had.distance + l_had.inner_thickness << std::endl;
       }
-    }
-    else {
+    } else {
       std::cout << " ###### error:  detector " << m_HadDetector << " not found !" << std::endl;
     }
   }

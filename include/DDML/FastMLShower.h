@@ -158,44 +158,45 @@ public:
     podio::UserDataCollection<uint64_t> nHits;
 #endif
 
-// TO REMOVE!
-//#if DDML_RECORD_CALO_IMPACT
-if (m_fastsimML.m_record_calo_impact){
-    // Create analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+    // TO REMOVE!
+    // #if DDML_RECORD_CALO_IMPACT
+    if (m_fastsimML.m_record_calo_impact) {
+      // Create analysis manager
+      G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
-    // Store information about particle impact on calorimter face from track
-    G4int PDG = track.GetPrimaryTrack()->GetParticleDefinition()->GetPDGEncoding();
-    G4ThreeVector position = track.GetPrimaryTrack()->GetPosition();
-    G4ThreeVector direction = track.GetPrimaryTrack()->GetMomentumDirection();
+      // Store information about particle impact on calorimter face from track
+      G4int PDG = track.GetPrimaryTrack()->GetParticleDefinition()->GetPDGEncoding();
+      G4ThreeVector position = track.GetPrimaryTrack()->GetPosition();
+      G4ThreeVector direction = track.GetPrimaryTrack()->GetMomentumDirection();
 
-    // Fill analysis manager
-    analysisManager->FillNtupleIColumn(1, 0, PDG);
-    analysisManager->FillNtupleDColumn(1, 1, energy);
-    analysisManager->FillNtupleDColumn(1, 2, position.x());
-    analysisManager->FillNtupleDColumn(1, 3, position.y());
-    analysisManager->FillNtupleDColumn(1, 4, position.z());
-    analysisManager->FillNtupleDColumn(1, 5, direction.x());
-    analysisManager->FillNtupleDColumn(1, 6, direction.y());
-    analysisManager->FillNtupleDColumn(1, 7, direction.z());
+      // Fill analysis manager
+      analysisManager->FillNtupleIColumn(1, 0, PDG);
+      analysisManager->FillNtupleDColumn(1, 1, energy);
+      analysisManager->FillNtupleDColumn(1, 2, position.x());
+      analysisManager->FillNtupleDColumn(1, 3, position.y());
+      analysisManager->FillNtupleDColumn(1, 4, position.z());
+      analysisManager->FillNtupleDColumn(1, 5, direction.x());
+      analysisManager->FillNtupleDColumn(1, 6, direction.y());
+      analysisManager->FillNtupleDColumn(1, 7, direction.z());
 
-    analysisManager->AddNtupleRow(1);
+      analysisManager->AddNtupleRow(1);
 
-    /*
-    DDMLEventAction* mEventAction = dynamic_cast<DDMLEventAction*>(G4EventManager::GetEventManager()->GetUserEventAction());
-    mEventAction->SetElCaloMC_PDG(PDG);
-    mEventAction->SetElCaloMC_E(energy);
-    mEventAction->SetElCaloMC_PosX(position.x());
-    mEventAction->SetElCaloMC_PosY(position.y());
-    mEventAction->SetElCaloMC_PosZ(position.z());
-    mEventAction->SetElCaloMC_DirX(direction.x());
-    mEventAction->SetElCaloMC_DirY(direction.y());
-    mEventAction->SetElCaloMC_DirZ(direction.z());
-    */
-}
+      /*
+      DDMLEventAction* mEventAction =
+      dynamic_cast<DDMLEventAction*>(G4EventManager::GetEventManager()->GetUserEventAction());
+      mEventAction->SetElCaloMC_PDG(PDG);
+      mEventAction->SetElCaloMC_E(energy);
+      mEventAction->SetElCaloMC_PosX(position.x());
+      mEventAction->SetElCaloMC_PosY(position.y());
+      mEventAction->SetElCaloMC_PosZ(position.z());
+      mEventAction->SetElCaloMC_DirX(direction.x());
+      mEventAction->SetElCaloMC_DirY(direction.y());
+      mEventAction->SetElCaloMC_DirZ(direction.z());
+      */
+    }
 
-// TO REMOVE!
-//#endif
+    // TO REMOVE!
+    // #endif
 
     for (auto& invec : m_input) {
       invec.clear();

@@ -402,11 +402,12 @@ def aiDanceTorch(kernel):
     if Record_Calo_Entry:
         from DDG4 import RunAction
         from DDG4 import EventAction
+
         ### Configure Run actions
-        run1 = RunAction(kernel, 'DDMLRunAction/runaction')
+        run1 = RunAction(kernel, "DDMLRunAction/runaction")
         kernel.registerGlobalAction(run1)
         kernel.runAction().add(run1)
-        event1 = EventAction(kernel, 'DDMLEventAction/eventaction')
+        event1 = EventAction(kernel, "DDMLEventAction/eventaction")
         kernel.registerGlobalAction(event1)
         kernel.eventAction().add(event1)
 
