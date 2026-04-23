@@ -16,16 +16,19 @@ namespace ddml {
  *
  */
 
-class OctogonalBarrelTrigger : public TriggerInterface {
+class OctogonalBarrelTrigger {
 public:
   OctogonalBarrelTrigger() = default;
 
-  virtual ~OctogonalBarrelTrigger() = default;
+  ~OctogonalBarrelTrigger() = default;
 
   // check trigger
-
-  virtual bool check_trigger(const G4FastTrack& aFastTrack);
+  bool check_trigger(const G4FastTrack& aFastTrack) const;
 };
+
+// Ensure this class models the TriggerInterface concept
+static_assert(TriggerInterface<OctogonalBarrelTrigger>,
+              "OctogonalBarrelTrigger should model the TriggerInterface concept");
 
 } // namespace ddml
 #endif

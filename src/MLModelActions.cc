@@ -33,86 +33,73 @@ namespace ddml {
 #ifdef DDML_USE_ONNX_INFERENCE
 /// a concrete model for regular grid GANs applied to the barrel calorimeter
 /// with ONNX
-typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::RegularGridGANModel, ddml::PolyhedraBarrelGeometry,
-                                 Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::RegularGridGANModel, ddml::PolyhedraBarrelGeometry>>
     RegularGridGANPolyhedraBarrelONNXModel;
 
 /// a concrete model for regular grid GANs applied to the endcap calorimeter
 /// with ONNX
-typedef FastMLShower<
-    FastMLModel<ddml::ONNXInference, ddml::RegularGridGANModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::RegularGridGANModel, ddml::EndcapGeometry>>
     RegularGridGANEndcapONNXModel;
 
 /// Par04 example
-typedef FastMLShower<
-    FastMLModel<ddml::ONNXInference, ddml::Par04ExampleVAE, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::Par04ExampleVAE, ddml::PolyhedraBarrelGeometry>>
     Par04ExampleVAEPolyhedraBarrelONNXModel;
 
 /// a concrete model for regular grid GANs applied to the endcap calorimeter
 /// with ONNX
-typedef FastMLShower<
-    FastMLModel<ddml::ONNXInference, ddml::Par04ExampleVAE, ddml::EndcapGeometry, Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::ONNXInference, ddml::Par04ExampleVAE, ddml::EndcapGeometry>>
     Par04ExampleVAEEndcapONNXModel;
 #endif
 
 #ifdef DDML_USE_TORCH_INFERENCE
 /// a concrete model for regular grid GANs applied to the barrel calorimeter
 /// with Torch
-typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridGANModel, ddml::PolyhedraBarrelGeometry,
-                                 Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridGANModel, ddml::PolyhedraBarrelGeometry>>
     RegularGridGANPolyhedraBarrelTorchModel;
 
 /// a concrete model for regular grid GANs applied to the endcap calorimeter
 /// with Torch
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::RegularGridGANModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridGANModel, ddml::EndcapGeometry>>
     RegularGridGANEndcapTorchModel;
 
 /// Model for BIBAE regular grid inference in the barrel calorimeter with Torch
-typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridBIBAEModel, ddml::PolyhedraBarrelGeometry,
-                                 Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridBIBAEModel, ddml::PolyhedraBarrelGeometry>>
     RegularGridBIBAEPolyhedraBarrelTorchModel;
 
 /// Model for BIBAE regular grid inference in the endcap calorimeter with Torch
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::RegularGridBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal>>
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridBIBAEModel, ddml::EndcapGeometry>>
     RegularGridBIBAEEndcapTorchModel;
 
 /// Model for two angle BIBAE regular grid inference in the barrel calorimeter
 /// with Torch
-typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridTwoAngleBIBAEModel,
-                                 ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
-                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+typedef FastMLShower<
+    FastMLModel<ddml::TorchInference, ddml::RegularGridTwoAngleBIBAEModel, ddml::PolyhedraBarrelGeometry,
+                ddml::OctogonalBarrelTrigger>> // add ML trigger
     RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel;
 
 /// Model for two angle BIBAE regular grid inference in the endcap calorimter
 /// with Torch
 typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry,
-                                 Geant4FastHitMakerGlobal,
                                  ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     RegularGridTwoAngleBIBAEModelEndcapTorchModel;
 
 /// CaloClouds Model for the barrel calorimeter with Torch
 typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::CaloCloudsTwoAngleModel, ddml::PolyhedraBarrelGeometry,
-                                 Geant4FastHitMakerGlobal,
                                  ddml::OctogonalBarrelTrigger>> // add ML trigger
     CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel;
 
 /// CaloClouds Model for the endcap calorimeter with Torch
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::CaloCloudsTwoAngleModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
-                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::CaloCloudsTwoAngleModel, ddml::EndcapGeometry,
+                                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     CaloCloudsTwoAngleModelEndcapTorchModel;
 
 /// L2L Flows Model
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
-                ddml::OctogonalBarrelTrigger>> // add ML trigger
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::PolyhedraBarrelGeometry,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
     L2LFlowsModelPolyhedraBarrelTorchModel;
 /// L2L Flows Model
-typedef FastMLShower<
-    FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
-                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml::EndcapGeometry,
+                                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     L2LFlowsModelEndcapTorchModel;
 #endif
 
@@ -120,23 +107,20 @@ typedef FastMLShower<
 /// Load from HDF5 file- as an example for the two angle BIBAE regular grid
 // Barrel
 typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::PolyhedraBarrelGeometry,
-                                 Geant4FastHitMakerGlobal,
                                  ddml::OctogonalBarrelTrigger>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel;
 // Endcap
-typedef FastMLShower<
-    FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
-                ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEModel, ddml::EndcapGeometry,
+                                 ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
 
 /// Load from HDF5 file- as an example for Hadron showers from PionClouds
 // Barrel
-typedef FastMLShower<
-    FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::PolyhedraBarrelGeometry, Geant4FastHitMakerGlobal,
-                ddml::OctogonalBarrelTrigger>> // add ML trigger
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::PolyhedraBarrelGeometry,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
     LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel;
 // Endcap // ENDCAP IS CURRENTLY NOT IMPLEMENTED!!!!
-typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::EndcapGeometry, Geant4FastHitMakerGlobal,
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::EndcapGeometry,
                                  ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5PionCloudsPCHadronModelEndcap;
 #endif

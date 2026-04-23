@@ -14,11 +14,11 @@ namespace ddml {
  *  @date Mar 2023
  */
 
-class RegularGridGANModel : public ModelInterface {
+class RegularGridGANModel {
 public:
   RegularGridGANModel() = default;
 
-  virtual ~RegularGridGANModel() = default;
+  ~RegularGridGANModel() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -37,13 +37,13 @@ public:
    *  angles.)
    */
 
-  virtual void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
-                            TensorDimVecs& tensDims, std::vector<float>& output);
+  void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                    TensorDimVecs& tensDims, std::vector<float>& output);
 
   /** create a vector of spacepoints per layer interpreting the model output
    */
-  virtual void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
-                             const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
+  void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, const std::vector<float>& output,
+                     std::vector<SpacePointVec>& spacepoints);
 
 private:
   /// model properties for plugin
@@ -55,6 +55,8 @@ private:
   float m_cellSizeY = 5.;
   TensorDimVecs m_tensDims = {{1, 100, 1, 1, 1}, {1, 1, 1, 1, 1}};
 };
+
+static_assert(ModelInterface<RegularGridGANModel>, "RegularGridGANModel must fulfill the ModelInterface concept");
 
 } // namespace ddml
 #endif

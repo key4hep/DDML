@@ -1,8 +1,9 @@
 #ifndef CaloCloudsTwoAngleModel_H
 #define CaloCloudsTwoAngleModel_H
 
-#include "DDML/FastMLShower.h"
 #include "DDML/ModelInterface.h"
+
+#include <DDG4/Geant4Action.h>
 
 namespace ddml {
 
@@ -18,11 +19,11 @@ namespace ddml {
  *  @date May. 2024
  */
 
-class CaloCloudsTwoAngleModel : public ModelInterface {
+class CaloCloudsTwoAngleModel {
 public:
   CaloCloudsTwoAngleModel() = default;
 
-  virtual ~CaloCloudsTwoAngleModel() = default;
+  ~CaloCloudsTwoAngleModel() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -33,13 +34,13 @@ public:
    *  based on the current FastTrack (e.g. extract kinetic energy and incident
    *  angles.)
    */
-  virtual void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
-                            TensorDimVecs& tensDims, std::vector<float>& output);
+  void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                    TensorDimVecs& tensDims, std::vector<float>& output);
 
   /** create a vector of spacepoints per layer interpreting the model output
    */
-  virtual void convertOutput(G4FastTrack const&, G4ThreeVector const&, const std::vector<float>& output,
-                             std::vector<SpacePointVec>& spacepoints);
+  void convertOutput(G4FastTrack const&, G4ThreeVector const&, const std::vector<float>& output,
+                     std::vector<SpacePointVec>& spacepoints);
 
 private:
   /// model properties for plugin
@@ -60,6 +61,9 @@ private:
 
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
+
+static_assert(ModelInterface<CaloCloudsTwoAngleModel>,
+              "CaloCloudsTwoAngleModel must fulfill the ModelInterface concept");
 
 } // namespace ddml
 #endif

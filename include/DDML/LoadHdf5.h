@@ -22,7 +22,7 @@ namespace ddml {
  *  @date  Sep. 2024
  */
 
-class LoadHdf5 : public InferenceInterface {
+class LoadHdf5 {
 public:
   LoadHdf5() = default;
 
@@ -35,7 +35,7 @@ public:
   void initialize();
 
   /// run the inference model - based on input vector and resized outputvector
-  void runInference(const InputVecs&, const TensorDimVecs&, std::vector<float>& output) override;
+  void runInference(const InputVecs&, const TensorDimVecs&, std::vector<float>& output);
 
 private:
   H5::H5File m_file = 0;
@@ -60,6 +60,8 @@ private:
   // counter to keep track of location in file
   uint32_t m_count{0};
 };
+
+static_assert(InferenceInterface<LoadHdf5>, "LoadHdf5 must satisfy InferenceInterface concept");
 
 } // namespace ddml
 #endif

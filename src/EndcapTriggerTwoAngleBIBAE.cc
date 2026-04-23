@@ -4,7 +4,7 @@
 
 namespace ddml {
 
-bool EndcapTriggerTwoAngleBIBAE::check_trigger(const G4FastTrack& aFastTrack) {
+bool EndcapTriggerTwoAngleBIBAE::check_trigger(const G4FastTrack& aFastTrack) const {
   G4ThreeVector direction = aFastTrack.GetPrimaryTrack()->GetMomentumDirection();
 
   G4double global_theta = direction.theta();

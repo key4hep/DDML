@@ -9,6 +9,11 @@
 #include <G4Track.hh>
 
 #include "DDML/DDML.h"
+#include "DDML/Geant4FastHitMakerGlobal.h"
+#include "DDML/GeometryInterface.h"
+#include "DDML/InferenceInterface.h"
+#include "DDML/ModelInterface.h"
+#include "DDML/TriggerInterface.h"
 
 #ifndef DDML_INSTRUMENT_MODEL_SHOWER
 #define DDML_INSTRUMENT_MODEL_SHOWER 0
@@ -21,6 +26,7 @@
 
 #include <chrono>
 #include <functional>
+#include <memory>
 #include <numeric>
 
 using ClockT = std::chrono::high_resolution_clock;
@@ -192,8 +198,9 @@ public:
 };
 
 struct AlwaysTrueTrigger {
-  bool check_trigger(const G4FastTrack&) { return true; }
+  bool check_trigger(const G4FastTrack&) const { return true; }
 };
+static_assert(TriggerInterface<AlwaysTrueTrigger>, "AlwaysTrueTrigger should model the TriggerInterface concept");
 
 /** Template class to put together a complete ML model by specifying
  * implementations for the Inference, the Model, the Geometry and a HitMaker.
@@ -201,20 +208,20 @@ struct AlwaysTrueTrigger {
  * @author F.Gaede, DESY
  * @date Mar 2023
  */
-template <class Inference, class MLModel, class Geometry, class HitMaker, class Trigger = AlwaysTrueTrigger>
+template <InferenceInterface Inference, ModelInterface MLModel, GeometryInterface Geometry,
+          TriggerInterface Trigger = AlwaysTrueTrigger>
 struct FastMLModel {
   using InferenceT = Inference;
   using MLModelT = MLModel;
   using GeometryT = Geometry;
-  using HitMakerT = HitMaker;
 
   Inference inference = {};
   MLModel model = {};
   Geometry geometry = {};
-  HitMaker* hitMaker = {};
+  std::unique_ptr<Geant4FastHitMakerGlobal> hitMaker = {};
   Trigger trigger{};
 
-  FastMLModel() : hitMaker(new HitMaker) {}
+  FastMLModel() : hitMaker(std::make_unique<Geant4FastHitMakerGlobal>()) {}
 
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);

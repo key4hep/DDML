@@ -19,11 +19,11 @@ namespace ddml {
  *
  */
 
-class PolyhedraBarrelGeometry : public GeometryInterface {
+class PolyhedraBarrelGeometry {
 public:
   PolyhedraBarrelGeometry() { initialize(); };
 
-  virtual ~PolyhedraBarrelGeometry() = default;
+  ~PolyhedraBarrelGeometry() = default;
 
   /// initialize the plugin - after properties have been set
   void initialize();
@@ -45,7 +45,7 @@ public:
 
   /** convert the local spacepoints to global spacepoints
    */
-  virtual void localToGlobal(G4FastTrack const& aFastTrack, std::vector<SpacePointVec>& spacepoints) const;
+  void localToGlobal(G4FastTrack const& aFastTrack, std::vector<SpacePointVec>& spacepoints) const;
 
 protected:
   /// local helper
@@ -62,6 +62,10 @@ private:
   std::string m_hadDetector = {"HcalBarrel"};
   int m_nHadSymmetry = m_nSymmetry;
 };
+
+// Static assert to ensure PolyhedraBarrelGeometry models the GeometryInterface concept
+static_assert(GeometryInterface<PolyhedraBarrelGeometry>,
+              "PolyhedraBarrelGeomtry should model the GeometryInterface concept");
 
 } // namespace ddml
 #endif
