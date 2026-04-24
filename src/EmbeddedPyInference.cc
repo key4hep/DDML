@@ -17,6 +17,10 @@ namespace ddml {
 
 struct __attribute__((visibility("hidden"))) EmbeddedPyInference::Impl {
   py::object callable;
+  py::list pyInputs;
+  std::vector<py::array_t<float>> inputArrays;
+  std::vector<const float*> lastDataPtrs;
+  std::vector<std::vector<ssize_t>> lastShapes;
 };
 
 namespace {
@@ -103,17 +107,32 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
     initialize();
   }
 
-  py::list pyInputs;
-  for (unsigned i = 0, N = inputs.size(); i < N; ++i) {
-    // Non-owning numpy view over the std::vector<float> buffer; no copy.
+  const size_t N = inputs.size();
+  if (m_impl->inputArrays.size() != N) {
+    m_impl->inputArrays.clear();
+    m_impl->inputArrays.reserve(N);
+    m_impl->lastDataPtrs.assign(N, nullptr);
+    m_impl->lastShapes.assign(N, {});
+    m_impl->pyInputs = py::list(N);
+    for (size_t i = 0; i < N; ++i) {
+      m_impl->inputArrays.emplace_back();
+    }
+  }
+
+  for (size_t i = 0; i < N; ++i) {
+    const float* ptr = inputs[i].data();
     std::vector<ssize_t> shape(tensDims[i].begin(), tensDims[i].end());
-    pyInputs.append(py::array_t<float>(shape, {}, // strides default
-                                       const_cast<float*>(inputs[i].data()), py::cast(this)));
+    const bool needRebuild = (ptr != m_impl->lastDataPtrs[i]) || (shape != m_impl->lastShapes[i]);
+    if (needRebuild) {
+      m_impl->inputArrays[i] = py::array_t<float>(shape, {}, const_cast<float*>(ptr), py::none());
+      m_impl->pyInputs[i] = m_impl->inputArrays[i];
+      m_impl->lastDataPtrs[i] = ptr;
+      m_impl->lastShapes[i] = std::move(shape);
+    }
   }
 
   try {
-    py::array_t<float, py::array::c_style | py::array::forcecast> result =
-        m_impl->callable(pyInputs).cast<py::array_t<float, py::array::c_style | py::array::forcecast>>();
+    auto result = m_impl->callable(m_impl->pyInputs).cast<py::array_t<float, py::array::c_style>>();
 
     if (static_cast<size_t>(result.size()) != output.size()) {
       throw std::runtime_error("EmbeddedPyInference: Python returned " + std::to_string(result.size()) +
