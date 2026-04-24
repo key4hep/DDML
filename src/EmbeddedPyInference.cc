@@ -1,5 +1,6 @@
 #include "DDML/EmbeddedPyInference.h"
 
+#include <cassert>
 #include <cstdlib> // setenv
 #include <cstring>
 #include <mutex>
@@ -49,9 +50,7 @@ namespace {
   }
 } // namespace
 
-EmbeddedPyInference::EmbeddedPyInference() : m_impl(std::make_unique<Impl>()) {
-  ensureInterpreter();
-}
+EmbeddedPyInference::EmbeddedPyInference() : m_impl(std::make_unique<Impl>()) { ensureInterpreter(); }
 
 EmbeddedPyInference::~EmbeddedPyInference() {
   py::gil_scoped_acquire gil;
@@ -67,10 +66,6 @@ void EmbeddedPyInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
 }
 
 void EmbeddedPyInference::initialize() {
-  if (m_isInitialized) {
-    return;
-  }
-
   py::gil_scoped_acquire gil;
 
   if (!m_modelPath.empty()) {
@@ -103,26 +98,19 @@ void EmbeddedPyInference::initialize() {
     m_impl->callable = mod.attr(m_entryPoint.c_str());
 
     if (m_intraOpNumThreads > 0) {
-      ::setenv("DDML_INTRA_OP_NUM_THREADS",
-               std::to_string(m_intraOpNumThreads).c_str(), /*overwrite=*/1);
+      ::setenv("DDML_INTRA_OP_NUM_THREADS", std::to_string(m_intraOpNumThreads).c_str(), /*overwrite=*/1);
     }
   } catch (py::error_already_set& e) {
     const std::string full = formatPyError(e);
-    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::initialize",
-                     "Python error during initialisation:\n%s", full.c_str());
+    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::initialize", "Python error during initialisation:\n%s",
+                     full.c_str());
     throw std::runtime_error("EmbeddedPyInference init: " + full);
   }
-
-  m_isInitialized = true;
 }
 
 void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
                                        std::vector<float>& output) {
   py::gil_scoped_acquire gil;
-
-  if (!m_isInitialized) {
-    initialize();
-  }
 
   const size_t N = inputs.size();
   if (m_impl->inputArrays.size() != N) {
@@ -158,8 +146,7 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
     std::memcpy(output.data(), result.data(), output.size() * sizeof(float));
   } catch (py::error_already_set& e) {
     const std::string full = formatPyError(e);
-    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::runInference",
-                     "Python error:\n%s", full.c_str());
+    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::runInference", "Python error:\n%s", full.c_str());
     throw std::runtime_error("EmbeddedPyInference run: " + full);
   }
 }
