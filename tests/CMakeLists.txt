@@ -9,7 +9,7 @@ function(set_test_env _test)
 endfunction()
 
 add_test(NAME run_cc3_ild COMMAND
-  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
+  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml --ml-preset CC3_BARREL --ml-preset CC3_ENDCAP
 )
 
 set_test_env(run_cc3_ild)
