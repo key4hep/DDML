@@ -12,6 +12,10 @@ namespace py = pybind11;
 
 namespace ddml {
 
+struct __attribute__((visibility("hidden"))) EmbeddedPyInference::Impl {
+  py::object callable;
+};
+
 namespace {
   // Guard interpreter lifecycle — only the first EmbeddedPyInference
   // constructed brings up the interpreter; all share it.
@@ -19,17 +23,16 @@ namespace {
   int g_instanceCount = 0;
 } // namespace
 
-EmbeddedPyInference::EmbeddedPyInference() {
+EmbeddedPyInference::EmbeddedPyInference() : m_impl(std::make_unique<Impl>()) {
   if (g_instanceCount++ == 0) {
     g_interpreter = std::make_unique<py::scoped_interpreter>();
   }
 }
 
 EmbeddedPyInference::~EmbeddedPyInference() {
-  // Release the Python-held callable under the GIL before interpreter teardown.
   {
     py::gil_scoped_acquire gil;
-    m_callable = py::object();
+    m_impl.reset();  // drops the pybind11 object under GIL
   }
   if (--g_instanceCount == 0) {
     g_interpreter.reset();
@@ -79,7 +82,7 @@ void EmbeddedPyInference::initialize() {
       throw std::runtime_error("EmbeddedPyInference: module '" + m_pythonModule +
                                "' does not expose a top-level callable named 'run_inference'");
     }
-    m_callable = mod.attr("run_inference");
+    m_impl->callable = mod.attr("run_inference");
 
     if (m_intraOpNumThreads > 0) {
       py::module_::import("torch").attr("set_num_threads")(m_intraOpNumThreads);
@@ -111,7 +114,7 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
 
   try {
     py::array_t<float, py::array::c_style | py::array::forcecast> result =
-        m_callable(pyInputs).cast<py::array_t<float, py::array::c_style | py::array::forcecast>>();
+        m_impl->callable(pyInputs).cast<py::array_t<float, py::array::c_style | py::array::forcecast>>();
 
     if (static_cast<size_t>(result.size()) != output.size()) {
       throw std::runtime_error("EmbeddedPyInference: Python returned " + std::to_string(result.size()) +
