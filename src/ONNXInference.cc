@@ -106,13 +106,7 @@ void ONNXInference::initialize() {
 
 /// run the inference model
 void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
-  if (!m_isInitialized) {
-    initialize();
-    m_isInitialized = true;
-  }
-
   // create input tensor object from data values
-
   assert(inputs.size() == tensDims.size());
 
   std::vector<Ort::Value> ort_inputs;

@@ -100,6 +100,7 @@ public:
   /// "ConstructSDandField()"
   virtual void constructSensitives(dd4hep::sim::Geant4DetectorConstructionContext* ctxt) override {
     this->Geant4FastSimShowerModel::constructSensitives(ctxt);
+    m_fastsimML.inference.initialize();
   }
 
   /// User callback to determine if the model is applicable for the particle
