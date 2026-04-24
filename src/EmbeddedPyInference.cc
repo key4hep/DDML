@@ -3,7 +3,9 @@
 #include <cstdlib> // setenv
 #include <cstring>
 #include <mutex>
+#include <ranges>
 #include <stdexcept>
+#include <string_view>
 
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
@@ -56,18 +58,16 @@ void EmbeddedPyInference::initialize() {
     ::setenv("DDML_MODEL_PATH", m_modelPath.c_str(), /*overwrite=*/1);
   }
 
-  // Prepend user-specified search paths to sys.path (colon-separated)
   if (!m_pythonPath.empty()) {
-    py::list sysPath = py::module_::import("sys").attr("path");
-    size_t start = 0;
-    while (start <= m_pythonPath.size()) {
-      size_t colon = m_pythonPath.find(':', start);
-      if (colon == std::string::npos)
-        colon = m_pythonPath.size();
-      if (colon > start) {
-        sysPath.insert(0, m_pythonPath.substr(start, colon - start));
-      }
-      start = colon + 1;
+    std::vector<std::string> paths;
+    for (auto part : std::views::split(std::string_view{m_pythonPath}, ':')) {
+      if (part.begin() != part.end())
+        paths.emplace_back(part.begin(), part.end());
+    }
+    // Prepend in reverse so the first entry in m_pythonPath ends up first in sys.path
+    py::object sysPath = py::module_::import("sys").attr("path");
+    for (auto it = paths.rbegin(); it != paths.rend(); ++it) {
+      sysPath.attr("insert")(0, *it);
     }
   }
 
