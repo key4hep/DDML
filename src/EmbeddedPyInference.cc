@@ -4,9 +4,7 @@
 #include <cstdlib> // setenv
 #include <cstring>
 #include <mutex>
-#include <ranges>
 #include <stdexcept>
-#include <string_view>
 
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
@@ -58,32 +56,12 @@ EmbeddedPyInference::~EmbeddedPyInference() {
 }
 
 void EmbeddedPyInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
-  plugin->declareProperty("PythonPath", this->m_pythonPath);
   plugin->declareProperty("PythonModule", this->m_pythonModule);
-  plugin->declareProperty("ModelPath", this->m_modelPath);
   plugin->declareProperty("EntryPoint", this->m_entryPoint);
-  plugin->declareProperty("IntraOpNumThreads", this->m_intraOpNumThreads);
 }
 
 void EmbeddedPyInference::initialize() {
   py::gil_scoped_acquire gil;
-
-  if (!m_modelPath.empty()) {
-    ::setenv("DDML_MODEL_PATH", m_modelPath.c_str(), /*overwrite=*/1);
-  }
-
-  if (!m_pythonPath.empty()) {
-    std::vector<std::string> paths;
-    for (auto part : std::views::split(std::string_view{m_pythonPath}, ':')) {
-      if (part.begin() != part.end())
-        paths.emplace_back(part.begin(), part.end());
-    }
-    // Prepend in reverse so the first entry in m_pythonPath ends up first in sys.path
-    py::object sysPath = py::module_::import("sys").attr("path");
-    for (auto it = paths.rbegin(); it != paths.rend(); ++it) {
-      sysPath.attr("insert")(0, *it);
-    }
-  }
 
   if (m_pythonModule.empty()) {
     throw std::runtime_error("EmbeddedPyInference: PythonModule property is not set");
@@ -97,9 +75,6 @@ void EmbeddedPyInference::initialize() {
     }
     m_impl->callable = mod.attr(m_entryPoint.c_str());
 
-    if (m_intraOpNumThreads > 0) {
-      ::setenv("DDML_INTRA_OP_NUM_THREADS", std::to_string(m_intraOpNumThreads).c_str(), /*overwrite=*/1);
-    }
   } catch (py::error_already_set& e) {
     const std::string full = formatPyError(e);
     dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::initialize", "Python error during initialisation:\n%s",

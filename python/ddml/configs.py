@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import os
+
 from .model import ModelConfig
 from .geometry import PluginGeometry, DetectorGeometry
 
@@ -43,6 +45,19 @@ CC3_ENDCAP = ModelConfig(
     plugin="CaloCloudsTwoAngleModelEndcapTorchModel/EndcapTorchModel",
     geometry=ILD_ENDCAP,
     plugin_properties=_cc3_common_properties,
+    correct_angles=False,
+    applicable_particles=EM_PARTICLES,
+    triggers=EM_TRIGGER_10_GEV,
+)
+
+
+CC3_BARREL_PY_INTERFACE = ModelConfig(
+    plugin="CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    geometry=ILD_BARREL,
+    plugin_properties={
+        "PythonModule": "cc3_sf_2a_wrapper",
+        "EntryPoint": "run_inference",
+    },
     correct_angles=False,
     applicable_particles=EM_PARTICLES,
     triggers=EM_TRIGGER_10_GEV,
