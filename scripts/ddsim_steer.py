@@ -430,7 +430,7 @@ def aiDanceTorch(kernel):
     elif CaloClouds == True:
         ml_file = "../models/CC3_SF_2A.pt"
         ml_model = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch"
-        ml_model_1 = "CaloCloudsTwoAngleModelPolyhedraEndcapTorchModel/EndcapModelTorch"
+        ml_model_1 = "CaloCloudsTwoAngleModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
     elif L2LFlows == True:
         ml_file = "../models/L2LFlowsx9.pt"
