@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .preset import ModelPreset
+from .model import ModelConfig
 from .geometry import PluginGeometry, DetectorGeometry
 
 from g4units import GeV
@@ -30,7 +30,7 @@ _cc3_common_properties = {
     "ModelPath": "../models/CC3_SF_2A.pt",
 }
 
-CC3_BARREL = ModelPreset(
+CC3_BARREL = ModelConfig(
     plugin="CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch",
     geometry=ILD_BARREL,
     plugin_properties=_cc3_common_properties,
@@ -39,7 +39,7 @@ CC3_BARREL = ModelPreset(
     triggers=EM_TRIGGER_10_GEV,
 )
 
-CC3_ENDCAP = ModelPreset(
+CC3_ENDCAP = ModelConfig(
     plugin="CaloCloudsTwoAngleModelEndcapTorchModel/EndcapTorchModel",
     geometry=ILD_ENDCAP,
     plugin_properties=_cc3_common_properties,
