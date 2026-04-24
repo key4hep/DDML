@@ -10,16 +10,17 @@ Serves two purposes:
 DDML embedded-Python contract:
     run_inference(inputs: list[np.ndarray]) -> np.ndarray (flat float32)
 """
+
 import os
 import numpy as np
 import torch
 
-_nt = int(os.environ.get("DDML_INTRA_OP_NUM_THREADS", "0"))
-if _nt > 0:
-    torch.set_num_threads(_nt)
+torch.set_num_threads(1)
 
-_MODEL_PATH = os.environ["DDML_MODEL_PATH"]
-_model = torch.jit.load(_MODEL_PATH).eval().to("cpu")
+_model_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../models/CC3_SF_2A.pt")
+)
+_model = torch.jit.load(_model_path).eval().to("cpu")
 
 
 @torch.inference_mode()
