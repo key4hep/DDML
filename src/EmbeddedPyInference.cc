@@ -48,6 +48,7 @@ void EmbeddedPyInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
   plugin->declareProperty("PythonPath", this->m_pythonPath);
   plugin->declareProperty("PythonModule", this->m_pythonModule);
   plugin->declareProperty("ModelPath", this->m_modelPath);
+  plugin->declareProperty("EntryPoint", this->m_entryPoint);
   plugin->declareProperty("IntraOpNumThreads", this->m_intraOpNumThreads);
 }
 
@@ -81,11 +82,11 @@ void EmbeddedPyInference::initialize() {
 
   try {
     py::module_ mod = py::module_::import(m_pythonModule.c_str());
-    if (!py::hasattr(mod, "run_inference")) {
+    if (!py::hasattr(mod, m_entryPoint.c_str())) {
       throw std::runtime_error("EmbeddedPyInference: module '" + m_pythonModule +
-                               "' does not expose a top-level callable named 'run_inference'");
+                               "' does not expose a top-level callable named '" + m_entryPoint + "'");
     }
-    m_impl->callable = mod.attr("run_inference");
+    m_impl->callable = mod.attr(m_entryPoint.c_str());
 
     if (m_intraOpNumThreads > 0) {
       ::setenv("DDML_INTRA_OP_NUM_THREADS",

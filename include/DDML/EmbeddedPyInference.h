@@ -40,10 +40,11 @@ private:
   std::unique_ptr<Impl> m_impl;
 
   // DD4hep properties
-  std::string m_pythonPath = {};   // ':'-separated, prepended to sys.path
-  std::string m_pythonModule = {}; // e.g. "cc3_sf_2a_wrapper"
-  std::string m_modelPath = {};    // exported via env DDML_MODEL_PATH
-  int m_intraOpNumThreads = 0;     // forwarded to the Python side
+  std::string m_pythonPath = {};          // ':'-separated, prepended to sys.path
+  std::string m_pythonModule = {};        // e.g. "cc3_sf_2a_wrapper"
+  std::string m_modelPath = {};           // exported via env DDML_MODEL_PATH
+  std::string m_entryPoint = "run_inference"; // callable name inside the module
+  int m_intraOpNumThreads = 0;            // forwarded to the Python side
   bool m_isInitialized = false;
 };
 
