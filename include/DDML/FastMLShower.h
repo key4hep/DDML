@@ -218,6 +218,8 @@ struct FastMLModel {
   Inference inference = {};
   MLModel model = {};
   Geometry geometry = {};
+  // NOTE: We leak this on purpose for now because some ref-counting inside the
+  // Geant4FastHitMakerGlobal goes wrong and segfaults during cleanup
   Geant4FastHitMakerGlobal* hitMaker = {};
   Trigger trigger{};
 
