@@ -1,10 +1,10 @@
 import argparse
 from typing import List
 
-from .preset import ModelPreset
+from .model import ModelConfig
 
 
-def add_shower_model(kernel, preset: ModelPreset) -> None:
+def add_shower_model(kernel, preset: ModelConfig) -> None:
     # DO NOT MOVE — GeV must resolve inside the callback so Etrigger gets the right unit factor.
     from DDG4 import DetectorConstruction, Geant4
 
@@ -38,7 +38,7 @@ def add_shower_model(kernel, preset: ModelPreset) -> None:
     seq.adopt(m)
 
 
-def ddml_physics(presets: List[ModelPreset], verbose: bool = True):
+def ddml_physics(presets: List[ModelConfig], verbose: bool = True):
     """Return a callable compatible with SIM.physics.setupUserPhysics()."""
     if not presets:
         raise ValueError("user_physics requires at least one ShowerPreset")

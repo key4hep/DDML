@@ -3,7 +3,7 @@ import argparse
 import sys
 
 from .setup_physics import add_shower_model, ddml_physics
-from .preset import ModelPreset
+from .model import ModelConfig
 
 
 _PRESETS: dict = {}
@@ -16,14 +16,14 @@ def _register_presets() -> None:
         if attr.startswith("_"):
             continue
         val = getattr(_config_mod, attr)
-        if isinstance(val, ModelPreset):
+        if isinstance(val, ModelConfig):
             _PRESETS[attr] = val
 
 
 _register_presets()
 
 
-def get_presets_from_args() -> List[ModelPreset]:
+def get_presets_from_args() -> List[ModelConfig]:
     # Add a single argument (in a way that doesn't interfere with the arg parsing of
     # ddsim). We do this to make it possible to dynamically get preests from CLI
     _cli = argparse.ArgumentParser(add_help=False)
@@ -45,7 +45,7 @@ def get_presets_from_args() -> List[ModelPreset]:
 
 
 __all__ = [
-    "ModelPreset",
+    "ModelConfig",
     "add_shower_model",
     "ddml_physics",
     "presets",

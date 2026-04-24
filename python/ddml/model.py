@@ -5,7 +5,7 @@ from .geometry import PluginGeometry
 
 
 @dataclass(frozen=True)
-class ModelPreset:
+class ModelConfig:
     plugin: str  # The DDML plugin name
     plugin_properties: Mapping[str, Any]  # The plugin properties
     geometry: PluginGeometry  # The geometry info for this preset
