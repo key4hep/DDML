@@ -2,6 +2,7 @@
 
 #include <cstdlib> // setenv
 #include <cstring>
+#include <mutex>
 #include <stdexcept>
 
 #include <pybind11/embed.h>
@@ -17,26 +18,24 @@ struct __attribute__((visibility("hidden"))) EmbeddedPyInference::Impl {
 };
 
 namespace {
-  // Guard interpreter lifecycle — only the first EmbeddedPyInference
-  // constructed brings up the interpreter; all share it.
-  std::unique_ptr<py::scoped_interpreter> g_interpreter;
-  int g_instanceCount = 0;
+  std::once_flag g_interpInit;
+  void ensureInterpreter() {
+    // Leaked on purpose: process-lifetime interpreter.
+    // Finalising CPython with NumPy loaded is unreliable.
+    std::call_once(g_interpInit, [] {
+      static py::scoped_interpreter interp{};
+      (void)interp;
+    });
+  }
 } // namespace
 
 EmbeddedPyInference::EmbeddedPyInference() : m_impl(std::make_unique<Impl>()) {
-  if (g_instanceCount++ == 0) {
-    g_interpreter = std::make_unique<py::scoped_interpreter>();
-  }
+  ensureInterpreter();
 }
 
 EmbeddedPyInference::~EmbeddedPyInference() {
-  {
-    py::gil_scoped_acquire gil;
-    m_impl.reset();  // drops the pybind11 object under GIL
-  }
-  if (--g_instanceCount == 0) {
-    g_interpreter.reset();
-  }
+  py::gil_scoped_acquire gil;
+  m_impl.reset();
 }
 
 void EmbeddedPyInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
