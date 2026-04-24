@@ -28,6 +28,11 @@ namespace {
     // Leaked on purpose: process-lifetime interpreter.
     // Finalising CPython with NumPy loaded is unreliable.
     std::call_once(g_interpInit, [] {
+      if (Py_IsInitialized()) {
+        // Host (e.g. ddsim running via cppyy) already owns the interpreter;
+        // do not create a second one.
+        return;
+      }
       static py::scoped_interpreter interp{};
       (void)interp;
     });
