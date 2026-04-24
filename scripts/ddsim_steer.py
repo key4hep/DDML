@@ -6,8 +6,12 @@
 #
 ######################################################################
 from DDSim.DD4hepSimulation import DD4hepSimulation
-from g4units import m, mm, GeV, MeV, rad
+from g4units import m, mm, MeV, rad
+
 import os
+
+from ml_models import user_physics, get_presets_from_args
+
 
 SIM = DD4hepSimulation()
 
@@ -287,23 +291,6 @@ SIM.random.replace_gRandom = True
 SIM.random.seed = None
 SIM.random.type = None
 
-# ---------------------------------------------
-#  Configure ML inference.
-#
-#  Pick preset(s) at run time via CLI flags or a JSON config file:
-#
-#    ddsim --steeringFile scripts/ddsim_steer.py --compactFile <xml>
-#        -> default: CALOCLOUDS (matches CTest run_cc3_ild)
-#
-#    ddsim ... --ml-preset PAR04_VAE
-#    ddsim ... --ml-preset L2L_FLOWS --ml-geometry ILD
-#    ddsim ... --ml-preset BIBAE_TWO_ANGLE_ENDCAP_ONLY_HDF5 \
-#              --ml-preset PION_CLOUDS_HADRON_HDF5
-#
-#    ddsim ... --ml-config ./ml_config.example.json
-#    DDML_CONFIG=./ml_config.example.json ddsim ...
-# ---------------------------------------------
-from ml_models import resolve_presets, user_physics
+presets = get_presets_from_args()
 
-_presets, _geometry = resolve_presets()
-SIM.physics.setupUserPhysics(user_physics(*_presets, geometry=_geometry))
+SIM.physics.setupUserPhysics(user_physics(presets))
