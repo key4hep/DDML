@@ -48,8 +48,6 @@ private:
   std::vector<const char*> m_inNames;
   std::vector<const char*> m_outNames;
 
-  bool m_isInitialized = false;
-
   /// onxx properties for plugin
   std::string m_modelPath = {};
   int m_profileFlag = 0;
