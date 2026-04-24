@@ -60,12 +60,9 @@ BIBAE_TWO_ANGLE = ShowerPreset(
     intra_op_threads=1,
 )
 
-# NOTE: the endcap plugin intentionally reuses the Barrel plugin class name
-# ("CaloCloudsTwoAngleModelPolyhedraBarrel..."). This matches the CTest
-# run_cc3_ild behaviour. Do not "fix".
 CALOCLOUDS = ShowerPreset(
     barrel_plugin="CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch",
-    endcap_plugin="CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/EndcapModelTorch",
+    endcap_plugin="CaloCloudsTwoAngleModelEndcapTorchModel/EndcapModelTorch",
     model_file="../models/CC3_SF_2A.pt",
     file_attr="ModelPath",
     applicable_particles=_EM,
