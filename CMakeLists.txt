@@ -108,6 +108,7 @@ dd4hep_set_compiler_flags()
 dd4hep_use_python_executable()
 
 add_subdirectory(src)
+add_subdirectory(python)
 
 if (DOWNLOAD_MODELS)
   include(ExternalData)
