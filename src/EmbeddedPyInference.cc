@@ -1,5 +1,6 @@
 #include "DDML/EmbeddedPyInference.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdlib> // setenv
 #include <cstring>
@@ -119,11 +120,24 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
   try {
     auto result = m_impl->callable(m_impl->pyInputs).cast<py::array_t<float, py::array::c_style>>();
 
-    if (static_cast<size_t>(result.size()) != output.size()) {
-      throw std::runtime_error("EmbeddedPyInference: Python returned " + std::to_string(result.size()) +
-                               " floats but caller pre-allocated " + std::to_string(output.size()));
+    // Caller pre-sizes `output` to the model's worst-case footprint. The actual
+    // model output may be smaller (self-describing, variable-length payload);
+    // convertOutput reads only the meaningful prefix. Trailing bytes stay at
+    // the zero-fill from prepareInput().
+    // Copy values back into the outputs making sure that we neither overrun the
+    // output buffer nor that we read past the end of the output tensor. We can
+    // ignore everyting in output past n, because we clear it for every run in
+    // FastMLShower::modelShower
+    const auto tensorSize = static_cast<size_t>(result.size());
+    if (tensorSize > output.size()) {
+      // We could technically just make enough room, but that might be hiding a
+      // configuration or model issue as it is the models responsibility to size
+      // this vector
+      dd4hep::printout(dd4hep::WARNING, "EmbeddedPyInference::runInference",
+                       "model returned more values than were pre-allocated");
     }
-    std::memcpy(output.data(), result.data(), output.size() * sizeof(float));
+    const size_t n = std::min(tensorSize, output.size());
+    std::memcpy(output.data(), result.data(), n * sizeof(float));
   } catch (py::error_already_set& e) {
     const std::string full = formatPyError(e);
     dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::runInference", "Python error:\n%s", full.c_str());
