@@ -33,6 +33,20 @@ namespace {
       (void)interp;
     });
   }
+
+  std::string formatPyError(py::error_already_set& e) {
+    try {
+      py::module_ tb = py::module_::import("traceback");
+      py::object fmt = tb.attr("format_exception")(e.type(), e.value(), e.trace());
+      std::string out;
+      for (auto line : fmt) {
+        out += line.cast<std::string>();
+      }
+      return out;
+    } catch (...) {
+      return std::string{e.what()};
+    }
+  }
 } // namespace
 
 EmbeddedPyInference::EmbeddedPyInference() : m_impl(std::make_unique<Impl>()) {
@@ -93,9 +107,10 @@ void EmbeddedPyInference::initialize() {
                std::to_string(m_intraOpNumThreads).c_str(), /*overwrite=*/1);
     }
   } catch (py::error_already_set& e) {
-    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::initialize", "Python error during initialisation: %s",
-                     e.what());
-    throw std::runtime_error(std::string("EmbeddedPyInference init: ") + e.what());
+    const std::string full = formatPyError(e);
+    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::initialize",
+                     "Python error during initialisation:\n%s", full.c_str());
+    throw std::runtime_error("EmbeddedPyInference init: " + full);
   }
 
   m_isInitialized = true;
@@ -142,8 +157,10 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
     }
     std::memcpy(output.data(), result.data(), output.size() * sizeof(float));
   } catch (py::error_already_set& e) {
-    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::runInference", "Python error: %s", e.what());
-    throw std::runtime_error(std::string("EmbeddedPyInference run: ") + e.what());
+    const std::string full = formatPyError(e);
+    dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::runInference",
+                     "Python error:\n%s", full.c_str());
+    throw std::runtime_error("EmbeddedPyInference run: " + full);
   }
 }
 
