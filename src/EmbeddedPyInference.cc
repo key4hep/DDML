@@ -88,7 +88,8 @@ void EmbeddedPyInference::initialize() {
     m_impl->callable = mod.attr("run_inference");
 
     if (m_intraOpNumThreads > 0) {
-      py::module_::import("torch").attr("set_num_threads")(m_intraOpNumThreads);
+      ::setenv("DDML_INTRA_OP_NUM_THREADS",
+               std::to_string(m_intraOpNumThreads).c_str(), /*overwrite=*/1);
     }
   } catch (py::error_already_set& e) {
     dd4hep::printout(dd4hep::ERROR, "EmbeddedPyInference::initialize", "Python error during initialisation: %s",
