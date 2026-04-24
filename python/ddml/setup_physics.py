@@ -1,21 +1,7 @@
 import argparse
-import sys
-from dataclasses import dataclass
-from typing import Mapping, Any, List
+from typing import List
 
-from .geometry import PluginGeometry
-
-
-@dataclass(frozen=True)
-class ModelPreset:
-    plugin: str  # The DDML plugin name
-    plugin_properties: Mapping[str, Any]  # The plugin properties
-    geometry: PluginGeometry  # The geometry info for this preset
-    applicable_particles: frozenset  # e.g. frozenset({"e+","e-","gamma"})
-    # Trigger configuratoin (particle: energy). NOTE: Units are user responsibility!
-    triggers: Mapping[str, float]
-    correct_angles: bool = False  # Whether or not to use angle correction
-    is_hadron: bool = False  # Whether or not this is a hadronic model or not
+from .preset import ModelPreset
 
 
 def add_shower_model(kernel, preset: ModelPreset) -> None:
@@ -52,7 +38,7 @@ def add_shower_model(kernel, preset: ModelPreset) -> None:
     seq.adopt(m)
 
 
-def user_physics(presets: List[ModelPreset], verbose: bool = True):
+def ddml_physics(presets: List[ModelPreset], verbose: bool = True):
     """Return a callable compatible with SIM.physics.setupUserPhysics()."""
     if not presets:
         raise ValueError("user_physics requires at least one ShowerPreset")

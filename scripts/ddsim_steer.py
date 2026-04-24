@@ -10,7 +10,7 @@ from g4units import m, mm, MeV, rad
 
 import os
 
-from ml_models import user_physics, get_presets_from_args
+from ddml import ddml_physics, get_presets_from_args
 
 
 SIM = DD4hepSimulation()
@@ -293,4 +293,4 @@ SIM.random.type = None
 
 presets = get_presets_from_args()
 
-SIM.physics.setupUserPhysics(user_physics(presets))
+SIM.physics.setupUserPhysics(ddml_physics(presets))

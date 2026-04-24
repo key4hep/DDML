@@ -1,11 +1,27 @@
-from .common import ModelPreset
-from .geometry import ILD_BARREL, ILD_ENDCAP
+#!/usr/bin/env python3
+
+from .preset import ModelPreset
+from .geometry import PluginGeometry, DetectorGeometry
 
 from g4units import GeV
 
-_EM = frozenset({"e+", "e-", "gamma"})
-_TRIG_5 = {"e+": 5.0 * GeV, "e-": 5.0 * GeV, "gamma": 5.0 * GeV}
-_TRIG_10 = {"e+": 10.0 * GeV, "e-": 10.0 * GeV, "gamma": 10.0 * GeV}
+
+_ILD_ECAL_BARREL = DetectorGeometry(
+    detector="EcalBarrel", region="EcalBarrelRegion", symmetry=8
+)
+_ILD_ECAL_ENDCAP = DetectorGeometry(detector="EcalEndcap", region="EcalEndcapRegion")
+_ILD_HCAL_BARREL = DetectorGeometry(
+    detector="HcalBarrel", region="HcalBarrelRegion", symmetry=8
+)
+_ILD_HCAL_ENDCAP = DetectorGeometry(detector="HcalEndcap", region="HcalEndcapRegion")
+
+ILD_BARREL = PluginGeometry(ecal=_ILD_ECAL_BARREL, hcal=_ILD_HCAL_BARREL)
+ILD_ENDCAP = PluginGeometry(ecal=_ILD_ECAL_ENDCAP, hcal=_ILD_HCAL_ENDCAP)
+
+
+EM_PARTICLES = frozenset({"e+", "e-", "gamma"})
+EM_TRIGGER_5_GEV = {"e+": 5.0 * GeV, "e-": 5.0 * GeV, "gamma": 5.0 * GeV}
+EM_TRIGGER_10_GEV = {"e+": 10.0 * GeV, "e-": 10.0 * GeV, "gamma": 10.0 * GeV}
 
 
 _cc3_common_properties = {
@@ -19,8 +35,8 @@ CC3_BARREL = ModelPreset(
     geometry=ILD_BARREL,
     plugin_properties=_cc3_common_properties,
     correct_angles=False,
-    applicable_particles=_EM,
-    triggers=_TRIG_10,
+    applicable_particles=EM_PARTICLES,
+    triggers=EM_TRIGGER_10_GEV,
 )
 
 CC3_ENDCAP = ModelPreset(
@@ -28,8 +44,8 @@ CC3_ENDCAP = ModelPreset(
     geometry=ILD_ENDCAP,
     plugin_properties=_cc3_common_properties,
     correct_angles=False,
-    applicable_particles=_EM,
-    triggers=_TRIG_10,
+    applicable_particles=EM_PARTICLES,
+    triggers=EM_TRIGGER_10_GEV,
 )
 
 
@@ -42,8 +58,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="Par04ExampleVAEEndcapONNXModel/ShowerModel",
 #     model_file="../models/Generator.onnx",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_5,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_5_GEV,
 #     correct_angles=True,
 #     optimize_flag=1,
 # )
@@ -54,8 +70,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="RegularGridGANEndcapONNXModel/ShowerModel",
 #     model_file="../models/francisca_gan.onnx",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_5,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_5_GEV,
 #     correct_angles=True,
 #     optimize_flag=1,
 # )
@@ -69,8 +85,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="RegularGridBIBAEEndcapTorchModel/EndcapModelTorch",
 #     model_file="../models/BIBAE_Full_PP_cut.pt",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_10,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_10_GEV,
 #     correct_angles=False,
 #     optimize_flag=1,
 #     intra_op_threads=1,
@@ -81,8 +97,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch",
 #     model_file="../models/BIBAE_Two_Angle_Full_PP_cut.pt",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_10,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_10_GEV,
 #     correct_angles=False,
 #     optimize_flag=1,
 #     intra_op_threads=1,
@@ -94,8 +110,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="CaloCloudsTwoAngleModelEndcapTorchModel/EndcapModelTorch",
 #     model_file="../models/CC3_SF_2A.pt",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_10,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_10_GEV,
 #     correct_angles=False,
 #     optimize_flag=1,
 #     intra_op_threads=1,
@@ -106,8 +122,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="L2LFlowsModelEndcapTorchModel/EndcapModelTorch",
 #     model_file="../models/L2LFlowsx9.pt",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_10,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_10_GEV,
 #     correct_angles=True,
 #     optimize_flag=1,
 #     intra_op_threads=1,
@@ -119,8 +135,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="RegularGridGANEndcapTorchModel/EndcapModelTorch",
 #     model_file="../models/francisca_gan_jit.pt",
 #     file_attr="ModelPath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_10,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_10_GEV,
 #     correct_angles=True,
 #     optimize_flag=1,
 #     intra_op_threads=1,
@@ -135,8 +151,8 @@ CC3_ENDCAP = ModelPreset(
 #     endcap_plugin="LoadHDF5RegularGridTwoAngleBIBAEModelEndcap/EndcapModelTorch",
 #     model_file="../models/photons-E5050A-theta9090A-phi9090-p1.hdf5",
 #     file_attr="FilePath",
-#     applicable_particles=_EM,
-#     etrigger_gev=_TRIG_10,
+#     applicable_particles=EM_PARTICLES,
+#     etrigger_gev=EM_TRIGGER_10_GEV,
 #     correct_angles=False,
 # )
 
