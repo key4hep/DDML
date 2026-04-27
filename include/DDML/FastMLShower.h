@@ -218,10 +218,10 @@ struct FastMLModel {
   Inference inference = {};
   MLModel model = {};
   Geometry geometry = {};
-  std::unique_ptr<Geant4FastHitMakerGlobal> hitMaker = {};
+  Geant4FastHitMakerGlobal* hitMaker = {};
   Trigger trigger{};
 
-  FastMLModel() : hitMaker(std::make_unique<Geant4FastHitMakerGlobal>()) {}
+  FastMLModel() : hitMaker(new Geant4FastHitMakerGlobal()) {}
 
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);
