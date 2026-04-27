@@ -122,15 +122,48 @@ index 5ff2e50..084f7ea 100644
 
 ```
 
-This model has to be activated in the `ddsim_steer.py` file. The relevant functions are:
-- For ONNX inference: `def aiDance(kernel) `
-- For Torch inference: `def aiDanceTorch(kernel):`
-- For Loading from a HDF5 File (Experimental interface!): `def LoadHdf5(kernel):`
+### Python configuration
 
-And each can be activated respectively by setting:
-- `SIM.physics.setupUserPhysics( aiDance)`
-- `SIM.physics.setupUserPhysics(aiDanceTorch)`
-- `SIM.physics.setupUserPhysics(LoadHdf5)`
+DDML provides a `ddml` python module for easily adapting a ddsim simulation. The
+example `ddsim_steer.py` file is also configured using this. The steering file
+imports two helpers and wires them into ddsim in three lines:
+
+```python
+from ddml import ddml_physics, get_presets_from_args
+
+presets = get_presets_from_args()
+SIM.physics.setupUserPhysics(ddml_physics(presets))
+```
+
+One or more named model presets (defined in `python/ddml/configs.py`) are then
+selected on the command line with the `--ml-model` flag:
+
+```
+ddsim --steeringFile ddsim_steer.py \
+      --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
+      --ml-model CC3_BARREL --ml-model CC3_ENDCAP
+```
+
+Repeat `--ml-model` to compose multiple presets (e.g. barrel + endcap).
+
+To add a custom preset, instantiate a `ModelConfig` (from `ddml.model`) with the
+desired `plugin`, `geometry`, `plugin_properties`, and trigger settings, and pass
+it directly to `ddml_physics`:
+
+```python
+from ddml import ddml_physics, ModelConfig
+from ddml.configs import ILD_BARREL, EM_PARTICLES, EM_TRIGGER_10_GEV
+
+my_model = ModelConfig(
+    plugin="MyPlugin/MyModel",
+    geometry=ILD_BARREL,
+    plugin_properties={"ModelPath": "../models/my_model.pt"},
+    applicable_particles=EM_PARTICLES,
+    triggers=EM_TRIGGER_10_GEV,
+    correct_angles=False,
+)
+SIM.physics.setupUserPhysics(ddml_physics([my_model]))
+```
 
 
 ## Coding style
