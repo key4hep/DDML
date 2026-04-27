@@ -115,11 +115,6 @@ if(HDF5_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/LoadHdf5.h)
 endif()
 
-# SAFE TO REMOVE!
-#if(RECORD_CALO_IMPACT)
-#  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h)
-#endif()
-
 #install(FILES
 #  ${headers}
 #  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
