@@ -16,13 +16,13 @@ namespace ddml {
  *
  */
 
-class DDMLRunAction : public dd4hep::sim::Geant4RunAction {
+class FastSimTriggerInfoRecordingRunAction : public dd4hep::sim::Geant4RunAction {
 public:
-  DDMLRunAction() = delete;
+  FastSimTriggerInfoRecordingRunAction() = delete;
   /// Standard constructor with initializing arguments
-  DDMLRunAction(dd4hep::sim::Geant4Context* c, const std::string& n);
+  FastSimTriggerInfoRecordingRunAction(dd4hep::sim::Geant4Context* c, const std::string& n);
   /// Default destructor
-  virtual ~DDMLRunAction();
+  virtual ~FastSimTriggerInfoRecordingRunAction();
   /// begin-of-run callback
   void begin(const G4Run*) override;
   /// End-of-run callback

@@ -404,10 +404,12 @@ def aiDanceTorch(kernel):
         from DDG4 import EventAction
 
         ### Configure Run actions
-        run1 = RunAction(kernel, "DDMLRunAction/runaction")
+        run1 = RunAction(kernel, "FastSimTriggerInfoRecordingRunAction/runaction")
         kernel.registerGlobalAction(run1)
         kernel.runAction().add(run1)
-        event1 = EventAction(kernel, "DDMLEventAction/eventaction")
+        event1 = EventAction(
+            kernel, "FastSimTriggerInfoRecordingEventAction/eventaction"
+        )
         kernel.registerGlobalAction(event1)
         kernel.eventAction().add(event1)
 

@@ -18,12 +18,12 @@ namespace ddml {
  *
  */
 
-class DDMLEventAction : public dd4hep::sim::Geant4EventAction {
+class FastSimTriggerInfoRecordingEventAction : public dd4hep::sim::Geant4EventAction {
 public:
   /// Standard constructor with initializing arguments
-  DDMLEventAction(dd4hep::sim::Geant4Context* c, const std::string& n);
+  FastSimTriggerInfoRecordingEventAction(dd4hep::sim::Geant4Context* c, const std::string& n);
   /// Default destructor
-  virtual ~DDMLEventAction();
+  virtual ~FastSimTriggerInfoRecordingEventAction();
   /// End-of-event callback
   void end(const G4Event*) override;
 

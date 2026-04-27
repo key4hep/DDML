@@ -10,7 +10,9 @@
 namespace ddml {
 
 /// Standard constructor with initializing arguments
-DDMLRunAction::DDMLRunAction(dd4hep::sim::Geant4Context* c, const std::string& n) : Geant4RunAction(c, n) {
+FastSimTriggerInfoRecordingRunAction::FastSimTriggerInfoRecordingRunAction(dd4hep::sim::Geant4Context* c,
+                                                                           const std::string& n)
+    : Geant4RunAction(c, n) {
   // Create analysis manager
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   analysisManager->SetDefaultFileType("root");
@@ -21,10 +23,12 @@ DDMLRunAction::DDMLRunAction(dd4hep::sim::Geant4Context* c, const std::string& n
 }
 
 /// Default destructor
-DDMLRunAction::~DDMLRunAction() { dd4hep::InstanceCount::decrement(this); }
+FastSimTriggerInfoRecordingRunAction::~FastSimTriggerInfoRecordingRunAction() {
+  dd4hep::InstanceCount::decrement(this);
+}
 
 /// begin-of-run callback
-void DDMLRunAction::begin(const G4Run*) {
+void FastSimTriggerInfoRecordingRunAction::begin(const G4Run*) {
   // Get analysis manager
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
@@ -62,7 +66,7 @@ void DDMLRunAction::begin(const G4Run*) {
 }
 
 /// End-of-run callback
-void DDMLRunAction::end(const G4Run* aRun) {
+void FastSimTriggerInfoRecordingRunAction::end(const G4Run* aRun) {
   auto analysisManager = G4AnalysisManager::Instance();
   analysisManager->FillNtupleDColumn(2, 0, aRun->GetNumberOfEvent());
   analysisManager->AddNtupleRow(2);
@@ -73,4 +77,4 @@ void DDMLRunAction::end(const G4Run* aRun) {
 } // namespace ddml
 
 #include "DDG4/Factories.h"
-DECLARE_GEANT4ACTION_NS(ddml, DDMLRunAction)
+DECLARE_GEANT4ACTION_NS(ddml, FastSimTriggerInfoRecordingRunAction)

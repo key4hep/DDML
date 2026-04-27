@@ -12,14 +12,18 @@
 
 namespace ddml {
 
-DDMLEventAction::DDMLEventAction(dd4hep::sim::Geant4Context* c, const std::string& n) : Geant4EventAction(c, n) {
+FastSimTriggerInfoRecordingEventAction::FastSimTriggerInfoRecordingEventAction(dd4hep::sim::Geant4Context* c,
+                                                                               const std::string& n)
+    : Geant4EventAction(c, n) {
   dd4hep::InstanceCount::increment(this);
 }
 
 /// Default destructor
-DDMLEventAction::~DDMLEventAction() { dd4hep::InstanceCount::decrement(this); }
+FastSimTriggerInfoRecordingEventAction::~FastSimTriggerInfoRecordingEventAction() {
+  dd4hep::InstanceCount::decrement(this);
+}
 
-void DDMLEventAction::end(const G4Event*) {
+void FastSimTriggerInfoRecordingEventAction::end(const G4Event*) {
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
@@ -47,4 +51,4 @@ void DDMLEventAction::end(const G4Event*) {
 } // namespace ddml
 
 #include "DDG4/Factories.h"
-DECLARE_GEANT4ACTION_NS(ddml, DDMLEventAction)
+DECLARE_GEANT4ACTION_NS(ddml, FastSimTriggerInfoRecordingEventAction)
