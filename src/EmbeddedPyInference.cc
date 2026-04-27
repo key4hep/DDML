@@ -87,11 +87,17 @@ void EmbeddedPyInference::initialize() {
                      full.c_str());
     throw std::runtime_error("EmbeddedPyInference init: " + full);
   }
+
+  dd4hep::printout(dd4hep::INFO, "EmbeddedPyInference::initialize", "Using python module '%s.%s' for running inference",
+                   m_pythonModule.c_str(), m_entryPoint.c_str());
 }
 
 void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
                                        std::vector<float>& output) {
   py::gil_scoped_acquire gil;
+
+  dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "running inference with %d input vectors",
+                   inputs.size());
 
   const size_t N = inputs.size();
   if (m_impl->inputArrays.size() != N) {
@@ -118,7 +124,10 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
   }
 
   try {
+    dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "Calling python inference now");
     auto result = m_impl->callable(m_impl->pyInputs).cast<py::array_t<float, py::array::c_style>>();
+    dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference",
+                     "After python inference. result has %d elements", result.size());
 
     // Caller pre-sizes `output` to the model's worst-case footprint. The actual
     // model output may be smaller (self-describing, variable-length payload);
