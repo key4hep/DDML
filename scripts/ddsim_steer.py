@@ -16,13 +16,13 @@ SIM.compactFile = ""
 ## Lorentz boost for the crossing angle, in radian!
 SIM.crossingAngleBoost = 7.0e-3 * rad
 SIM.enableDetailedShowerMode = True
-SIM.enableG4GPS = True
+SIM.enableG4GPS = False
 SIM.enableG4Gun = False
 SIM.enableGun = False
 ## InputFiles for simulation .stdhep, .slcio, .HEPEvt, .hepevt, .hepmc, .pairs files are supported
 SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
-SIM.macroFile = "./test_onnx.mac"
+# SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
 SIM.numberOfEvents = 42
 ## Outputfile from the simulation,only lcio output is supported
@@ -39,7 +39,7 @@ SIM.printLevel = "INFO"
 ## vis: enable visualisation, run the macroFile if it is set
 ## run: run the macroFile and exit
 ## shell: enable interactive session
-SIM.runType = "run"  # "batch"
+SIM.runType = "batch"  # "batch"
 ## Skip first N events when reading a file
 SIM.skipNEvents = 0
 ## Steering file to change default behaviour
@@ -183,7 +183,7 @@ SIM.gun.direction = (0, 0, 1)
 ##     Setting a distribution will set isotrop = True
 ##
 SIM.gun.distribution = None
-SIM.gun.energy = 10000.0
+SIM.gun.energy = 25000.0
 
 ##  isotropic distribution for the particle gun
 ##
@@ -192,7 +192,7 @@ SIM.gun.energy = 10000.0
 ##
 SIM.gun.isotrop = False
 SIM.gun.multiplicity = 1
-SIM.gun.particle = "mu-"
+SIM.gun.particle = "gamma"
 SIM.gun.phiMax = None
 
 ## Minimal azimuthal angle for random distribution
@@ -200,8 +200,8 @@ SIM.gun.phiMin = None
 
 ##  position of the particle gun, 3 vector
 SIM.gun.position = (0.0, 0.0, 0.0)
-SIM.gun.thetaMax = None
-SIM.gun.thetaMin = None
+SIM.gun.thetaMax = 2.5
+SIM.gun.thetaMin = -2.5
 
 
 ################################################################################
