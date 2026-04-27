@@ -48,10 +48,6 @@ Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() { delete m_navigator; }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aTrack) {
-
-  // std::cout << "Geant4FastHitMakerGlobal::make - aHit.GetPosition().x() " << aHit.GetPosition().x() << "
-  // aHit.GetPosition().y() " <<
-  //             aHit.GetPosition().y() << " aHit.GetPosition().z() " << aHit.GetPosition().z() << std::endl;
   //  do not make empty deposit
   if (aHit.GetEnergy() <= 0) {
     return;
