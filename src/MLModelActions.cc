@@ -110,6 +110,11 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml
 typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::CaloCloudsTwoAngleModel,
                                  ddml::PolyhedraBarrelGeometry, ddml::OctogonalBarrelTrigger>>
     CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel;
+
+typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::CaloCloudsTwoAngleModel, ddml::EndcapGeometry,
+                                 ddml::EndcapTriggerTwoAngleBIBAE>>
+    CaloCloudsTwoAngleModelEndcapPyEmbeddedModel;
+
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
@@ -160,6 +165,7 @@ DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelEndcapTorchModel)
 
 #ifdef DDML_USE_EMBEDDED_PYINFERENCE
 DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel)
+DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelEndcapPyEmbeddedModel);
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
