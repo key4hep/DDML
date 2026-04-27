@@ -13,12 +13,16 @@ add_test(NAME run_cc3_ild COMMAND
         --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
         -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
         --outputFile cc3_ild_pgun.edm4hep.root
-        --ml-preset CC3_BARREL --ml-preset CC3_ENDCAP
+        --ml-model CC3_BARREL --ml-model CC3_ENDCAP
 )
 set_test_env(run_cc3_ild)
 
 add_test(NAME run_cc3_pywrapper_ild COMMAND
-  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py --compactFile  $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml --ml-model CC3_BARREL_PY_INTERFACE --outputFile cc3_barre_py_interface.edm4hep.root
+  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
+        --compactFile  $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
+        -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
+        --outputFile cc3_barrel_py_interface.edm4hep.root
+        --ml-model CC3_BARREL_PY_INTERFACE
 )
 set_test_env(run_cc3_pywrapper_ild)
 

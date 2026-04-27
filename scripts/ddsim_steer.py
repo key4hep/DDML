@@ -204,8 +204,8 @@ SIM.gun.phiMin = None
 
 ##  position of the particle gun, 3 vector
 SIM.gun.position = (0.0, 0.0, 0.0)
-SIM.gun.thetaMax = 2.5
-SIM.gun.thetaMin = -2.5
+SIM.gun.thetaMax = 0.3
+SIM.gun.thetaMin = 1.5
 
 
 ################################################################################
