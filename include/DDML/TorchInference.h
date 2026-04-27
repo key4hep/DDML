@@ -17,7 +17,7 @@ namespace ddml {
  *  @date Mar 2023
  */
 
-class TorchInference : public InferenceInterface {
+class TorchInference {
 public:
   TorchInference();
 
@@ -30,7 +30,7 @@ public:
   void initialize();
 
   /// run the inference model - based on input vector and resized outputvector
-  virtual void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output);
+  void runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output);
 
 private:
   torch::jit::script::Module m_jitModule;
@@ -44,6 +44,8 @@ private:
   int m_optimizeFlag = 0;
   int m_intraOpNumThreads = 0;
 };
+
+static_assert(InferenceInterface<TorchInference>, "TorchInference must satisfy InferenceInterface concept");
 
 } // namespace ddml
 #endif

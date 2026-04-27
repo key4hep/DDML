@@ -14,11 +14,11 @@ namespace ddml {
  *  @date May 2023
  */
 
-class Par04ExampleVAE : public ModelInterface {
+class Par04ExampleVAE {
 public:
   Par04ExampleVAE() = default;
 
-  virtual ~Par04ExampleVAE() = default;
+  ~Par04ExampleVAE() = default;
 
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
@@ -37,13 +37,13 @@ public:
    *  angles.)
    */
 
-  virtual void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
-                            TensorDimVecs& tensDims, std::vector<float>& output);
+  void prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                    TensorDimVecs& tensDims, std::vector<float>& output);
 
   /** create a vector of spacepoints per layer interpreting the model output
    */
-  virtual void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
-                             const std::vector<float>& output, std::vector<SpacePointVec>& spacepoints);
+  void convertOutput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, const std::vector<float>& output,
+                     std::vector<SpacePointVec>& spacepoints);
 
 private:
   float m_initialEnergy = 0.;
@@ -57,6 +57,8 @@ private:
   float m_cellSizeZ = 3.4;     // mm - not used really
   TensorDimVecs m_tensDims = {{1, m_latentSize + 4}};
 };
+
+static_assert(ModelInterface<Par04ExampleVAE>, "Par04ExampleVAE must fulfill the ModelInterface concept");
 
 } // namespace ddml
 #endif

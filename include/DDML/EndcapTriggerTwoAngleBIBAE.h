@@ -16,16 +16,19 @@ namespace ddml {
  *
  */
 
-class EndcapTriggerTwoAngleBIBAE : public TriggerInterface {
+class EndcapTriggerTwoAngleBIBAE {
 public:
   EndcapTriggerTwoAngleBIBAE() = default;
 
-  virtual ~EndcapTriggerTwoAngleBIBAE() = default;
+  ~EndcapTriggerTwoAngleBIBAE() = default;
 
   // check trigger
-
-  virtual bool check_trigger(const G4FastTrack& aFastTrack);
+  bool check_trigger(const G4FastTrack& aFastTrack) const;
 };
+
+// Ensure this class models the TriggerInterface concept
+static_assert(TriggerInterface<EndcapTriggerTwoAngleBIBAE>,
+              "EndcapTriggerTwoAngleBIBAE should model the TriggerInterface concept");
 
 } // namespace ddml
 #endif
