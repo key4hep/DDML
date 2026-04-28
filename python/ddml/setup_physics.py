@@ -58,12 +58,3 @@ def ddml_physics(presets: List[ModelConfig], verbose: bool = True):
         phys.dump()
 
     return _setup
-
-
-_CLI = argparse.ArgumentParser(add_help=False)
-_CLI.add_argument(
-    "--ml-preset",
-    action="append",
-    default=None,
-    help="Preset dotted name (e.g. torch.CALOCLOUDS). Repeat to compose.",
-)
