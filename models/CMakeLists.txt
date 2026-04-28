@@ -24,6 +24,7 @@ add_custom_target(copy_models_to_source ALL
 foreach(path ${download_paths})
   add_custom_command(
     TARGET copy_models_to_source
+    POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${path} ${PROJECT_SOURCE_DIR}/models
   )
 endforeach()
