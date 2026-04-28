@@ -6,6 +6,10 @@
 #include <concepts>
 #include <vector>
 
+namespace dd4hep::sim {
+class Geant4Action;
+}
+
 namespace ddml {
 
 /** The basic concept for running inference with one input vector and one
@@ -16,11 +20,15 @@ namespace ddml {
  */
 
 template <typename T>
-concept InferenceInterface =
-    requires(T t, const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
-      /// run the inference model - based on input vector and resized outputvector
-      { t.runInference(inputs, tensDims, output) } -> std::same_as<void>;
-    };
+concept InferenceInterface = requires(T t, const InputVecs& inputs, const TensorDimVecs& tensDims,
+                                      std::vector<float>& output, dd4hep::sim::Geant4Action* plugin) {
+  /// run the inference model - based on input vector and resized outputvector
+  { t.runInference(inputs, tensDims, output) } -> std::same_as<void>;
+  /// initialize also has to be there as this will be called during FastMLShower::constructSensitives
+  { t.initialize() } -> std::same_as<void>;
+  /// declareProperties will be called from the FastMLShower constructor
+  { t.declareProperties(plugin) } -> std::same_as<void>;
+};
 
 } // namespace ddml
 

@@ -39,11 +39,6 @@ void TorchInference::initialize() {
 void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims, std::vector<float>& output) {
   c10::InferenceMode guard(true);
 
-  if (!m_isInitialized) {
-    initialize();
-    m_isInitialized = true;
-  }
-
   if (dd4hep::printLevel() <= dd4hep::DEBUG) {
     dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", " ----- TorchInference::runInference -----");
     dd4hep::printout(dd4hep::DEBUG, "TorchInference::runInference", "# inputs = %f : ", inputs.size());
