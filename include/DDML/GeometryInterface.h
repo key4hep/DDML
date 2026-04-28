@@ -8,6 +8,10 @@
 
 #include "DDML/DDML.h"
 
+namespace dd4hep::sim {
+class Geant4Action;
+}
+
 class G4FastTrack;
 
 namespace ddml {
@@ -22,18 +26,21 @@ namespace ddml {
  */
 
 template <typename T>
-concept GeometryInterface =
-    requires(const T t, const G4FastTrack& aFastTrack, std::vector<SpacePointVec>& spacepoints) {
-      /** compute local direction in coordinate system that has the z-axis pointing
-       * into the calorimeter, normal to the layers
-       */
-      { t.localDirection(aFastTrack) } -> std::same_as<G4ThreeVector>;
+concept GeometryInterface = requires(const T t, T mt, const G4FastTrack& aFastTrack,
+                                     std::vector<SpacePointVec>& spacepoints, dd4hep::sim::Geant4Action* plugin) {
+  /** compute local direction in coordinate system that has the z-axis pointing
+   * into the calorimeter, normal to the layers
+   */
+  { t.localDirection(aFastTrack) } -> std::same_as<G4ThreeVector>;
 
-      /** convert the local spacepoints to global spacepoints inside sensitive
-       * volumes
-       */
-      { t.localToGlobal(aFastTrack, spacepoints) } -> std::same_as<void>;
-    };
+  /** convert the local spacepoints to global spacepoints inside sensitive
+   * volumes
+   */
+  { t.localToGlobal(aFastTrack, spacepoints) } -> std::same_as<void>;
+
+  /// declareProperties will be called from the FastMLShower constructor
+  { mt.declareProperties(plugin) } -> std::same_as<void>;
+};
 
 } // namespace ddml
 

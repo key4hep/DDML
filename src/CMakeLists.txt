@@ -60,6 +60,12 @@ if(Torch_FOUND)
   )
 endif()
 
+if(DDML_ENABLE_EMBEDDED_PYINFERENCE)
+  target_sources(${PROJECT_NAME} PRIVATE EmbeddedPyInference.cc)
+  target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::embed Python3::Python Python3::NumPy)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC DDML_USE_EMBEDDED_PYINFERENCE)
+endif()
+
 if(HDF5_FOUND)
   target_sources(${PROJECT_NAME} PRIVATE
     LoadHdf5.cc
@@ -105,6 +111,10 @@ endif()
 
 if(Torch_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/TorchInference.h)
+endif()
+
+if(DDML_ENABLE_EMBEDDED_PYINFERENCE)
+  list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/EmbeddedPyInference.h)
 endif()
 
 if(HDF5_FOUND)

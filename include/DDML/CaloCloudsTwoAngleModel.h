@@ -59,7 +59,7 @@ private:
 
   Vector3d normalize(const Vector3d& v);
 
-  TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
+  TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}};
 };
 
 static_assert(ModelInterface<CaloCloudsTwoAngleModel>,

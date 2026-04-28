@@ -99,8 +99,20 @@ else()
   message("Torch not found!")
 endif()
 
+option(DDML_ENABLE_EMBEDDED_PYINFERENCE "Build embedded-Python inference backend" OFF)
+
+if(DDML_ENABLE_EMBEDDED_PYINFERENCE)
+  find_package(Python3 3.9 COMPONENTS Interpreter Development NumPy REQUIRED)
+  find_package(pybind11 2.10 CONFIG REQUIRED)
+  message("Embedded-Python inference backend enabled (Python ${Python3_VERSION}).")
+endif()
+
 if(NOT Torch_FOUND AND NOT OnnxRuntime_FOUND)
-  message(FATAL "Cannot find ONNX or Torch for ML inference. Need at least one")
+  if(NOT DDML_ENABLE_EMBEDDED_PYINFERENCE)
+    message(FATAL_ERROR "Cannot find ONNX or Torch and embedded-Python inference backend is turned off. Need at least one.")
+  else()
+    message(STATUS "Only building embedded-Python inference backend because ONNX and Torch have not been found.")
+  endif()
 endif()
 
 find_package(DD4hep REQUIRED COMPONENTS DDG4)
@@ -108,6 +120,7 @@ dd4hep_set_compiler_flags()
 dd4hep_use_python_executable()
 
 add_subdirectory(src)
+add_subdirectory(python)
 
 if (DOWNLOAD_MODELS)
   include(ExternalData)
@@ -117,4 +130,12 @@ if (DOWNLOAD_MODELS)
   add_subdirectory(models)
 
   ExternalData_Add_Target(model_download)
+endif()
+
+include(CTest)
+if (BUILD_TESTING)
+  if (NOT DOWNLOAD_MODELS)
+    message(WARNING "Tests are enabled but models are not downloaded. They will likely fail")
+  endif()
+  add_subdirectory(tests)
 endif()

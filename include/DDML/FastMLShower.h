@@ -100,6 +100,7 @@ public:
   /// "ConstructSDandField()"
   virtual void constructSensitives(dd4hep::sim::Geant4DetectorConstructionContext* ctxt) override {
     this->Geant4FastSimShowerModel::constructSensitives(ctxt);
+    m_fastsimML.initialize();
   }
 
   /// User callback to determine if the model is applicable for the particle
@@ -218,10 +219,14 @@ struct FastMLModel {
   Inference inference = {};
   MLModel model = {};
   Geometry geometry = {};
-  std::unique_ptr<Geant4FastHitMakerGlobal> hitMaker = {};
+  // NOTE: We leak this on purpose for now because some ref-counting inside the
+  // Geant4FastHitMakerGlobal goes wrong and segfaults during cleanup
+  Geant4FastHitMakerGlobal* hitMaker = {};
   Trigger trigger{};
 
-  FastMLModel() : hitMaker(std::make_unique<Geant4FastHitMakerGlobal>()) {}
+  FastMLModel() : hitMaker(new Geant4FastHitMakerGlobal()) {}
+
+  void initialize() { inference.initialize(); }
 
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);
