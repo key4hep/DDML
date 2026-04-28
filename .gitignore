@@ -17,3 +17,5 @@ compile.sh
 *.pt
 run.sh
 compile_commands.json
+
+*.pyc

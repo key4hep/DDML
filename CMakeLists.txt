@@ -108,6 +108,7 @@ dd4hep_set_compiler_flags()
 dd4hep_use_python_executable()
 
 add_subdirectory(src)
+add_subdirectory(python)
 
 if (DOWNLOAD_MODELS)
   include(ExternalData)
@@ -117,4 +118,12 @@ if (DOWNLOAD_MODELS)
   add_subdirectory(models)
 
   ExternalData_Add_Target(model_download)
+endif()
+
+include(CTest)
+if (BUILD_TESTING)
+  if (NOT DOWNLOAD_MODELS)
+    message(WARNING "Tests are enabled but models are not downloaded. They will likely fail")
+  endif()
+  add_subdirectory(tests)
 endif()
