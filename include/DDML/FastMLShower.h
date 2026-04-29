@@ -161,7 +161,6 @@ public:
       analysisManager->FillNtupleDColumn(1, 7, direction.z());
 
       analysisManager->AddNtupleRow(1);
-
     }
 
     for (auto& invec : m_input) {
