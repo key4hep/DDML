@@ -19,12 +19,6 @@
 #define DDML_INSTRUMENT_MODEL_SHOWER 0
 #endif
 
-/*** Safe to remove?
-#ifndef DDML_RECORD_CALO_IMPACT
-  #define DDML_RECORD_CALO_IMPACT 0
-#endif
-*/
-
 #if DDML_INSTRUMENT_MODEL_SHOWER
 #include "podio/Frame.h"
 #include "podio/ROOTWriter.h"
@@ -47,11 +41,6 @@ inline auto run_void_member_timed(Obj& obj, MemberFunc func, Args&&... args) {
 }
 #endif
 
-/* TO REMOVE!
-#if DDML_RECORD_CALO_IMPACT
-  #include "G4AnalysisManager.hh"
-#endif
-*/
 // Required to record calo entry position
 #include "G4AnalysisManager.hh"
 
@@ -152,8 +141,6 @@ public:
     podio::UserDataCollection<uint64_t> nHits;
 #endif
 
-    // TO REMOVE!
-    // #if DDML_RECORD_CALO_IMPACT
     if (m_fastsimML.m_record_calo_impact) {
       // Create analysis manager
       G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
@@ -175,22 +162,7 @@ public:
 
       analysisManager->AddNtupleRow(1);
 
-      /*
-      DDMLEventAction* mEventAction =
-      dynamic_cast<DDMLEventAction*>(G4EventManager::GetEventManager()->GetUserEventAction());
-      mEventAction->SetElCaloMC_PDG(PDG);
-      mEventAction->SetElCaloMC_E(energy);
-      mEventAction->SetElCaloMC_PosX(position.x());
-      mEventAction->SetElCaloMC_PosY(position.y());
-      mEventAction->SetElCaloMC_PosZ(position.z());
-      mEventAction->SetElCaloMC_DirX(direction.x());
-      mEventAction->SetElCaloMC_DirY(direction.y());
-      mEventAction->SetElCaloMC_DirZ(direction.z());
-      */
     }
-
-    // TO REMOVE!
-    // #endif
 
     for (auto& invec : m_input) {
       invec.clear();
