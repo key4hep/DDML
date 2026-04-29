@@ -49,7 +49,7 @@ private:
   std::vector<float> m_library{};
 
   // shower library dimensions
-  std::vector<unsigned long> m_dimsOut{};
+  std::vector<hsize_t> m_dimsOut{};
 
   // dimensions of shower library
   int m_rank;

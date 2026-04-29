@@ -396,6 +396,23 @@ def aiDanceTorch(kernel):
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
     hadrons = False
 
+    ## Record calo entry position?
+    Record_Calo_Entry = True
+
+    if Record_Calo_Entry:
+        from DDG4 import RunAction
+        from DDG4 import EventAction
+
+        ### Configure Run actions
+        run1 = RunAction(kernel, "FastSimTriggerInfoRecordingRunAction/runaction")
+        kernel.registerGlobalAction(run1)
+        kernel.runAction().add(run1)
+        event1 = EventAction(
+            kernel, "FastSimTriggerInfoRecordingEventAction/eventaction"
+        )
+        kernel.registerGlobalAction(event1)
+        kernel.eventAction().add(event1)
+
     if ild == True:
         ml_barrel_name = "EcalBarrel"
         ml_barrel_symmetry = 8
@@ -486,6 +503,10 @@ def aiDanceTorch(kernel):
     model.ModelPath = ml_file
     model.OptimizeFlag = 1
     model.IntraOpNumThreads = 1
+
+    ## Optional: record entry point of particles to calorimeter face
+    if Record_Calo_Entry:
+        model.Record_Calo_Impact = True
 
     model.enableUI()
     seq.adopt(model)

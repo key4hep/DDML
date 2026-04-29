@@ -48,7 +48,7 @@ Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() { delete m_navigator; }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aTrack) {
-  // do not make empty deposit
+  //  do not make empty deposit
   if (aHit.GetEnergy() <= 0) {
     return;
   }

@@ -41,6 +41,9 @@ inline auto run_void_member_timed(Obj& obj, MemberFunc func, Args&&... args) {
 }
 #endif
 
+// Required to record calo entry position
+#include "G4AnalysisManager.hh"
+
 namespace ddml {
 /** The templated base class for running fast shower simulation with ML.
  *  The actual implementation is provided by the templated class
@@ -138,6 +141,28 @@ public:
     podio::UserDataCollection<uint64_t> nHits;
 #endif
 
+    if (m_fastsimML.m_record_calo_impact) {
+      // Create analysis manager
+      G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+      // Store information about particle impact on calorimter face from track
+      G4int PDG = track.GetPrimaryTrack()->GetParticleDefinition()->GetPDGEncoding();
+      G4ThreeVector position = track.GetPrimaryTrack()->GetPosition();
+      G4ThreeVector direction = track.GetPrimaryTrack()->GetMomentumDirection();
+
+      // Fill analysis manager
+      analysisManager->FillNtupleIColumn(1, 0, PDG);
+      analysisManager->FillNtupleDColumn(1, 1, energy);
+      analysisManager->FillNtupleDColumn(1, 2, position.x());
+      analysisManager->FillNtupleDColumn(1, 3, position.y());
+      analysisManager->FillNtupleDColumn(1, 4, position.z());
+      analysisManager->FillNtupleDColumn(1, 5, direction.x());
+      analysisManager->FillNtupleDColumn(1, 6, direction.y());
+      analysisManager->FillNtupleDColumn(1, 7, direction.z());
+
+      analysisManager->AddNtupleRow(1);
+    }
+
     for (auto& invec : m_input) {
       invec.clear();
     }
@@ -223,10 +248,19 @@ struct FastMLModel {
 
   FastMLModel() : hitMaker(std::make_unique<Geant4FastHitMakerGlobal>()) {}
 
+  const bool has_constructGeo = false;
+  const bool has_constructField = false;
+  const bool has_constructSensitives = false;
+  const bool has_check_applicability = false;
+  const bool has_check_trigger = false;
+
+  bool m_record_calo_impact = false;
+
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);
     inference.declareProperties(plugin);
     geometry.declareProperties(plugin);
+    plugin->declareProperty("Record_Calo_Impact", this->m_record_calo_impact);
   }
 };
 

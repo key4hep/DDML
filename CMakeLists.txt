@@ -58,6 +58,7 @@ endif()
 
 option(INSTRUMENT_MODEL "Instrument the steps of the showerModel call" OFF)
 
+
 option(DOWNLOAD_MODELS "Download and install the models that are stored externally" ON)
 
 #---------------------------------------------------
