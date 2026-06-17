@@ -243,10 +243,12 @@ struct FastMLModel {
   Inference inference = {};
   MLModel model = {};
   Geometry geometry = {};
-  std::unique_ptr<Geant4FastHitMakerGlobal> hitMaker = {};
+  // NOTE: We leak this on purpose for now because some ref-counting inside the
+  // Geant4FastHitMakerGlobal goes wrong and segfaults during cleanup
+  Geant4FastHitMakerGlobal* hitMaker = {};
   Trigger trigger{};
 
-  FastMLModel() : hitMaker(std::make_unique<Geant4FastHitMakerGlobal>()) {}
+  FastMLModel() : hitMaker(new Geant4FastHitMakerGlobal()) {}
 
   const bool has_constructGeo = false;
   const bool has_constructField = false;

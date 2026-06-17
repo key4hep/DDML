@@ -1,6 +1,8 @@
 #include "DDML/TorchInference.h"
 #include "omp.h" // for setting num torch threads
+#include <algorithm>
 #include <cassert>
+#include <cstring>
 
 #define DEBUGPRINT 0
 
@@ -83,8 +85,18 @@ void TorchInference::runInference(const InputVecs& inputs, const TensorDimVecs& 
     }
   }
 
-  for (unsigned j = 0; j < output.size(); ++j) {
-    output[j] = *(outTensor.data_ptr<float>() + j);
+  // Copy values back into the outputs making sure that we neither overrun the
+  // output buffer nor that we read past the end of the output tensor. We can
+  // ignore everyting in output past n, because we clear it for every run in
+  // FastMLShower::modelShower
+  if (outTensor.numel() > (int64_t)output.size()) {
+    // We could technically just make enough room, but that might be hiding a
+    // configuration or model issue as it is the models responsibility to size
+    // this vector
+    dd4hep::printout(dd4hep::WARNING, "TorchInference::runInference",
+                     "model returned more values than were pre-allocated");
   }
+  const size_t n = std::min(static_cast<size_t>(outTensor.numel()), output.size());
+  std::memcpy(output.data(), outTensor.data_ptr<float>(), n * sizeof(float));
 }
 } // namespace ddml
