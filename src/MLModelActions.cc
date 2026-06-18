@@ -114,6 +114,16 @@ typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEM
                                  ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5RegularGridTwoAngleBIBAEModelEndcap;
 
+// Load from hdf5 file- as an example the CC3 model
+// Barrel
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::CaloCloudsTwoAngleModel, ddml::PolyhedraBarrelGeometry,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+    LoadHDF5CaloCloudsTwoAngleModelPolyhedraBarrel;
+// Endcap
+typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::CaloCloudsTwoAngleModel, ddml::EndcapGeometry,
+                                 ddml::OctogonalBarrelTrigger>> // add ML trigger
+    LoadHDF5CaloCloudsTwoAngleModelPolyhedraEndcap;
+
 /// Load from HDF5 file- as an example for Hadron showers from PionClouds
 // Barrel
 typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::PolyhedraBarrelGeometry,
@@ -152,6 +162,8 @@ DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelEndcapTorchModel)
 #ifdef DDML_USE_LOAD_HDF5
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5RegularGridTwoAngleBIBAEModelEndcap)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5CaloCloudsTwoAngleModelPolyhedraBarrel)
+DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5CaloCloudsTwoAngleModelPolyhedraEndcap)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel)
 DECLARE_GEANT4ACTION_NS(ddml, LoadHDF5PionCloudsPCHadronModelEndcap)
 #endif

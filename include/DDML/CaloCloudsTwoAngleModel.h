@@ -46,8 +46,8 @@ private:
   /// model properties for plugin
   // These grid sizes were used for the two angle BIBAE
   int m_nLayer = 30;
-  int m_maxNumElements = 35000; // number of space points in the output multiplied by 4 (x,y,z,energy)
-  int m_latentSize = 3;         // number of input features (energy, theta, phi)
+  int m_maxNumElements = 6868; // 35000; // number of space points in the output multiplied by 4 (x,y,z,energy)
+  int m_latentSize = 3;        // number of input features (energy, theta, phi)
 
   struct Vector3d {
     double x;

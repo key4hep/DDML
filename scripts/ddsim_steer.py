@@ -546,10 +546,11 @@ def aiDanceTorch(kernel):
 
 def LoadHdf5(kernel):
     ild = True
-    BIBAE = True
-    Two_Angle = True
+    BIBAE = False  # True
+    Two_Angle = False  # True
     old_DD4hep = False  ## use for DD4hep versions/commits before ~ Apr 21st 2023
-    hadrons = True
+    Step2point = True
+    hadrons = False  # True
 
     if ild == True:
         ml_barrel_name = "EcalBarrel"
@@ -577,6 +578,11 @@ def LoadHdf5(kernel):
             "LoadHDF5RegularGridTwoAngleBIBAEModelPolyhedraBarrel/BarrelModelTorch"
         )
         ml_model_1 = "LoadHDF5RegularGridTwoAngleBIBAEModelEndcap/EndcapModelTorch"
+        ml_correct_angles = False
+
+    if Step2point == True:
+        ml_file = "../models/compressed_merge_within_cell.input_cc3_layercounts_test.h5"
+        ml_model = "LoadHDF5CaloCloudsTwoAngleModelPolyhedraBarrel/BarrelModelTorch"
         ml_correct_angles = False
 
     if hadrons == True:
@@ -608,7 +614,7 @@ def LoadHdf5(kernel):
         seq.adopt(sensitives)
 
     # -----------------
-    """
+
     ## EM in Barrel
     model = DetectorConstruction(kernel, str(ml_model))
 
@@ -631,9 +637,10 @@ def LoadHdf5(kernel):
 
     model.enableUI()
     seq.adopt(model)
-    """
+
     # -------------------
     ## EM in Endcap
+    """
     model1 = DetectorConstruction(kernel, str(ml_model_1))
 
     ##   # Mandatory model parameters
@@ -654,8 +661,10 @@ def LoadHdf5(kernel):
 
     model1.enableUI()
     seq.adopt(model1)
+    """
 
     # -------------------
+    """
     ## Hadrons in Barrel
     modelHad1 = DetectorConstruction(kernel, str(ml_model_had))
 
@@ -679,6 +688,7 @@ def LoadHdf5(kernel):
 
     modelHad1.enableUI()
     seq.adopt(modelHad1)
+    """
 
     # -------------------
 
@@ -693,5 +703,5 @@ def LoadHdf5(kernel):
 
 
 # SIM.physics.setupUserPhysics( aiDance)
-SIM.physics.setupUserPhysics(aiDanceTorch)
-# SIM.physics.setupUserPhysics(LoadHdf5)
+# SIM.physics.setupUserPhysics(aiDanceTorch)
+SIM.physics.setupUserPhysics(LoadHdf5)

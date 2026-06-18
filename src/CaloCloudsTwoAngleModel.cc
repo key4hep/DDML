@@ -59,20 +59,26 @@ void CaloCloudsTwoAngleModel::prepareInput(G4FastTrack const& aFastTrack, G4Thre
 
 void CaloCloudsTwoAngleModel::convertOutput(G4FastTrack const&, G4ThreeVector const&, const std::vector<float>& output,
                                             std::vector<SpacePointVec>& spacepoints) {
+  //// Note: in the step2point file, number of space points per layer, but still have the same s
   int nLayer = m_nLayer; // number of layers is z dimension
   int layerNum = 0;
   int numSP = 0;
 
   spacepoints.resize(nLayer);
 
+  // Assumption is that the first <nLayers> entries in the tensor for a point cloud model will be the number of points
+  // per layer
   int numElements = 0;
   for (int i = 0; i < nLayer; i++) {
-    numSP = output[i] + 1;
+    numSP = output[4 * i]; // *4 here as other entries are zero
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "i : %i", i);
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "numSP : %i", numSP);
     spacepoints[i].reserve(numSP);
-    numElements += output[i] * 4;
+    numElements += numSP * 4;
   }
 
-  for (int i = nLayer; i < nLayer + numElements; i += 4) {
+  for (int i = nLayer * 4; i < nLayer * 4 + numElements;
+       i += 4) {                              // multiply by 4 here as still have zeros where there are not entries
     ddml::SpacePoint sp(output[i] * (-1.),    // x // *(-1) to align local to global convention in ddml
                         output[i + 1] * (-1), // y // *(-1) to align local to global convention in ddml
                         0.,                   // z
@@ -82,6 +88,13 @@ void CaloCloudsTwoAngleModel::convertOutput(G4FastTrack const&, G4ThreeVector co
 
     // layerNum = output[i+2] ;
     layerNum = output[i + 2];
+
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "i : %i", i);
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "layerNum : %i", layerNum);
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "output[i] : %f", output[i]);
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "output[i + 1] : %f", output[i + 1]);
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "output[i + 2] : %f", output[i + 2]);
+    dd4hep::printout(dd4hep::DEBUG, "CaloCloudsTwoAngleModel::convertOutput", "output[i + 3] : %f", output[i + 3]);
 
     spacepoints[layerNum].emplace_back(sp);
   }
