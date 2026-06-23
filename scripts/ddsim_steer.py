@@ -264,8 +264,10 @@ if not dd4hep:
     import DDG4
 
     ddg4_path = os.path.dirname(DDG4.__file__)
+    install_prefix = os.path.abspath(os.path.join(ddg4_python, "..", "..", ".."))
+    pdg_path = os.path.join(install_prefix, "DDG4", "examples", "particle.tbl")
+    SIM.physics.pdgfile = pdg_path
 
-    SIM.physics.pdgfile = os.path.join(ddg4_path, "examples/particle.tbl")
 
 else:
     SIM.physics.pdgfile = os.path.join(
