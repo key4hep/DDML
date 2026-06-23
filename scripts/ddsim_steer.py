@@ -258,18 +258,14 @@ SIM.physics.list = "QGSP_BERT"  # "FTFP_BERT"
 
 ##  location of particle.tbl file containing extra particles and their lifetime information
 ##
-dd4hep = os.eniron.get("DD4HEP")
+dd4hep = os.environ.get("DD4HEP")
 
 if not dd4hep:
     import DDG4
 
     ddg4_path = os.path.dirname(DDG4.__file__)
 
-
-    SIM.physics.pdgfile = os.path.join(
-        ddg4_path,
-        "examples/particle.tbl"
-    )
+    SIM.physics.pdgfile = os.path.join(ddg4_path, "examples/particle.tbl")
 
 else:
     SIM.physics.pdgfile = os.path.join(
