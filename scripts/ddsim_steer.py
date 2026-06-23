@@ -261,12 +261,19 @@ SIM.physics.list = "QGSP_BERT"  # "FTFP_BERT"
 dd4hep = os.environ.get("DD4HEP")
 
 if not dd4hep:
-    import DDG4
+    
+    import shutil
 
-    ddg4_path = os.path.dirname(DDG4.__file__)
-    install_prefix = os.path.abspath(os.path.join(ddg4_path, "..", "..", ".."))
-    pdg_path = os.path.join(install_prefix, "DDG4", "examples", "particle.tbl")
+    ddsim_path = shutil.which("ddsim")
+    prefix = os.path.abspath(os.path.join(ddsim_path, "..", ".."))
+
+    pdg_path = os.path.join(prefix, "examples", "DDG4", "examples", "particle.tbl")
+
+    if not os.path.exists(pdg_path):
+        raise RuntimeError(f"PDG file not found at {pdg_path}")
+
     SIM.physics.pdgfile = pdg_path
+
 
 
 else:
