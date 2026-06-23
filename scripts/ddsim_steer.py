@@ -261,7 +261,7 @@ SIM.physics.list = "QGSP_BERT"  # "FTFP_BERT"
 dd4hep = os.environ.get("DD4HEP")
 
 if not dd4hep:
-    
+
     import shutil
 
     ddsim_path = shutil.which("ddsim")
@@ -273,7 +273,6 @@ if not dd4hep:
         raise RuntimeError(f"PDG file not found at {pdg_path}")
 
     SIM.physics.pdgfile = pdg_path
-
 
 
 else:
