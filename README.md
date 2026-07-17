@@ -18,6 +18,12 @@ Generative Models: Towards a First Physics Application*, P. McKeown et al., PoS 
 ### Environment Setup
 Access to `cvmfs` required.
 
+> Comment; 22 probably worked at some point, now in Ubuntu 22 we get 
+```
+Unsupported OS or OS couldn't be correctly detected, aborting...
+Supported OSes are: AlmaLinux/RockyLinux/RHEL 9, Ubuntu 24.04, and Ubuntu 26.04
+```
+
 The library can be run in apptainer with an Ubuntu 22.04 docker image as follows, with bind mounting to `cvmfs`:
 ```
 mkdir cvmfs
@@ -45,7 +51,10 @@ Now build as usual
 ```
 mkdir build
 cd build
-cmake ..
+#cmake ..
+# henry need the flag set to on, otherwise the plugin isn't compiled
+cmake -DDDML_ENABLE_EMBEDDED_PYINFERENCE=ON ..
+# Henry; works when the run_cc3_pywrapper_ild is commented out of tests/CMakeLists.txt
 make -j4 install
 ```
 
@@ -60,8 +69,16 @@ source ../install/bin/thisDDML.sh
 The simulation can then be run as usual with ddsim- for example for the ILD detector:
 
 ```
+# HENRY; apparently we need to explicity add this python path
+ddml_python=$(readlink -f ../python)
+export PYTHONPATH=${PYTHONPATH}:${ddml_python}
 cd ../scripts
-ddsim --steeringFile ddsim_steer.py --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml
+#ddsim --steeringFile ddsim_steer.py --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml
+# need to specify the --ml-model CC3_BARREL_PY_INTERFACE and an --inputFile
+ddsim --steeringFile ddsim_steer.py \
+ --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
+ --ml-model CC3_BARREL_PY_INTERFACE \
+ --inputFile /data/dust/group/ilc/sft-ml/datasets/angular/simulation_inputs/ILD-barrelSmallSegment-singleParticles-gen-E1010pdg22.slcio
 ```
 
 Depending on the setup in `ddsim_steer.py`, either a `.slcio` file or a `.edm4hep.root` file can be written
