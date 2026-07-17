@@ -16,13 +16,13 @@ SIM.compactFile = ""
 ## Lorentz boost for the crossing angle, in radian!
 SIM.crossingAngleBoost = 7.0e-3 * rad
 SIM.enableDetailedShowerMode = True
-SIM.enableG4GPS = True
+SIM.enableG4GPS = False#True
 SIM.enableG4Gun = False
 SIM.enableGun = False
 ## InputFiles for simulation .stdhep, .slcio, .HEPEvt, .hepevt, .hepmc, .pairs files are supported
 SIM.inputFiles = []
 ## Macro file to execute for runType 'run' or 'vis'
-SIM.macroFile = "./test_onnx.mac"
+#SIM.macroFile = "./test_onnx.mac"
 ## number of events to simulate, used in batch mode
 SIM.numberOfEvents = 42
 ## Outputfile from the simulation,only lcio output is supported
@@ -581,7 +581,7 @@ def LoadHdf5(kernel):
         ml_correct_angles = False
 
     if Step2point == True:
-        ml_file = "../models/compressed_merge_within_cell.input_cc3_layercounts_test.h5"
+        ml_file = "../models/ddml_minimal_noSC_mergedcenter_test_small.h5" #"../models/compressed_merge_within_cell.input_cc3_layercounts_test.h5"
         ml_model = "LoadHDF5CaloCloudsTwoAngleModelPolyhedraBarrel/BarrelModelTorch"
         ml_correct_angles = False
 
