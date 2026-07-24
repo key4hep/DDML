@@ -71,13 +71,21 @@ The simulation can then be run as usual with ddsim- for example for the ILD dete
 ```
 # HENRY; apparently we need to explicity add this python path
 ddml_python=$(readlink -f ../python)
-export PYTHONPATH=${PYTHONPATH}:${ddml_python}
+plugin_python=$(readlink -f ../python/examples)
+export PYTHONPATH=${PYTHONPATH}:${ddml_python}:${plugin_python}
 cd ../scripts
 #ddsim --steeringFile ddsim_steer.py --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml
 # need to specify the --ml-model CC3_BARREL_PY_INTERFACE and an --inputFile
-ddsim --steeringFile ddsim_steer.py \
+ddsim --steeringFile ddsim_steer_cc3.py \
  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
  --ml-model CC3_BARREL_PY_INTERFACE \
+ --inputFile /data/dust/group/ilc/sft-ml/datasets/angular/simulation_inputs/ILD-barrelSmallSegment-singleParticles-gen-E1010pdg22.slcio
+```
+or for allshowers (must be on a GPU node!)
+```
+ddsim --steeringFile ddsim_steer.py \
+ --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
+ --ml-model AS1_BARREL_PY_INTERFACE \
  --inputFile /data/dust/group/ilc/sft-ml/datasets/angular/simulation_inputs/ILD-barrelSmallSegment-singleParticles-gen-E1010pdg22.slcio
 ```
 
@@ -86,6 +94,7 @@ Depending on the setup in `ddsim_steer.py`, either a `.slcio` file or a `.edm4he
 Events can be visualised in the standard way for `.slcio` file or a `.edm4hep.root` files, e.g for `.slcio` with ILD:
 
 ```
+# gets a permission error for the "Gearfile"
 ced2go -d $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml dummyOutput.slcio
 ```
 

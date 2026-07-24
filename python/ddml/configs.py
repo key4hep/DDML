@@ -21,6 +21,7 @@ ILD_ENDCAP = PluginGeometry(ecal=_ILD_ECAL_ENDCAP, hcal=_ILD_HCAL_ENDCAP)
 
 
 PHOTONS = frozenset({"gamma"})
+PHOTONS = frozenset({"gamma"})
 PHOTON_TRIGGER_5_GEV = {"gamma": 5.0 * GeV}
 PHOTON_TRIGGER_10_GEV = {"gamma": 10.0 * GeV}
 
@@ -90,6 +91,19 @@ CC3_ENDCAP_PY_INTERFACE = ModelConfig(
     geometry=ILD_ENDCAP,
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
+        "EntryPoint": "run_inference",
+    },
+    correct_angles=False,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
+)
+
+
+AS1_BARREL_PY_INTERFACE = ModelConfig(
+    plugin="CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    geometry=ILD_BARREL,
+    plugin_properties={
+        "PythonModule": "allshowers_1_wrapper",
         "EntryPoint": "run_inference",
     },
     correct_angles=False,

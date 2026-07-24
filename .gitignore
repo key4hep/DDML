@@ -19,3 +19,4 @@ run.sh
 compile_commands.json
 
 *.pyc
+.aider*
