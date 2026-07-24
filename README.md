@@ -81,7 +81,7 @@ ddsim --steeringFile ddsim_steer_cc3.py \
  --ml-model CC3_BARREL_PY_INTERFACE \
  --inputFile /data/dust/group/ilc/sft-ml/datasets/angular/simulation_inputs/ILD-barrelSmallSegment-singleParticles-gen-E1010pdg22.slcio
 ```
-or for allshowers (must be on a GPU node!)
+or for allshowers (must be on a GPU node, and note that multiple instances may cause crashes)
 ```
 ddsim --steeringFile ddsim_steer.py \
  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
