@@ -448,7 +448,7 @@ def aiDanceTorch(kernel):
         ml_file = "../models/CC3_paper_checkpoint.pt"  ## checkpoint from the CC3 paper
         # ml_file = "../models/CC3_SF_2A.pt"
         ml_model = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch"
-        ml_model_1 = "CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/EndcapModelTorch"
+        ml_model_1 = "CaloCloudsTwoAngleModelEndcapTorchModel/EndcapModelTorch"
         ml_correct_angles = False
     elif L2LFlows == True:
         ml_file = "../models/L2LFlowsx9.pt"
