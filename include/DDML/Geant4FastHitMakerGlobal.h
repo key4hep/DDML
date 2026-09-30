@@ -50,7 +50,7 @@
 class Geant4FastHitMakerGlobal {
 public:
   Geant4FastHitMakerGlobal();
-  ~Geant4FastHitMakerGlobal();
+  ~Geant4FastHitMakerGlobal() = default;
 
   /// Deposit energy at given position.
   /// @param[in] aHit Created hit (energy and position)
@@ -67,11 +67,11 @@ private:
   /// Touchable
   G4TouchableHandle m_touchableHandle;
   /// Navigator
-  G4Navigator* m_navigator;
+  G4Navigator m_navigator{};
   /// Flag specifying if navigator has been already set up
-  G4bool m_naviSetup;
+  G4bool m_naviSetup{false};
   /// Name of the world containing the sensitive detector. If empty, default
   /// mass world is used.
-  G4String m_worldWithSdName;
+  G4String m_worldWithSdName{""};
 };
 #endif

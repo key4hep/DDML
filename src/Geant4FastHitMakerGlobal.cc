@@ -34,16 +34,7 @@
 
 #include <DD4hep/Printout.h>
 
-Geant4FastHitMakerGlobal::Geant4FastHitMakerGlobal() {
-  m_touchableHandle = new G4TouchableHistory();
-  m_navigator = new G4Navigator();
-  m_naviSetup = false;
-  m_worldWithSdName = "";
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Geant4FastHitMakerGlobal::~Geant4FastHitMakerGlobal() { delete m_navigator; }
+Geant4FastHitMakerGlobal::Geant4FastHitMakerGlobal() : m_touchableHandle(new G4TouchableHistory()) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -62,14 +53,14 @@ void Geant4FastHitMakerGlobal::make(const G4FastHit& aHit, const G4FastTrack& aT
     } else {
       worldWithSD = G4TransportationManager::GetTransportationManager()->GetParallelWorld(m_worldWithSdName);
     }
-    m_navigator->SetWorldVolume(worldWithSD);
+    m_navigator.SetWorldVolume(worldWithSD);
     // use track global position
-    m_navigator->LocateGlobalPointAndUpdateTouchable(aHit.GetPosition(), m_touchableHandle(), false);
+    m_navigator.LocateGlobalPointAndUpdateTouchable(aHit.GetPosition(), m_touchableHandle(), false);
     m_naviSetup = true;
   } else {
     // for further deposits use hit (local) position and local->global
     // transformation
-    m_navigator->LocateGlobalPointAndUpdateTouchable(aHit.GetPosition(), m_touchableHandle());
+    m_navigator.LocateGlobalPointAndUpdateTouchable(aHit.GetPosition(), m_touchableHandle());
   }
   G4VPhysicalVolume* currentVolume = m_touchableHandle()->GetVolume();
 
