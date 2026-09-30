@@ -1,9 +1,8 @@
 #include "DDML/ONNXInference.h"
 
+#include <algorithm>
 #include <cassert>
-#include <iostream>
-
-#define DEBUGPRINT 0
+#include <cstring>
 
 namespace ddml {
 
@@ -130,11 +129,20 @@ void ONNXInference::runInference(const InputVecs& inputs, const TensorDimVecs& t
   std::vector<Ort::Value> ort_outputs = m_session->Run(Ort::RunOptions{nullptr}, m_inNames.data(), ort_inputs.data(),
                                                        ort_inputs.size(), m_outNames.data(), m_outNames.size());
 
-  // get pointer to output tensor float values
-  const auto* floatarr = ort_outputs.front().GetTensorData<float>();
-  //  output.assign(outputSize, 0);
-  for (int i = 0, N = output.size(); i < N; ++i) {
-    output[i] = floatarr[i];
+  // Copy values back into the outputs making sure that we neither overrun the
+  // output buffer nor that we read past the end of the output tensor. We can
+  // ignore everyting in output past n, because we clear it for every run in
+  // FastMLShower::modelShower
+  const auto& front = ort_outputs.front();
+  const auto tensorElems = static_cast<size_t>(front.GetTensorTypeAndShapeInfo().GetElementCount());
+  if (tensorElems > output.size()) {
+    // We could technically just make enough room, but that might be hiding a
+    // configuration or model issue as it is the models responsibility to size
+    // this vector
+    dd4hep::printout(dd4hep::WARNING, "ONNXInference::runInference",
+                     "model returned more values than were pre-allocated");
   }
+  const size_t n = std::min(tensorElems, output.size());
+  std::memcpy(output.data(), front.GetTensorData<float>(), n * sizeof(float));
 }
 } // namespace ddml
