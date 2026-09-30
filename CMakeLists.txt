@@ -7,42 +7,14 @@ project(DDML LANGUAGES CXX)
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_LIBDIR lib)  # Make sure that the generated thisDDML.sh script points to the right location
 
-# Define a default build type can be overriden by passing
-# ``-DCMAKE_BUILD_TYPE=<type>`` when invoking CMake
-if(NOT CMAKE_CONFIGURATION_TYPES)
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE RelWithDebInfo
-      CACHE STRING "Choose the type of build, options are: None Release MinSizeRel Debug RelWithDebInfo"
-      FORCE
-      )
-  else()
-    set(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}"
-      CACHE STRING "Choose the type of build, options are: None Release MinSizeRel Debug RelWithDebInfo"
-      FORCE
-      )
-  endif()
-endif()
+include(cmake/Key4hepConfig.cmake)
+
 
 # Change the default install prefix away from /usr/local
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   message(STATUS "Setting install prefix to ${PROJECT_SOURCE_DIR}/install")
   set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install CACHE STRING "Install prefix" FORCE)
 endif()
-
-# Set up C++ Standard
-# ``-DCMAKE_CXX_STANDARD=<standard>`` when invoking CMake
-set(CMAKE_CXX_STANDARD 20 CACHE STRING "")
-
-if(NOT CMAKE_CXX_STANDARD MATCHES "20|23")
-  message(FATAL_ERROR "Unsupported C++ standard: ${CMAKE_CXX_STANDARD}, supported values are 20 and 23")
-endif()
-
-# Prevent CMake falls back to the latest standard the compiler does support
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Disables the use of compiler-specific extensions, hence makes sure the code
-# works for a wider range of compilers
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -102,8 +74,6 @@ if(NOT Torch_FOUND AND NOT onnxruntime_FOUND)
 endif()
 
 find_package(DD4hep REQUIRED COMPONENTS DDG4)
-dd4hep_set_compiler_flags()
-dd4hep_use_python_executable()
 
 add_subdirectory(src)
 
