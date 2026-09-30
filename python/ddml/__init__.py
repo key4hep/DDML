@@ -55,6 +55,5 @@ __all__ = [
     "ModelConfig",
     "add_shower_model",
     "ddml_physics",
-    "presets",
-    "get_presets_from_args",
+    "get_fastsim_configuration",
 ]
