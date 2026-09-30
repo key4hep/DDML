@@ -37,12 +37,12 @@ if(INSTRUMENT_MODEL)
   )
 endif()
 
-if(OnnxRuntime_FOUND)
+if(onnxruntime_FOUND)
   target_sources(${PROJECT_NAME} PRIVATE
     ONNXInference.cc
     )
   target_link_libraries(${PROJECT_NAME} PUBLIC
-    OnnxRuntime
+    onnxruntime::onnxruntime
     )
   target_compile_definitions(${PROJECT_NAME} PUBLIC
     DDML_USE_ONNX_INFERENCE
@@ -103,7 +103,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h
   )
 
-if(OnnxRuntime_FOUND)
+if(onnxruntime_FOUND)
   list(APPEND headers ${PROJECT_SOURCE_DIR}/include/DDML/ONNXInference.h)
 endif()
 

@@ -66,9 +66,6 @@ option(DOWNLOAD_MODELS "Download and install the models that are stored external
 
 find_package(EDM4HEP REQUIRED)
 
-# make sure the onnx find script is found:
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
 # HDF5, MPI headers are also required
 # HDF5 seems not to properly export targets, so have to find MPI explicitly
 find_package(HDF5 COMPONENTS C CXX)
@@ -85,8 +82,8 @@ else()
 endif()
 #--------------------------------------------------
 
-find_package(OnnxRuntime)
-if(OnnxRuntime_FOUND)
+find_package(onnxruntime)
+if(onnxruntime_FOUND)
   message("ONNX Runtime inference library found.")
 else()
   message("ONNX Runtime not found!")
@@ -100,7 +97,7 @@ else()
   message("Torch not found!")
 endif()
 
-if(NOT Torch_FOUND AND NOT OnnxRuntime_FOUND)
+if(NOT Torch_FOUND AND NOT onnxruntime_FOUND)
   message(FATAL "Cannot find ONNX or Torch for ML inference. Need at least one")
 endif()
 
