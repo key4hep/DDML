@@ -11,6 +11,7 @@ from g4units import m, mm, MeV, rad
 import os
 
 from ddml import ddml_physics, get_presets_from_args
+from python.ddml import get_fastsim_configuration
 
 
 SIM = DD4hepSimulation()
@@ -291,6 +292,6 @@ SIM.random.replace_gRandom = True
 SIM.random.seed = None
 SIM.random.type = None
 
-presets = get_presets_from_args()
+presets, record_calo_entry = get_fastsim_configuration()
 
-SIM.physics.setupUserPhysics(ddml_physics(presets))
+SIM.physics.setupUserPhysics(ddml_physics(presets, record_calo_entry))

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 import argparse
 import sys
 
@@ -23,7 +23,7 @@ def _register_presets() -> None:
 _register_presets()
 
 
-def get_presets_from_args() -> List[ModelConfig]:
+def get_fastsim_configuration() -> Tuple[List[ModelConfig], bool]:
     # Add a single argument (in a way that doesn't interfere with the arg parsing of
     # ddsim). We do this to make it possible to dynamically get preests from CLI
     _cli = argparse.ArgumentParser(add_help=False)
@@ -33,6 +33,12 @@ def get_presets_from_args() -> List[ModelConfig]:
         default=None,
         help="Preset dotted name (e.g. torch.CALOCLOUDS). Repeat to compose.",
     )
+    _cli.add_argument(
+        "--record-calo-entry",
+        action="store_true",
+        default=False,
+        description="Record information about particles as they enter the calorimeter",
+    )
 
     # Make sure to leave all other arguments untouched. Only remove ours
     args, remainder = _cli.parse_known_args()
@@ -41,7 +47,8 @@ def get_presets_from_args() -> List[ModelConfig]:
     presets = []
     for preset in args.ml_model:
         presets.append(_PRESETS[preset])
-    return presets
+
+    return presets, args.record_calo_entry
 
 
 __all__ = [

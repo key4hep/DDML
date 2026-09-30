@@ -38,7 +38,22 @@ def add_shower_model(kernel, preset: ModelConfig) -> None:
     seq.adopt(m)
 
 
-def ddml_physics(presets: List[ModelConfig], verbose: bool = True):
+def add_calo_entry_recording(kernel):
+    """Add the setup / actions to record information about partilces as they
+    enter the calorimeter"""
+    from DDG4 import RunAction, EventAction
+
+    run_a = RunAction(kernel, "FastSimTriggerInfoRecordingRunAction/runaction")
+    kernel.registerGlobalAction(run_a)
+    kernel.runAction().add(run_a)
+    event_a = EventAction(kernel, "FastSimTriggerInfoRecordingEventAction/eventaction")
+    kernel.registerGlobalAction(event_a)
+    kernel.eventAction().add(event_a)
+
+
+def ddml_physics(
+    presets: List[ModelConfig], verbose: bool = True, record_calo_entry: bool = False
+):
     """Return a callable compatible with SIM.physics.setupUserPhysics()."""
     if not presets:
         raise ValueError("user_physics requires at least one ShowerPreset")
@@ -56,6 +71,9 @@ def ddml_physics(presets: List[ModelConfig], verbose: bool = True):
         ph.enableUI()
         phys.adopt(ph)
         phys.dump()
+
+        if record_calo_entry:
+            add_calo_entry_recording(kernel)
 
     return _setup
 
