@@ -13,11 +13,19 @@ add_test(NAME run_cc3_ild COMMAND
         -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
         --outputFile cc3_ild_pgun.edm4hep.root
 )
+set_tests_properties(run_cc3_ild PROPERTIES FIXTURES_SETUP cc3_ild_output)
+
+add_test(NAME check_test_outputs COMMAND
+  python3 ${PROJECT_SOURCE_DIR}/tests/check_test_outputs.py
+)
+set_tests_properties(check_test_outputs PROPERTIES FIXTURES_REQUIRED cc3_ild_output)
 
 set_test_env(run_cc3_ild)
 set_tests_properties(
   run_cc3_ild
+  check_test_outputs
 
   PROPERTIES
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts
 )
+
