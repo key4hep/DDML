@@ -52,7 +52,9 @@ def add_calo_entry_recording(kernel):
 
 
 def ddml_physics(
-    presets: List[ModelConfig], verbose: bool = True, record_calo_entry: bool = False
+    presets: List[ModelConfig],
+    record_calo_entry: bool = False,
+    verbose: bool = True,
 ):
     """Return a callable compatible with SIM.physics.setupUserPhysics()."""
     if not presets:
