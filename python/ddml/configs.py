@@ -19,9 +19,9 @@ ILD_BARREL = PluginGeometry(ecal=_ILD_ECAL_BARREL, hcal=_ILD_HCAL_BARREL)
 ILD_ENDCAP = PluginGeometry(ecal=_ILD_ECAL_ENDCAP, hcal=_ILD_HCAL_ENDCAP)
 
 
-EM_PARTICLES = frozenset({"e+", "e-", "gamma"})
-EM_TRIGGER_5_GEV = {"e+": 5.0 * GeV, "e-": 5.0 * GeV, "gamma": 5.0 * GeV}
-EM_TRIGGER_10_GEV = {"e+": 10.0 * GeV, "e-": 10.0 * GeV, "gamma": 10.0 * GeV}
+PHOTONS = frozenset({"gamma"})
+PHOTON_TRIGGER_5_GEV = {"gamma": 5.0 * GeV}
+PHOTON_TRIGGER_10_GEV = {"gamma": 10.0 * GeV}
 
 
 _cc3_common_properties = {
@@ -35,8 +35,8 @@ CC3_BARREL = ModelConfig(
     geometry=ILD_BARREL,
     plugin_properties=_cc3_common_properties,
     correct_angles=False,
-    applicable_particles=EM_PARTICLES,
-    triggers=EM_TRIGGER_10_GEV,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
 )
 
 CC3_ENDCAP = ModelConfig(
@@ -44,8 +44,8 @@ CC3_ENDCAP = ModelConfig(
     geometry=ILD_ENDCAP,
     plugin_properties=_cc3_common_properties,
     correct_angles=False,
-    applicable_particles=EM_PARTICLES,
-    triggers=EM_TRIGGER_10_GEV,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
 )
 
 
