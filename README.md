@@ -131,11 +131,11 @@ imports two helpers and wires them into ddsim in three lines:
 ```python
 from ddml import ddml_physics, get_presets_from_args
 
-presets = get_presets_from_args()
-SIM.physics.setupUserPhysics(ddml_physics(presets))
+presets, record_calo_entry = get_fastsim_configuration()
+SIM.physics.setupUserPhysics(ddml_physics(presets, record_calo_entry))
 ```
 
-One or more named model presets (defined in `python/ddml/configs.py`) are then
+One or more named model configurations (defined in `python/ddml/configs.py`) are then
 selected on the command line with the `--ml-model` flag:
 
 ```
@@ -146,9 +146,9 @@ ddsim --steeringFile ddsim_steer.py \
 
 Repeat `--ml-model` to compose multiple presets (e.g. barrel + endcap).
 
-To add a custom preset, instantiate a `ModelConfig` (from `ddml.model`) with the
-desired `plugin`, `geometry`, `plugin_properties`, and trigger settings, and pass
-it directly to `ddml_physics`:
+To add a custom model configuration, instantiate a `ModelConfig` (from
+`ddml.model`) with the desired `plugin`, `geometry`, `plugin_properties`, and
+trigger settings, and pass it directly to `ddml_physics`:
 
 ```python
 from ddml import ddml_physics, ModelConfig
