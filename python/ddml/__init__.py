@@ -37,7 +37,7 @@ def get_fastsim_configuration() -> Tuple[List[ModelConfig], bool]:
         "--record-calo-entry",
         action="store_true",
         default=False,
-        description="Record information about particles as they enter the calorimeter",
+        help="Record information about particles as they enter the calorimeter",
     )
 
     # Make sure to leave all other arguments untouched. Only remove ours

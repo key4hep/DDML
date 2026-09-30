@@ -10,8 +10,7 @@ from g4units import m, mm, MeV, rad
 
 import os
 
-from ddml import ddml_physics
-from python.ddml import get_fastsim_configuration
+from ddml import ddml_physics, get_fastsim_configuration
 
 
 SIM = DD4hepSimulation()
