@@ -40,6 +40,7 @@ checks = (
     check_any_mc_fastsim("cc3_ild_pgun.edm4hep.root"),
     check_calo_entry_recording("Output.root"),  # Comes from run_cc3_ild
     check_any_mc_fastsim("bibae_ild_pgun.edm4hep.root"),
+    check_any_mc_fastsim("cc3_py_interface_ild_pgun.edm4hep.root"),
 )
 
 if not all(checks):
