@@ -1,10 +1,12 @@
 #include "DDML/TorchInference.h"
+
+#include <Parsers/Printout.h>
+
 #include "omp.h" // for setting num torch threads
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-
-#define DEBUGPRINT 0
 
 namespace ddml {
 
@@ -21,9 +23,16 @@ void TorchInference::declareProperties(dd4hep::sim::Geant4Action* plugin) {
 void TorchInference::initialize() {
   c10::InferenceMode guard(true);
 
-  m_jitModule = torch::jit::load(m_modelPath);
-  m_jitModule.to(torch::kCPU);
-  m_jitModule.eval();
+  dd4hep::printout(dd4hep::INFO, "TorchInference::initialize", "Loading ML model from '%s'", m_modelPath.c_str());
+  try {
+    m_jitModule = torch::jit::load(m_modelPath);
+    m_jitModule.to(torch::kCPU);
+    m_jitModule.eval();
+  } catch (const std::exception& err) {
+    dd4hep::printout(dd4hep::ERROR, "TorchInference::initialize", "Error loading model '%s': %s", m_modelPath.c_str(),
+                     err.what());
+    throw;
+  }
 
   m_options = torch::TensorOptions().dtype(torch::kFloat32).device(torch::kCPU);
 
