@@ -93,6 +93,6 @@ CC3_ENDCAP_PY_INTERFACE = ModelConfig(
         "EntryPoint": "run_inference",
     },
     correct_angles=False,
-    applicable_particles=EM_PARTICLES,
-    triggers=EM_TRIGGER_10_GEV,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
 )
