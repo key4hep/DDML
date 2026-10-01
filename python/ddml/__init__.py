@@ -10,6 +10,8 @@ _PRESETS: dict = {}
 
 
 def _register_presets() -> None:
+    """Make all known configurations available for easy retrieval via command
+    line arguments"""
     from . import configs as _config_mod
 
     for attr in dir(_config_mod):
@@ -24,8 +26,15 @@ _register_presets()
 
 
 def get_fastsim_configuration() -> Tuple[List[ModelConfig], bool]:
-    # Add a single argument (in a way that doesn't interfere with the arg parsing of
-    # ddsim). We do this to make it possible to dynamically get preests from CLI
+    """Get the fast simulation configuration from the commandline arguments
+
+    Returns the list of models to be configured in the physics list and a
+    boolean value for steering whether the recording of information at the
+    calorimeter entry should be turned on
+    """
+    # Add DDML specific arguments (in a way that doesn't interfere with the arg
+    # parsing of ddsim). We do this to make it possible to dynamically get
+    # preests from CLI
     _cli = argparse.ArgumentParser(add_help=False)
     _cli.add_argument(
         "--ml-model",
