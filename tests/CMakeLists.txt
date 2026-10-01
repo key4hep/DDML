@@ -44,13 +44,13 @@ add_test(NAME run_cc3_py_interface_ild COMMAND
         --outputFile cc3_py_interface_ild_pgun.edm4hep.root
         --ml-model CC3_BARREL_PY_INTERFACE --ml-model CC3_ENDCAP_PY_INTERFACE
 )
-set_test_env(run_cc3_pywrapper_ild)
+set_test_env(run_cc3_py_interface_ild)
 
 set_tests_properties(
   run_cc3_ild
   run_bibae_ild
   check_test_outputs
-  run_cc3_pywrapper_ild
+  run_cc3_py_interface_ild
 
   PROPERTIES
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts
