@@ -12,6 +12,7 @@ add_test(NAME run_cc3_ild COMMAND
   ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
         --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
         --ml-model CC3_BARREL --ml-model CC3_ENDCAP
+        --record-calo-entry
         -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
         --outputFile cc3_ild_pgun.edm4hep.root
 )
