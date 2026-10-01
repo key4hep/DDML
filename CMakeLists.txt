@@ -69,7 +69,7 @@ else()
   message("Torch not found!")
 endif()
 
-option(DDML_ENABLE_EMBEDDED_PYINFERENCE "Build embedded-Python inference backend" OFF)
+option(DDML_ENABLE_EMBEDDED_PYINFERENCE "Build embedded-Python inference backend" ON)
 
 if(DDML_ENABLE_EMBEDDED_PYINFERENCE)
   find_package(Python3 3.9 COMPONENTS Interpreter Development NumPy REQUIRED)
