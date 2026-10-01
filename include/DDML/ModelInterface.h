@@ -6,6 +6,10 @@
 
 #include "DDML/DDML.h"
 
+namespace dd4hep::sim {
+class Geant4Action;
+}
+
 class G4FastTrack;
 
 #include <G4ThreeVector.hh>
@@ -18,22 +22,26 @@ namespace ddml {
  *  @date Mar 2023
  */
 template <typename T>
-concept ModelInterface = requires(T t, G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
-                                  TensorDimVecs& tensDims, std::vector<float>& output,
-                                  const std::vector<float>& constOutput, std::vector<SpacePointVec>& spacepoints) {
-  /** prepare the input vector and resize the output vector for this model
-   *  based on the current FastTrack (e.g. extract kinetic energy and incident
-   *  angles.) and the direction in the local coordinate system (see
-   * @GeometryInterface)
-   */
-  { t.prepareInput(aFastTrack, localDir, inputs, tensDims, output) } -> std::same_as<void>;
+concept ModelInterface =
+    requires(T t, G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+             TensorDimVecs& tensDims, std::vector<float>& output, const std::vector<float>& constOutput,
+             std::vector<SpacePointVec>& spacepoints, dd4hep::sim::Geant4Action* plugin) {
+      /** prepare the input vector and resize the output vector for this model
+       *  based on the current FastTrack (e.g. extract kinetic energy and incident
+       *  angles.) and the direction in the local coordinate system (see
+       * @GeometryInterface)
+       */
+      { t.prepareInput(aFastTrack, localDir, inputs, tensDims, output) } -> std::same_as<void>;
 
-  /** interpreting the model output and create a vector of spacepoints per layer
-   * in local coordinates - with the origin at the entry point into the
-   * calorimeter.
-   */
-  { t.convertOutput(aFastTrack, localDir, constOutput, spacepoints) } -> std::same_as<void>;
-};
+      /** interpreting the model output and create a vector of spacepoints per layer
+       * in local coordinates - with the origin at the entry point into the
+       * calorimeter.
+       */
+      { t.convertOutput(aFastTrack, localDir, constOutput, spacepoints) } -> std::same_as<void>;
+
+      /// declareProperties will be called from the FastMLShower constructor
+      { t.declareProperties(plugin) } -> std::same_as<void>;
+    };
 
 } // namespace ddml
 

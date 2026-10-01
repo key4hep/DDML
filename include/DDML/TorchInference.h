@@ -36,8 +36,6 @@ private:
   torch::jit::script::Module m_jitModule;
   torch::TensorOptions m_options{};
 
-  bool m_isInitialized = false;
-
   /// torch properties for plugin
   std::string m_modelPath = {};
   int m_profileFlag = 0;

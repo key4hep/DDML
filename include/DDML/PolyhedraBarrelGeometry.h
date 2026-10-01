@@ -21,7 +21,7 @@ namespace ddml {
 
 class PolyhedraBarrelGeometry {
 public:
-  PolyhedraBarrelGeometry() { initialize(); };
+  PolyhedraBarrelGeometry() = default;
 
   ~PolyhedraBarrelGeometry() = default;
 
@@ -58,7 +58,7 @@ private:
   std::string m_detector = {"EcalBarrel"};
   int m_nSymmetry = 8;
   bool m_correctForAngles = false;
-  bool m_isHadShower; //= true;
+  bool m_isHadShower = false;
   std::string m_hadDetector = {"HcalBarrel"};
   int m_nHadSymmetry = m_nSymmetry;
 };
