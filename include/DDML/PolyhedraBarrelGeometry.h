@@ -21,7 +21,7 @@ namespace ddml {
 
 class PolyhedraBarrelGeometry {
 public:
-  PolyhedraBarrelGeometry() { initialize(); };
+  PolyhedraBarrelGeometry() = default;
 
   ~PolyhedraBarrelGeometry() = default;
 

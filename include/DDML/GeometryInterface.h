@@ -40,6 +40,10 @@ concept GeometryInterface = requires(const T t, T mt, const G4FastTrack& aFastTr
 
   /// declareProperties will be called from the FastMLShower constructor
   { mt.declareProperties(plugin) } -> std::same_as<void>;
+
+  /// initialize will be called during FastMLShower::constructSensitives, i.e.
+  /// after all properties have been set
+  { mt.initialize() } -> std::same_as<void>;
 };
 
 } // namespace ddml

@@ -16,7 +16,7 @@ namespace ddml {
 
 class EndcapGeometry {
 public:
-  EndcapGeometry() { initialize(); };
+  EndcapGeometry() = default;
 
   /// initialize the plugin - after properties have been set
   void initialize();

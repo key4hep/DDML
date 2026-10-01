@@ -259,7 +259,10 @@ struct FastMLModel {
 
   bool m_record_calo_impact = false;
 
-  void initialize() { inference.initialize(); }
+  void initialize() {
+    inference.initialize();
+    geometry.initialize();
+  }
 
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     model.declareProperties(plugin);
