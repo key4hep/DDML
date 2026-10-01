@@ -16,16 +16,29 @@ add_test(NAME run_cc3_ild COMMAND
         -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
         --outputFile cc3_ild_pgun.edm4hep.root
 )
+set_test_env(run_cc3_ild)
 set_tests_properties(run_cc3_ild PROPERTIES FIXTURES_SETUP cc3_ild_output)
+
+add_test(NAME run_bibae_ild COMMAND
+  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
+        --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
+        --ml-model BIBAE_BARREL --ml-model BIBAE_ENDCAP
+        -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
+        --outputFile bibae_ild_pgun.edm4hep.root
+)
+set_test_env(run_bibae_ild)
+set_tests_properties(run_bibae_ild PROPERTIES FIXTURES_SETUP bibae_ild_output)
 
 add_test(NAME check_test_outputs COMMAND
   python3 ${PROJECT_SOURCE_DIR}/tests/check_test_outputs.py
 )
-set_tests_properties(check_test_outputs PROPERTIES FIXTURES_REQUIRED cc3_ild_output)
+set_tests_properties(check_test_outputs PROPERTIES
+  FIXTURES_REQUIRED "cc3_ild_output;bibae_ild_output"
+)
 
-set_test_env(run_cc3_ild)
 set_tests_properties(
   run_cc3_ild
+  run_bibae_ild
   check_test_outputs
 
   PROPERTIES

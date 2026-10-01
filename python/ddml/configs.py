@@ -29,6 +29,13 @@ _cc3_common_properties = {
     "ModelPath": "../models/CC3_paper_checkpoint.pt",
 }
 
+_bibae_common_properties = {
+    "OptimizeFlag": 1,
+    "IntraOpNumThreads": 1,
+    "ModelPath": "../models/BIBAE_Two_Angle_Full_PP_cut.pt",
+}
+
+# CaloClouds3 default configuration
 CC3_BARREL = ModelConfig(
     plugin="CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch",
     geometry=ILD_BARREL,
@@ -37,11 +44,28 @@ CC3_BARREL = ModelConfig(
     applicable_particles=PHOTONS,
     triggers=PHOTON_TRIGGER_10_GEV,
 )
-
 CC3_ENDCAP = ModelConfig(
     plugin="CaloCloudsTwoAngleModelEndcapTorchModel/EndcapTorchModel",
     geometry=ILD_ENDCAP,
     plugin_properties=_cc3_common_properties,
+    correct_angles=False,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
+)
+
+# BIBAE (with two angle capabilities) default configuration
+BIBAE_BARREL = ModelConfig(
+    plugin="RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel/BarrelModelTorch",
+    geometry=ILD_BARREL,
+    plugin_properties=_bibae_common_properties,
+    correct_angles=False,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
+)
+BIBAE_ENDCAP = ModelConfig(
+    plugin="RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch",
+    geometry=ILD_ENDCAP,
+    plugin_properties=_bibae_common_properties,
     correct_angles=False,
     applicable_particles=PHOTONS,
     triggers=PHOTON_TRIGGER_10_GEV,
@@ -79,42 +103,6 @@ CC3_ENDCAP = ModelConfig(
 # # Torch
 # # ---------------------------------------------------------------------------
 
-# BIBAE = ShowerPreset(
-#     barrel_plugin="RegularGridBIBAEPolyhedraBarrelTorchModel/BarrelModelTorch",
-#     endcap_plugin="RegularGridBIBAEEndcapTorchModel/EndcapModelTorch",
-#     model_file="../models/BIBAE_Full_PP_cut.pt",
-#     file_attr="ModelPath",
-#     applicable_particles=EM_PARTICLES,
-#     etrigger_gev=EM_TRIGGER_10_GEV,
-#     correct_angles=False,
-#     optimize_flag=1,
-#     intra_op_threads=1,
-# )
-
-# BIBAE_TWO_ANGLE = ShowerPreset(
-#     barrel_plugin="RegularGridTwoAngleBIBAEModelPolyhedraBarrelTorchModel/BarrelModelTorch",
-#     endcap_plugin="RegularGridTwoAngleBIBAEModelEndcapTorchModel/EndcapModelTorch",
-#     model_file="../models/BIBAE_Two_Angle_Full_PP_cut.pt",
-#     file_attr="ModelPath",
-#     applicable_particles=EM_PARTICLES,
-#     etrigger_gev=EM_TRIGGER_10_GEV,
-#     correct_angles=False,
-#     optimize_flag=1,
-#     intra_op_threads=1,
-# )
-
-
-# CALOCLOUDS = ShowerPreset(
-#     barrel_plugin="CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel/BarrelModelTorch",
-#     endcap_plugin="CaloCloudsTwoAngleModelEndcapTorchModel/EndcapModelTorch",
-#     model_file="../models/CC3_SF_2A.pt",
-#     file_attr="ModelPath",
-#     applicable_particles=EM_PARTICLES,
-#     etrigger_gev=EM_TRIGGER_10_GEV,
-#     correct_angles=False,
-#     optimize_flag=1,
-#     intra_op_threads=1,
-# )
 
 # L2L_FLOWS = ShowerPreset(
 #     barrel_plugin="L2LFlowsModelPolyhedraBarrelTorchModel/BarrelModelTorch",
