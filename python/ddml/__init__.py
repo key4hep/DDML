@@ -5,7 +5,6 @@ import sys
 from .setup_physics import add_shower_model, ddml_physics
 from .model import ModelConfig
 
-
 _PRESETS: dict = {}
 
 

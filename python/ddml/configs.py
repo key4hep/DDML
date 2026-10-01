@@ -5,7 +5,6 @@ from .geometry import PluginGeometry, DetectorGeometry
 
 from g4units import GeV
 
-
 _ILD_ECAL_BARREL = DetectorGeometry(
     detector="EcalBarrel", region="EcalBarrelRegion", symmetry=8
 )

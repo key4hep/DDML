@@ -12,7 +12,6 @@ import os
 
 from ddml import ddml_physics, get_fastsim_configuration
 
-
 SIM = DD4hepSimulation()
 
 ## The compact XML file
