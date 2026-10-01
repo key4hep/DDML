@@ -1,5 +1,7 @@
 #include "DDML/ONNXInference.h"
 
+#include <Parsers/Printout.h>
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
@@ -36,8 +38,17 @@ void ONNXInference::initialize() {
     m_sessionOptions.EnableProfiling("opt.json");
   }
 
-  auto sessionLocal = std::make_unique<Ort::Session>(*m_env, m_modelPath.c_str(), m_sessionOptions);
-  m_session = std::move(sessionLocal);
+  dd4hep::printout(dd4hep::INFO, "ONNXInference::initialize", "Loading ML model from '%s'", m_modelPath.c_str());
+  try {
+    auto sessionLocal = std::make_unique<Ort::Session>(*m_env, m_modelPath.c_str(), m_sessionOptions);
+    if (!sessionLocal) {
+    }
+    m_session = std::move(sessionLocal);
+  } catch (std::exception& err) {
+    dd4hep::printout(dd4hep::ERROR, "ONNXInference::initialize", "Could not load ML model from '%s': %s",
+                     m_modelPath.c_str(), err.what());
+    throw;
+  }
   m_memInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemTypeDefault);
 
   // Collect information about input parameter shapes and names that are
