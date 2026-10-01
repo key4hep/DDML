@@ -1,6 +1,7 @@
 # The models to download
 set(models
   BIBAE_Full_PP_cut.pt
+  BIBAE_Two_Angle_Full_PP_cut.pt
   CC3_SF_2A.pt
   CC3_paper_checkpoint.pt
   #L2LFlowsx9.pt
