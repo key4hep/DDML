@@ -27,7 +27,7 @@ PHOTON_TRIGGER_10_GEV = {"gamma": 10.0 * GeV}
 _cc3_common_properties = {
     "OptimizeFlag": 1,
     "IntraOpNumThreads": 1,
-    "ModelPath": "../models/CC3_SF_2A.pt",
+    "ModelPath": "../models/CC3_paper_checkpoint.pt",
 }
 
 CC3_BARREL = ModelConfig(
