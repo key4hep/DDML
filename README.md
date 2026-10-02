@@ -18,6 +18,12 @@ Generative Models: Towards a First Physics Application*, P. McKeown et al., PoS 
 ### Environment Setup
 Access to `cvmfs` required.
 
+> Comment; 22 probably worked at some point, now in Ubuntu 22 we get 
+```
+Unsupported OS or OS couldn't be correctly detected, aborting...
+Supported OSes are: AlmaLinux/RockyLinux/RHEL 9, Ubuntu 24.04, and Ubuntu 26.04
+```
+
 The library can be run in apptainer with an Ubuntu 22.04 docker image as follows, with bind mounting to `cvmfs`:
 ```
 mkdir cvmfs
@@ -45,7 +51,10 @@ Now build as usual
 ```
 mkdir build
 cd build
-cmake ..
+#cmake ..
+# henry need the flag set to on, otherwise the plugin isn't compiled
+cmake -DDDML_ENABLE_EMBEDDED_PYINFERENCE=ON ..
+# Henry; works when the run_cc3_pywrapper_ild is commented out of tests/CMakeLists.txt
 make -j4 install
 ```
 
@@ -60,8 +69,24 @@ source ../install/bin/thisDDML.sh
 The simulation can then be run as usual with ddsim- for example for the ILD detector:
 
 ```
+# HENRY; apparently we need to explicity add this python path
+ddml_python=$(readlink -f ../python)
+plugin_python=$(readlink -f ../python/examples)
+export PYTHONPATH=${PYTHONPATH}:${ddml_python}:${plugin_python}
 cd ../scripts
-ddsim --steeringFile ddsim_steer.py --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml
+#ddsim --steeringFile ddsim_steer.py --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml
+# need to specify the --ml-model CC3_BARREL_PY_INTERFACE and an --inputFile
+ddsim --steeringFile ddsim_steer_cc3.py \
+ --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
+ --ml-model CC3_BARREL_PY_INTERFACE \
+ --inputFile /data/dust/group/ilc/sft-ml/datasets/angular/simulation_inputs/ILD-barrelSmallSegment-singleParticles-gen-E1010pdg22.slcio
+```
+or for allshowers (must be on a GPU node, and note that multiple instances may cause crashes)
+```
+ddsim --steeringFile ddsim_steer.py \
+ --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
+ --ml-model AS1_BARREL_PY_INTERFACE \
+ --inputFile /data/dust/group/ilc/sft-ml/datasets/angular/simulation_inputs/ILD-barrelSmallSegment-singleParticles-gen-E1010pdg22.slcio
 ```
 
 Depending on the setup in `ddsim_steer.py`, either a `.slcio` file or a `.edm4hep.root` file can be written
@@ -69,6 +94,7 @@ Depending on the setup in `ddsim_steer.py`, either a `.slcio` file or a `.edm4he
 Events can be visualised in the standard way for `.slcio` file or a `.edm4hep.root` files, e.g for `.slcio` with ILD:
 
 ```
+# gets a permission error for the "Gearfile"
 ced2go -d $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml dummyOutput.slcio
 ```
 
@@ -122,15 +148,48 @@ index 5ff2e50..084f7ea 100644
 
 ```
 
-This model has to be activated in the `ddsim_steer.py` file. The relevant functions are:
-- For ONNX inference: `def aiDance(kernel) `
-- For Torch inference: `def aiDanceTorch(kernel):`
-- For Loading from a HDF5 File (Experimental interface!): `def LoadHdf5(kernel):`
+### Python configuration
 
-And each can be activated respectively by setting:
-- `SIM.physics.setupUserPhysics( aiDance)`
-- `SIM.physics.setupUserPhysics(aiDanceTorch)`
-- `SIM.physics.setupUserPhysics(LoadHdf5)`
+DDML provides a `ddml` python module for easily adapting a ddsim simulation. The
+example `ddsim_steer.py` file is also configured using this. The steering file
+imports two helpers and wires them into ddsim in three lines:
+
+```python
+from ddml import ddml_physics, get_presets_from_args
+
+presets, record_calo_entry = get_fastsim_configuration()
+SIM.physics.setupUserPhysics(ddml_physics(presets, record_calo_entry))
+```
+
+One or more named model configurations (defined in `python/ddml/configs.py`) are then
+selected on the command line with the `--ml-model` flag:
+
+```
+ddsim --steeringFile ddsim_steer.py \
+      --compactFile $k4geo_DIR/ILD/compact/ILD_l5_o1_v02/ILD_l5_o1_v02.xml \
+      --ml-model CC3_BARREL --ml-model CC3_ENDCAP
+```
+
+Repeat `--ml-model` to compose multiple presets (e.g. barrel + endcap).
+
+To add a custom model configuration, instantiate a `ModelConfig` (from
+`ddml.model`) with the desired `plugin`, `geometry`, `plugin_properties`, and
+trigger settings, and pass it directly to `ddml_physics`:
+
+```python
+from ddml import ddml_physics, ModelConfig
+from ddml.configs import ILD_BARREL, EM_PARTICLES, EM_TRIGGER_10_GEV
+
+my_model = ModelConfig(
+    plugin="MyPlugin/MyModel",
+    geometry=ILD_BARREL,
+    plugin_properties={"ModelPath": "../models/my_model.pt"},
+    applicable_particles=EM_PARTICLES,
+    triggers=EM_TRIGGER_10_GEV,
+    correct_angles=False,
+)
+SIM.physics.setupUserPhysics(ddml_physics([my_model]))
+```
 
 
 ## Coding style
