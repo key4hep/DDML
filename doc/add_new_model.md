@@ -26,7 +26,7 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::RegularGridGANModel
 DECLARE_GEANT4ACTION_NS(ddml, RegularGridGANEndcapTorchModel)
 ```
 
-declares the `RegularGridGANEndcapTorchModel` as a model that 
+declares the `RegularGridGANEndcapTorchModel` as a model that
 - uses the `TorchInference` class for running inference by loading a torch
   (jitted) model,
 - uses the `RegularGridGANModel` to prepare the inputs and convert the outputs
