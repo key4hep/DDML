@@ -76,6 +76,7 @@ endif()
 find_package(DD4hep REQUIRED COMPONENTS DDG4)
 
 add_subdirectory(src)
+add_subdirectory(python)
 
 if (DOWNLOAD_MODELS)
   include(ExternalData)
