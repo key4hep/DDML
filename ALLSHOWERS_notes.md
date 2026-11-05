@@ -5,7 +5,7 @@ Some notes on what to do to run AllShowers.
 ## DDML setup
 
 - Clone this repo
-- Chose some fixed version of key4HEP (do not use the nightly.... then you'd have to rebuild when it changes). For example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`.
+- In an ideal world we would [Chose some fixed version of key4HEP (do not use the nightly.... then you'd have to rebuild when it changes). For example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`.] Actually, to get the sparse attention mask to work, you have to user the nightly... and I guess you are recompiling every time that changes. 
 - Build and install as normal (`mkdir build && cd build && cmake .. && make && make -j4 install`)
 - Source the install (`source ../install/bin/thisDDML.sh`)
 - Add things to the PYTHONPATH (`export PYTHONPATH=/path/to/DDML/python:/p
