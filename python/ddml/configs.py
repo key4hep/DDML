@@ -22,6 +22,13 @@ PHOTONS = frozenset({"gamma"})
 PHOTON_TRIGGER_5_GEV = {"gamma": 5.0 * GeV}
 PHOTON_TRIGGER_10_GEV = {"gamma": 10.0 * GeV}
 
+ALLSHOWERS_PARTICLES = frozenset({
+    "gamma", "e-", "e+", "pi-", "pi+", "kaon-", "kaon+",
+    "kaon0L", "proton", "anti_proton", "neutron", "anti_neutron",
+})
+ALLSHOWERS_TRIGGERS = {name: 10.0 * GeV for name in ALLSHOWERS_PARTICLES}
+
+
 
 _cc3_common_properties = {
     "OptimizeFlag": 1,
@@ -71,8 +78,32 @@ BIBAE_ENDCAP = ModelConfig(
     triggers=PHOTON_TRIGGER_10_GEV,
 )
 
+AS_BARREL_PY_INTERFACE = ModelConfig(
+    plugin="MultiParticleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    geometry=ILD_BARREL,
+    plugin_properties={
+        "PythonModule": "allshowers_wrapper",
+        "EntryPoint": "run_inference",
+    },
+    correct_angles=False,
+    applicable_particles=ALLSHOWERS_PARTICLES,
+    triggers=ALLSHOWERS_TRIGGERS,
+)
+
+AS_ENDCAP_PY_INTERFACE = ModelConfig(
+    plugin="MultiParticleModelEndcapPyEmbeddedModel/EndcapModelPython",
+    geometry=ILD_ENDCAP,
+    plugin_properties={
+        "PythonModule": "allshowers_wrapper",
+        "EntryPoint": "run_inference",
+    },
+    correct_angles=False,
+    applicable_particles=ALLSHOWERS_PARTICLES,
+    triggers=ALLSHOWERS_TRIGGERS,
+)
+
 CC3_BARREL_PY_INTERFACE = ModelConfig(
-    plugin="CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    plugin="MultiParticleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
     geometry=ILD_BARREL,
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
@@ -84,7 +115,7 @@ CC3_BARREL_PY_INTERFACE = ModelConfig(
 )
 
 CC3_ENDCAP_PY_INTERFACE = ModelConfig(
-    plugin="CaloCloudsTwoAngleModelEndcapPyEmbeddedModel/EndcapModelPython",
+    plugin="MultiParticleModelEndcapPyEmbeddedModel/EndcapModelPython",
     geometry=ILD_ENDCAP,
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
