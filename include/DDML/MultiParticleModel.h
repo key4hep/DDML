@@ -26,6 +26,7 @@ public:
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     plugin->declareProperty("LatentVectorSize", this->m_latentSize);
+    plugin->declareProperty("NumberOfLayers", this->m_nLayer);
   }
 
   /** prepare the input vector and resize the output vector for this model
