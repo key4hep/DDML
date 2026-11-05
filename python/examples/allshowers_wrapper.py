@@ -9,68 +9,137 @@ Serves two purposes:
 
 DDML embedded-Python contract:
     run_inference(inputs: list[np.ndarray]) -> np.ndarray (flat float32)
-Planned sketch
-'''
-import allshowers
-import torch
-import os
-
-_TMP_DIR='/path/to/some/tmp'
-_CNF_WEIGHTS='/other/path/to/cnf/weights.pt'
-_PCFM_WEIGHTS='/other/path/to/pcfm/weights.pt'
-_HARDCODED_CNF_CONFIG={"thing": "value"}  # what would be in the allshowers yaml file
-_HARDCODED_PCFM_CONFIG={"thing": "other value"}  # what would be in the pointcountfm yaml file
-
-if not have_setup_run_dirs: # possible multi-user, use lock file
-  run_dir = setup_file_structure_symlinks(_TMP_DIR, _CNF_WEIGHTS, _PCFM_WEIGHTS)
-
-generator = allshowers.unified_sampling.Generator(# args...
-)
-
-sampler = allshowers.unified_sampling.Sampler(# args...
-)
-
-generator = generator.to(device)
-generator.eval()
-sampler = sampler.to(device)
-sampler.eval()
-
-device = 'cuda' if torch.cuda_is_avaliable() else 'cpu'
-
-def run_inference(energy, theta_deg, phi_deg, pdg):
-   direction = direction_from_theta_phi(theta_deg, phi_deg)
-   label = label_from_pdg(pdg)
-   samples = generate(
-            generator,
-            sampler,
-            [energy],
-            [direction],
-            [label],
-            num_particles=1,
-        )
-    return samples[0]
-'''
 """
-
+import math
 import os
+import tempfile
+from pathlib import Path
 import numpy as np
+
 import torch
-import allshowers
+import yaml
+from allshowers.unified_sampling import Generator, generate, init_sampler
+from showerdata.detector import get_ILD_geometry
 
 torch.set_num_threads(1)
 
+_TMP_DIR = "/path/to/some/tmp"
+_CNF_WEIGHTS = "/other/path/to/cnf/weights/best.pt"
 _model_path = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../models/CC3_SF_2A.pt")
 )
-_model = torch.jit.load(_model_path).eval().to("cpu")
+_CNF_TRAFOS = "/other/path/to/cnf/preprocessing/trafos.pt"
+_PCFM_WEIGHTS = "/other/path/to/pcfm/model.pt"
+
+# The parts of the CNF run's conf.yaml that Generator reads (repo defaults from
+# conf/transformer.yaml). Must match the run the weights came from.
+_HARDCODED_CNF_CONFIG = {
+    "data": {
+        "samples_energy_trafo": [
+            ["Log", {"alpha": 0.0}],
+            ["StandardScaler", {"shape": [1, 1]}],
+        ],
+        "samples_coordinate_trafo": [["StandardScaler", {"shape": [1, 1, 2]}]],
+        "cond_trafo": [
+            ["Log", {"alpha": 0.0}],
+            ["StandardScaler", {"shape": [1, 1]}],
+        ],
+    },
+    "model": {
+        "num_layers": 78,
+        "dim_inputs": [3, 6, 4],
+        "dim_embedding": 64,
+        "num_head": 4,
+        "num_blocks": 4,
+        "dim_feedforward": 256,
+        "num_points_cond": 512,
+        "activation": "GELU",
+        "num_layer_cond": 4,
+        "num_particles": 12,
+        "flow_config": {"frequencies": 3},
+    },
+}
+
+# The parts of the PointCountFM run's conf.yaml that init_sampler reads (repo
+# defaults from config/config.yaml). Must match the run the weights came from.
+_HARDCODED_PCFM_CONFIG = {
+    "data": {
+        "transform_num_points": [
+            ["Log", {"alpha": 0.5}],
+            ["StandardScaler", {"shape": [1, 78]}],
+        ],
+        "transform_inc": [["StandardScaler", {"shape": [1, 1]}]],
+    },
+    "model": {
+        "name": "FullyConnected",
+        "dim_input": 78,
+        "dim_condition": 16,
+        "dim_time": 6,
+        "hidden_dims": [128, 256, 512, 256, 128],
+    },
+}
+
+# Label order both models were trained with (label = index in this list).
+_PDG_LIST = [11, -11, 22, 130, 211, -211, 321, -321, 2112, -2112, 2212, -2212]
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+geo = get_ILD_geometry()
+layer_bottom_pos = torch.tensor(geo.layer_bottom_pos, device=device)
+
+def _make_run_dir(run_dir: Path, config: dict, links: dict[str, str]) -> Path:
+    for name, target in links.items():
+        (run_dir / name).parent.mkdir(parents=True, exist_ok=True)
+        (run_dir / name).symlink_to(os.path.abspath(target))
+    (run_dir / "conf.yaml").write_text(yaml.safe_dump(config))
+    return run_dir
+
+
+# Both loaders read every file in their constructor, so the run dirs only need
+# to exist while loading. A private temp dir per process leaves nothing to lock.
+with tempfile.TemporaryDirectory(dir=_TMP_DIR) as tmp:
+    cnf_dir = _make_run_dir(
+        Path(tmp, "cnf"),
+        _HARDCODED_CNF_CONFIG,
+        {"weights/best.pt": _CNF_WEIGHTS, "preprocessing/trafos.pt": _CNF_TRAFOS},
+    )
+    pcfm_dir = _make_run_dir(
+        Path(tmp, "pcfm"), _HARDCODED_PCFM_CONFIG, {"model.pt": _PCFM_WEIGHTS}
+    )
+    # same settings as the unified_sampling.py defaults
+    generator = Generator(
+        cnf_dir, num_timesteps=16, solver="midpoint", resize_factor=1.033
+    )
+    sampler = init_sampler(pcfm_dir, steps=50)
+
+generator = generator.to(device).eval()
+sampler = sampler.to(device).eval()
 
 
 @torch.inference_mode()
 def run_inference(inputs):
     # inputs is a list of 4 float32 numpy arrays: energy, theta_deg, phi_deg, pdg
     # torch.from_numpy aliases the C++ buffer — do NOT mutate the arrays.
-    tensors = [torch.from_numpy(a) for a in inputs]
-    out = _model(*tensors)
-    # Return a contiguous flat float32 view; the C++ side memcpy's into
-    # the pre-allocated std::vector<float>.
-    return out.detach().cpu().numpy().astype(np.float32, copy=False).ravel()
+    energy, theta_deg, phi_deg, pdg = inputs
+    theta, phi = math.radians(theta_deg), math.radians(phi_deg)
+    direction = [
+        math.sin(theta) * math.cos(phi),
+        math.sin(theta) * math.sin(phi),
+        math.cos(theta),
+    ]
+    samples = generate(
+        generator,
+        sampler,
+        torch.tensor([[energy]], dtype=torch.float32, device=device),
+        torch.tensor([direction], dtype=torch.float32, device=device),
+        torch.tensor([_PDG_LIST.index(pdg)], device=device),
+        num_particles=len(_PDG_LIST),
+    )
+    sample = samples[0][samples[0, :, 3] > 0]
+    sample = sample.detach().cpu().numpy().astype(np.float32, copy=False)
+    layer = sample[:, 2].astype(np.int)
+    per_layer = np.bincount(layer, minlength=_HARDCODED_CNF_CONFIG['model']['num_layers']).astype(np.float32)
+    z_pos = layer_bottom_pos[layer]
+    sample[:, 2] = z_pos
+    out = np.concatenate(per_layer, sample.ravel())
+    return out
