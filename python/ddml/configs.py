@@ -103,7 +103,7 @@ AS_ENDCAP_PY_INTERFACE = ModelConfig(
     correct_angles=False,
     applicable_particles=ALLSHOWERS_PARTICLES,
     triggers=ALLSHOWERS_TRIGGERS,
-    is_hadron=True,  # fine even if not always hadron. Just makes HCAL exist
+    # TODO does this need an equivalent to is_hadron=True?
 )
 
 CC3_BARREL_PY_INTERFACE = ModelConfig(
