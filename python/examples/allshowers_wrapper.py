@@ -21,6 +21,9 @@ import yaml
 from allshowers.unified_sampling import Generator, generate, init_sampler
 import allshowers.flow_matching
 import allshowers.transformer
+
+######################
+# Code to deal with the torch version being different....
 from torch.nn.attention.flex_attention import create_block_mask
 
 # unified_sampling compiles all of compute_mask (fullgraph=True); torch 2.9's
@@ -28,6 +31,16 @@ from torch.nn.attention.flex_attention import create_block_mask
 # AllShowers main does instead: compute_mask uncompiled, create_block_mask compiled.
 allshowers.transformer.create_block_mask = torch.compile(create_block_mask)
 allshowers.flow_matching.compute_mask = allshowers.transformer.compute_mask.__wrapped__
+
+#--- Didn't work ----
+# dynamic=True makes mask_fn's num_layer_cond symbolic, which torch 2.9.1's
+# CPU flex-attention lowering can't handle; the default keeps it a constant.
+#allshowers.transformer.flex_attention = torch.compile(
+#    allshowers.transformer.flex_attention.__wrapped__, fullgraph=True
+#)
+# ------
+allshowers.transformer.flex_attention = allshowers.transformer.flex_attention.__wrapped__
+####################
 
 torch.set_num_threads(1)
 
