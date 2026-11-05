@@ -19,17 +19,19 @@ import numpy as np
 import torch
 import yaml
 from allshowers.unified_sampling import Generator, generate, init_sampler
-from showerdata.detector import get_ILD_geometry
 
 torch.set_num_threads(1)
 
-_TMP_DIR = "/path/to/some/tmp"
-_CNF_WEIGHTS = "/other/path/to/cnf/weights/best.pt"
-_model_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../models/CC3_SF_2A.pt")
+_TMP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/tmp"))
+_CNF_WEIGHTS = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../models/AllShowers_CNF_v1.pt")
 )
-_CNF_TRAFOS = "/other/path/to/cnf/preprocessing/trafos.pt"
-_PCFM_WEIGHTS = "/other/path/to/pcfm/model.pt"
+_CNF_TRAFOS = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../models/AllShowers_trafos_v1.pt")
+)
+_PCFM_WEIGHTS = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../models/AllShowers_pcfm_v1.pt")
+)
 
 # The parts of the CNF run's conf.yaml that Generator reads (repo defaults from
 # conf/transformer.yaml). Must match the run the weights came from.
@@ -84,8 +86,6 @@ _PDG_LIST = [11, -11, 22, 130, 211, -211, 321, -321, 2112, -2112, 2212, -2212]
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-geo = get_ILD_geometry()
-layer_bottom_pos = torch.tensor(geo.layer_bottom_pos, device=device)
 
 def _make_run_dir(run_dir: Path, config: dict, links: dict[str, str]) -> Path:
     for name, target in links.items():
@@ -138,8 +138,8 @@ def run_inference(inputs):
     sample = samples[0][samples[0, :, 3] > 0]
     sample = sample.detach().cpu().numpy().astype(np.float32, copy=False)
     layer = sample[:, 2].astype(np.int)
-    per_layer = np.bincount(layer, minlength=_HARDCODED_CNF_CONFIG['model']['num_layers']).astype(np.float32)
-    z_pos = layer_bottom_pos[layer]
-    sample[:, 2] = z_pos
+    per_layer = np.bincount(
+        layer, minlength=_HARDCODED_CNF_CONFIG["model"]["num_layers"]
+    ).astype(np.float32)
     out = np.concatenate(per_layer, sample.ravel())
     return out
