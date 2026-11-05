@@ -104,6 +104,8 @@ AS_ENDCAP_PY_INTERFACE = ModelConfig(
     applicable_particles=ALLSHOWERS_PARTICLES,
     triggers=ALLSHOWERS_TRIGGERS,
     # TODO does this need an equivalent to is_hadron=True?
+    # according to claude, yes, and the src/EndcapGeometry.cc would also need adjustment
+    # leaving this to Thomas to decide if and how changes should be made
 )
 
 CC3_BARREL_PY_INTERFACE = ModelConfig(
