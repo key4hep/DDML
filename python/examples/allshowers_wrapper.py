@@ -19,10 +19,21 @@ import numpy as np
 import torch
 import yaml
 from allshowers.unified_sampling import Generator, generate, init_sampler
+import allshowers.flow_matching
+import allshowers.transformer
+from torch.nn.attention.flex_attention import create_block_mask
+
+# unified_sampling compiles all of compute_mask (fullgraph=True); torch 2.9's
+# Dynamo can't trace the nested mask_fn it passes to create_block_mask. Do what
+# AllShowers main does instead: compute_mask uncompiled, create_block_mask compiled.
+allshowers.transformer.create_block_mask = torch.compile(create_block_mask)
+allshowers.flow_matching.compute_mask = allshowers.transformer.compute_mask.__wrapped__
 
 torch.set_num_threads(1)
 
 _TMP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/tmp"))
+if not os.path.exists(_TMP_DIR):
+    os.mkdir(_TMP_DIR)
 _CNF_WEIGHTS = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../models/AllShowers_CNF_v1.pt")
 )
@@ -120,7 +131,7 @@ sampler = sampler.to(device).eval()
 def run_inference(inputs):
     # inputs is a list of 4 float32 numpy arrays: energy, theta_deg, phi_deg, pdg
     # torch.from_numpy aliases the C++ buffer — do NOT mutate the arrays.
-    energy, theta_deg, phi_deg, pdg = inputs
+    energy, theta_deg, phi_deg, pdg = (a.item() for a in inputs)
     theta, phi = math.radians(theta_deg), math.radians(phi_deg)
     direction = [
         math.sin(theta) * math.cos(phi),
@@ -132,7 +143,7 @@ def run_inference(inputs):
         sampler,
         torch.tensor([[energy]], dtype=torch.float32, device=device),
         torch.tensor([direction], dtype=torch.float32, device=device),
-        torch.tensor([_PDG_LIST.index(pdg)], device=device),
+        torch.tensor([_PDG_LIST.index(round(pdg))], device=device),
         num_particles=len(_PDG_LIST),
     )
     sample = samples[0][samples[0, :, 3] > 0]
