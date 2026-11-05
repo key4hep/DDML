@@ -78,6 +78,15 @@ void MultiParticleModel::convertOutput(G4FastTrack const&, G4ThreeVector const&,
     numElements += output[i] * 4;
   }
 
+  // Check that the model has not created more points than fit in the output
+  const int available = ((static_cast<int>(output.size()) - nLayer) / 4) * 4;
+  if (numElements > available) {
+    dd4hep::printout(dd4hep::WARNING, "MultiParticleModel::convertOutput",
+                     "layer counts sum to %d points, but output buffer is length %d > must clip model output",
+                     numElements / 4, available / 4);
+    numElements = available;
+  }
+
   for (int i = nLayer; i < nLayer + numElements; i += 4) {
     ddml::SpacePoint sp(output[i] * (-1.),    // x // *(-1) to align local to global convention in ddml
                         output[i + 1] * (-1), // y // *(-1) to align local to global convention in ddml

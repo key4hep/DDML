@@ -84,10 +84,12 @@ AS_BARREL_PY_INTERFACE = ModelConfig(
     plugin_properties={
         "PythonModule": "allshowers_wrapper",
         "EntryPoint": "run_inference",
+        "NumberOfLayers": 78,
     },
     correct_angles=False,
     applicable_particles=ALLSHOWERS_PARTICLES,
     triggers=ALLSHOWERS_TRIGGERS,
+    is_hadron=True,  # fine even if not always hadron. Just makes HCAL exist
 )
 
 AS_ENDCAP_PY_INTERFACE = ModelConfig(
@@ -96,10 +98,12 @@ AS_ENDCAP_PY_INTERFACE = ModelConfig(
     plugin_properties={
         "PythonModule": "allshowers_wrapper",
         "EntryPoint": "run_inference",
+        "NumberOfLayers": 78,
     },
     correct_angles=False,
     applicable_particles=ALLSHOWERS_PARTICLES,
     triggers=ALLSHOWERS_TRIGGERS,
+    is_hadron=True,  # fine even if not always hadron. Just makes HCAL exist
 )
 
 CC3_BARREL_PY_INTERFACE = ModelConfig(
@@ -108,6 +112,7 @@ CC3_BARREL_PY_INTERFACE = ModelConfig(
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
         "EntryPoint": "run_inference",
+        "NumberOfLayers": 30,
     },
     correct_angles=False,
     applicable_particles=PHOTONS,
@@ -120,6 +125,7 @@ CC3_ENDCAP_PY_INTERFACE = ModelConfig(
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
         "EntryPoint": "run_inference",
+        "NumberOfLayers": 30,
     },
     correct_angles=False,
     applicable_particles=PHOTONS,

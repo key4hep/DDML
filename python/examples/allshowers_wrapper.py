@@ -137,9 +137,9 @@ def run_inference(inputs):
     )
     sample = samples[0][samples[0, :, 3] > 0]
     sample = sample.detach().cpu().numpy().astype(np.float32, copy=False)
-    layer = sample[:, 2].astype(np.int)
+    layer = sample[:, 2].astype(int)
     per_layer = np.bincount(
         layer, minlength=_HARDCODED_CNF_CONFIG["model"]["num_layers"]
     ).astype(np.float32)
-    out = np.concatenate(per_layer, sample.ravel())
+    out = np.concatenate([per_layer, sample.ravel()])
     return out
