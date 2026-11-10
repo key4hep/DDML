@@ -161,6 +161,7 @@ def run_inference(inputs):
     )
     sample = samples[0][samples[0, :, 3] > 0]
     sample = sample.detach().cpu().numpy().astype(np.float32, copy=False)
+    sample[..., 3] *= 1000
     layer = sample[:, 2].astype(int)
     per_layer = np.bincount(
         layer, minlength=_HARDCODED_CNF_CONFIG["model"]["num_layers"]
