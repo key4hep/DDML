@@ -31,3 +31,5 @@ If you come back to this after installing and want to run again, you need to set
 - Add the python installs dir back to the PYTHONPATH (`export PYTHONPATH=/path/to/my/python/libraries:$PYTHONPATH`)
 
 ## To run
+
+`ddsim --steeringFile ddsim_steer_photon_gun_allshowerspy.py  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml`
