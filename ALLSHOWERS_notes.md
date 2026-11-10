@@ -8,7 +8,7 @@ Some notes on what to do to run AllShowers.
 - In an ideal world we would [Chose some fixed version of key4HEP (do not use the nightly.... then you'd have to rebuild when it changes). For example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`.] Actually, to get the sparse attention mask to work, you have to user the nightly... and I guess you are recompiling every time that changes. 
 - Build and install as normal (`mkdir build && cd build && cmake .. && make && make -j4 install`)
 - Source the install (`source ../install/bin/thisDDML.sh`)
-- Add things to the PYTHONPATH (`export PYTHONPATH=/path/to/DDML/python:/p
+- Add things to the PYTHONPATH (`export PYTHONPATH=/path/to/DDML/python:/path/to/DDML/python/examples:$PYTHONPATH`)
 
 ## AllShowers setup
 
@@ -26,10 +26,15 @@ Note, if the local disk is small, it's advisable to also use the `--cache-dir` f
 
 If you come back to this after installing and want to run again, you need to set the env up again;
 
-- Source the same version of key4hep (e.g. `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`)
+- Source the same version of key4hep (e.g. `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`, or `source setup_env_nightly.sh`)
 - Source the install (`source ../install/bin/thisDDML.sh`)
-- Add the python installs dir back to the PYTHONPATH (`export PYTHONPATH=/path/to/my/python/libraries:$PYTHONPATH`)
+- Add the python installs dir and the DDML dirs back to the PYTHONPATH (`export PYTHONPATH=/path/to/DDML/python:/path/to/DDML/python/examples:/path/to/my/python/libraries:$PYTHONPATH`)
 
 ## To run
 
+Enter the scripts directory to find the steering files, and do;
+
 `ddsim --steeringFile ddsim_steer_photon_gun_allshowerspy.py  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml`
+
+- `ddsim_steer_photon_gun_allshowerspy.py` will only work if everything is built and run on the nightly due to python versions
+- `ddsim_steer_photon_gun_cc3py.py` will also work on 2026-04-08
