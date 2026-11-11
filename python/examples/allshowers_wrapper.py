@@ -23,23 +23,43 @@ import allshowers.flow_matching
 import allshowers.transformer
 
 ######################
-# Code to deal with the torch version being different....
-#from torch.nn.attention.flex_attention import create_block_mask
+# torch 2.9.1 (Key4hep 2026-04-08) vs the torch ~2.13 this AllShowers commit targets.
 #
-## unified_sampling compiles all of compute_mask (fullgraph=True); torch 2.9's
-## Dynamo can't trace the nested mask_fn it passes to create_block_mask. Do what
-## AllShowers main does instead: compute_mask uncompiled, create_block_mask compiled.
-#allshowers.transformer.create_block_mask = torch.compile(create_block_mask)
-#allshowers.flow_matching.compute_mask = allshowers.transformer.compute_mask.__wrapped__
+# AllShowers computes attention with flex_attention and a BlockMask, both through
+# torch.compile. On CPU with Key4hep's torch 2.9.1 that path kept failing (dynamic-shape
+# lowering bugs, sleef.h missing from torch/include, then heap corruption under ddsim).
+# Here the same masked attention runs on torch's scaled_dot_product_attention instead,
+# a fused CPU kernel already compiled into libtorch: nothing is compiled at run time
+# (no torch.compile, no Inductor, no g++).
+#
+# The mask is AllShowers' mask_fn (allshowers/transformer.py), built densely once per
+# shower: point q attends to point kv if both are real points (not padding) and
+# layer[q] - layer[kv] lies in [-1 * (num_layer_cond + 1) // 2, num_layer_cond // 2].
+# Padding rows have no allowed key; SDPA then returns zeros, as flex_attention does.
+import torch.nn.functional as F
 
-##--- Didn't work ----
-## dynamic=True makes mask_fn's num_layer_cond symbolic, which torch 2.9.1's
-## CPU flex-attention lowering can't handle; the default keeps it a constant.
-##allshowers.transformer.flex_attention = torch.compile(
-##    allshowers.transformer.flex_attention.__wrapped__, fullgraph=True
-##)
-## ------
-#allshowers.transformer.flex_attention = allshowers.transformer.flex_attention.__wrapped__
+
+def _dense_mask(padding_mask, layer, num_layer_cond=-1):
+    padding_mask = padding_mask.flatten(1)
+    allowed = padding_mask[:, :, None] & padding_mask[:, None, :]
+    if num_layer_cond >= 0:
+        layer = layer.flatten(1).to(torch.int16)
+        diff = layer[:, :, None] - layer[:, None, :]
+        allowed &= diff >= -1 * (num_layer_cond + 1) // 2
+        allowed &= diff <= num_layer_cond // 2
+    return allowed[:, None]  # [batch, 1 (all heads), query, key]
+
+
+def _sdpa(query, key, value, block_mask):
+    return F.scaled_dot_product_attention(query, key, value, attn_mask=block_mask)
+
+
+allshowers.flow_matching.compute_mask = _dense_mask
+allshowers.transformer.flex_attention = _sdpa
+print(
+    f"allshowers_wrapper: torch {torch.__version__}, attention via scaled_dot_product_attention (no torch.compile)",
+    flush=True,
+)
 ####################
 
 torch.set_num_threads(1)
