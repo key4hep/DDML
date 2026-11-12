@@ -19,48 +19,7 @@ import numpy as np
 import torch
 import yaml
 from allshowers.unified_sampling import Generator, generate, init_sampler
-import allshowers.flow_matching
-import allshowers.transformer
 
-######################
-# torch 2.9.1 (Key4hep 2026-04-08) vs the torch ~2.13 this AllShowers commit targets.
-#
-# AllShowers computes attention with flex_attention and a BlockMask, both through
-# torch.compile. On CPU with Key4hep's torch 2.9.1 that path kept failing (dynamic-shape
-# lowering bugs, sleef.h missing from torch/include, then heap corruption under ddsim).
-# Here the same masked attention runs on torch's scaled_dot_product_attention instead,
-# a fused CPU kernel already compiled into libtorch: nothing is compiled at run time
-# (no torch.compile, no Inductor, no g++).
-#
-# The mask is AllShowers' mask_fn (allshowers/transformer.py), built densely once per
-# shower: point q attends to point kv if both are real points (not padding) and
-# layer[q] - layer[kv] lies in [-1 * (num_layer_cond + 1) // 2, num_layer_cond // 2].
-# Padding rows have no allowed key; SDPA then returns zeros, as flex_attention does.
-import torch.nn.functional as F
-
-
-def _dense_mask(padding_mask, layer, num_layer_cond=-1):
-    padding_mask = padding_mask.flatten(1)
-    allowed = padding_mask[:, :, None] & padding_mask[:, None, :]
-    if num_layer_cond >= 0:
-        layer = layer.flatten(1).to(torch.int16)
-        diff = layer[:, :, None] - layer[:, None, :]
-        allowed &= diff >= -1 * (num_layer_cond + 1) // 2
-        allowed &= diff <= num_layer_cond // 2
-    return allowed[:, None]  # [batch, 1 (all heads), query, key]
-
-
-def _sdpa(query, key, value, block_mask):
-    return F.scaled_dot_product_attention(query, key, value, attn_mask=block_mask)
-
-
-allshowers.flow_matching.compute_mask = _dense_mask
-allshowers.transformer.flex_attention = _sdpa
-print(
-    f"allshowers_wrapper: torch {torch.__version__}, attention via scaled_dot_product_attention (no torch.compile)",
-    flush=True,
-)
-####################
 
 torch.set_num_threads(1)
 
@@ -128,6 +87,32 @@ _HARDCODED_PCFM_CONFIG = {
 # Label order both models were trained with (label = index in this list).
 _PDG_LIST = [11, -11, 22, 130, 211, -211, 321, -321, 2112, -2112, 2212, -2212]
 
+
+# AllShowers was trained on showers whose points were shifted in x and y, layer by
+# layer, so the incident particle always appears to enter perpendicularly at the
+# origin (arXiv:2601.11716, sec. 2.1). Its output keeps that frame, and the
+# AS_*_PY_INTERFACE configs (correct_angles=False) place every layer straight
+# behind the entry point, so run_inference moves each layer back along the
+# incident direction by (layer depth behind the entry face) * tan(theta).
+# Do not also set correct_angles=True, or the tilt is applied twice.
+#
+# Depth (mm) of each layer's sensitive centre behind the ECAL front face in
+# ILD_l5_v02 (k4geo v00-24) barrel, the geometry AllShowers was trained in:
+# 30 ECAL layers (SEcal06 stack, read off simulated hits) and 48 HCAL layers
+# (Hcal_inner_radius - Ecal_inner_radius = 253.2 mm, then 20 mm steel + 6.5 mm
+# chamber per layer). The ECAL endcap has the same stack; the HCAL endcap starts
+# 15 mm closer, so endcap HCAL layers end up 15 mm * tan(theta) too far along.
+# Assumes the particle enters through the ECAL front face, as DDML's layer
+# numbering does.
+_LAYER_DEPTH_MM = np.array(
+    [6.80, 9.93, 19.27, 22.40, 31.74, 34.87, 44.21, 47.34, 56.68, 59.81,
+     69.15, 72.28, 81.62, 84.75, 94.09, 97.22, 106.56, 109.69, 119.03, 122.16,
+     133.60, 138.83, 150.27, 155.50, 166.94, 172.17, 183.61, 188.84, 200.28, 205.51]
+    + [277.70 + 26.5 * k for k in range(48)],
+    dtype=np.float32,
+)
+
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -183,6 +168,14 @@ def run_inference(inputs):
     sample = sample.detach().cpu().numpy().astype(np.float32, copy=False)
     sample[..., 3] *= 1000
     layer = sample[:, 2].astype(int)
+    # Undo the training shift (see _LAYER_DEPTH_MM): move each layer along the
+    # incident direction. direction[2] = cos(theta) > 0 for a particle entering
+    # the calorimeter.
+    if direction[2] > 0.0:
+        depth = _LAYER_DEPTH_MM[layer]
+        sample[:, 0] += depth * (direction[0] / direction[2])
+        sample[:, 1] += depth * (direction[1] / direction[2])
+
     per_layer = np.bincount(
         layer, minlength=_HARDCODED_CNF_CONFIG["model"]["num_layers"]
     ).astype(np.float32)
