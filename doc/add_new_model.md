@@ -8,7 +8,8 @@ In order to add a new ML model a few things have to be considered:
 Some of these questions can be answered without any consideration for *DDML* but
 are entirely driven by the model itself, e.g.
 - if the model cannot be exported via torch or onnx, running via the *embedded
-  python inference* is the only way.
+  python inference* is the only way (see [Embedded Python
+  inference](embedded_python_inference.md) for the technical details).
 - the detector / calorimeter that has been used for training the model probably
   also defines rather strong constraints onto where the model can be applied
 

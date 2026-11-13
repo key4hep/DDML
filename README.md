@@ -33,6 +33,9 @@ Prerequisites:
 	- DD4hep, Geant4, podio, EDM4hep, LCIO, ...
 - ONNXRuntime
 - libTorch.so/dylib
+- Python 3 (development files), NumPy and pybind11 for the embedded Python
+  inference backend (can be disabled with
+  `-DDDML_ENABLE_EMBEDDED_PYINFERENCE=OFF`)
 
 This setup can be achieved with the setup script provided:
 
@@ -79,7 +82,7 @@ The library has the following key components:
 - **Trigger**: Kill the full simulation and run the fast simulation, if conditions are fulfilled
 - **Model**: Prepare the model input, and interpret the output
 - **Geometry**: Place spacepoints produced by the model (localToGlobal). Also provide local direction of track at calorimeter face
-- **Inference**: Calls desired inference library for the model. The library currently supports LibTorch and OnnxRuntime
+- **Inference**: Calls desired inference library for the model. The library currently supports LibTorch, OnnxRuntime and calling a Python function via an embedded interpreter (see [Embedded Python inference](doc/embedded_python_inference.md))
 - **Hit Maker**: Geant4 helper class for placement of energy deposits that land in a sensitive detector region
 
 The structure of the library is summarised in the following class diagram:
