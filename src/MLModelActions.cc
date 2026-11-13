@@ -4,6 +4,10 @@
 #include "DDML/TorchInference.h"
 #endif
 
+#ifdef DDML_USE_EMBEDDED_PYINFERENCE
+#include "DDML/EmbeddedPyInference.h"
+#endif
+
 #include "DDML/FastMLShower.h"
 
 #ifdef DDML_USE_ONNX_INFERENCE
@@ -17,7 +21,6 @@
 #include "DDML/CaloCloudsTwoAngleModel.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
-#include "DDML/Geant4FastHitMakerGlobal.h"
 #include "DDML/L2LFlowsModel.h"
 #include "DDML/OctogonalBarrelTrigger.h"
 #include "DDML/Par04ExampleVAE.h"
@@ -26,7 +29,6 @@
 #include "DDML/RegularGridBIBAEModel.h"
 #include "DDML/RegularGridGANModel.h"
 #include "DDML/RegularGridTwoAngleBIBAEModel.h"
-#include "DDML/TriggerInterface.h"
 
 namespace ddml {
 
@@ -103,6 +105,18 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml
     L2LFlowsModelEndcapTorchModel;
 #endif
 
+#ifdef DDML_USE_EMBEDDED_PYINFERENCE
+/// CaloClouds model for the barrel calorimeter with embedded Python (CC3_SF_2A verification example)
+typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::CaloCloudsTwoAngleModel,
+                                 ddml::PolyhedraBarrelGeometry, ddml::OctogonalBarrelTrigger>>
+    CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel;
+
+typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::CaloCloudsTwoAngleModel, ddml::EndcapGeometry,
+                                 ddml::EndcapTriggerTwoAngleBIBAE>>
+    CaloCloudsTwoAngleModelEndcapPyEmbeddedModel;
+
+#endif
+
 #ifdef DDML_USE_LOAD_HDF5
 /// Load from HDF5 file- as an example for the two angle BIBAE regular grid
 // Barrel
@@ -147,6 +161,11 @@ DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelEndcapTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelPolyhedraBarrelTorchModel)
 DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelEndcapTorchModel)
+#endif
+
+#ifdef DDML_USE_EMBEDDED_PYINFERENCE
+DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel)
+DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelEndcapPyEmbeddedModel);
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5

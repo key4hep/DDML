@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Script that does some very basic checks on the outputs of the tests of DDML."""
 
+import argparse
 import sys
 
 import ROOT
@@ -36,11 +37,28 @@ def check_calo_entry_recording(filename):
     return all(_check_tree_present(t) for t in ("run", "Fast_Sim_Info", "global"))
 
 
-checks = (
-    check_any_mc_fastsim("cc3_ild_pgun.edm4hep.root"),
-    check_calo_entry_recording("Output.root"),  # Comes from run_cc3_ild
-    check_any_mc_fastsim("bibae_ild_pgun.edm4hep.root"),
-)
+# Which files to check for each set of tests. Only the ones that correspond to
+# the tests that have actually been configured are passed as arguments
+CHECKS = {
+    "cc3": lambda: all(
+        (
+            check_any_mc_fastsim("cc3_ild_pgun.edm4hep.root"),
+            check_calo_entry_recording("Output.root"),  # Comes from run_cc3_ild
+        )
+    ),
+    "bibae": lambda: check_any_mc_fastsim("bibae_ild_pgun.edm4hep.root"),
+    "cc3_py_interface": lambda: check_any_mc_fastsim(
+        "cc3_py_interface_ild_pgun.edm4hep.root"
+    ),
+}
 
-if not all(checks):
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(
+    "checks", nargs="+", choices=CHECKS.keys(), help="Which test outputs to check"
+)
+args = parser.parse_args()
+
+# Run all checks to get all errors reported, not only the first one
+results = [CHECKS[c]() for c in args.checks]
+if not all(results):
     sys.exit(1)

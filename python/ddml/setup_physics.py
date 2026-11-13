@@ -1,4 +1,3 @@
-import argparse
 from typing import List
 
 from .model import ModelConfig
@@ -78,12 +77,3 @@ def ddml_physics(
             add_calo_entry_recording(kernel)
 
     return _setup
-
-
-_CLI = argparse.ArgumentParser(add_help=False)
-_CLI.add_argument(
-    "--ml-preset",
-    action="append",
-    default=None,
-    help="Preset dotted name (e.g. torch.CALOCLOUDS). Repeat to compose.",
-)

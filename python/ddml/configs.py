@@ -70,3 +70,27 @@ BIBAE_ENDCAP = ModelConfig(
     applicable_particles=PHOTONS,
     triggers=PHOTON_TRIGGER_10_GEV,
 )
+
+CC3_BARREL_PY_INTERFACE = ModelConfig(
+    plugin="CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    geometry=ILD_BARREL,
+    plugin_properties={
+        "PythonModule": "cc3_sf_2a_wrapper",
+        "EntryPoint": "run_inference",
+    },
+    correct_angles=False,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
+)
+
+CC3_ENDCAP_PY_INTERFACE = ModelConfig(
+    plugin="CaloCloudsTwoAngleModelEndcapPyEmbeddedModel/EndcapModelPython",
+    geometry=ILD_ENDCAP,
+    plugin_properties={
+        "PythonModule": "cc3_sf_2a_wrapper",
+        "EntryPoint": "run_inference",
+    },
+    correct_angles=False,
+    applicable_particles=PHOTONS,
+    triggers=PHOTON_TRIGGER_10_GEV,
+)
