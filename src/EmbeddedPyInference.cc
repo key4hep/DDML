@@ -125,7 +125,17 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
 
   try {
     dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "Calling python inference now");
-    auto result = m_impl->callable(m_impl->pyInputs).cast<py::array_t<float, py::array::c_style>>();
+    py::object pyResult = m_impl->callable(m_impl->pyInputs);
+    // pybind11 happily converts None into a 0-d array holding NaN, which would
+    // silently corrupt the output. A None result is almost certainly a missing
+    // return statement, so make it a proper Python error instead.
+    if (pyResult.is_none()) {
+      const std::string msg = "'" + m_pythonModule + "." + m_entryPoint +
+                              "' returned None, expected a float32 array (missing return statement?)";
+      PyErr_SetString(PyExc_TypeError, msg.c_str());
+      throw py::error_already_set();
+    }
+    auto result = pyResult.cast<py::array_t<float, py::array::c_style>>();
     dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference",
                      "After python inference. result has %d elements", result.size());
 
