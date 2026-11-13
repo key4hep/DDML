@@ -7,7 +7,7 @@ Explanation of how to run AllShowers in DDML.
 This is the same as what you would do if you followed the main `README.md`, with some minor notes on acceptable versions.
 
 - Clone this repo
-- In an ideal world we would chose some fixed version of key4HEP rather than use the nightly (with the nightly, you'd have to rebuild when it changes), for example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r YYYY-MM-DD`. However, to get the sparse attention mask to work, you have to have a sufficiently recent version of torch, at least torch 2.13. At the time of writing, this is only available on the nightly, however, it is anticipated that a new tag will fix this very soon. 
+- In an ideal world we would chose some fixed version of key4HEP rather than use the nightly (with the nightly, you'd have to rebuild when it changes), for example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r YYYY-MM-DD`. However, to get the sparse attention mask to work, you have to have a sufficiently recent version of torch, at least torch 2.13. At the time of writing, this is only available on the nightly, however, it is anticipated that a new tag will fix this very soon.
 - Build and install as normal (`mkdir build && cd build && cmake .. && make && make -j4 install`)
 - Source the install (`source ../install/bin/thisDDML.sh`)
 - Add things to the PYTHONPATH (`export PYTHONPATH=${PATH_TO_THIS_DDML}/python:${PATH_TO_THIS_DDML}/python/examples:$PYTHONPATH`)

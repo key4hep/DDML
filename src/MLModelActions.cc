@@ -19,10 +19,10 @@
 #endif
 
 #include "DDML/CaloCloudsTwoAngleModel.h"
-#include "DDML/MultiParticleModel.h"
 #include "DDML/EndcapGeometry.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/L2LFlowsModel.h"
+#include "DDML/MultiParticleModel.h"
 #include "DDML/OctogonalBarrelTrigger.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/PionCloudsModel.h"
@@ -108,8 +108,8 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml
 
 #ifdef DDML_USE_EMBEDDED_PYINFERENCE
 /// CaloClouds model for the barrel calorimeter with embedded Python (CC3_SF_2A verification example)
-typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::MultiParticleModel,
-                                 ddml::PolyhedraBarrelGeometry, ddml::OctogonalBarrelTrigger>>
+typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::MultiParticleModel, ddml::PolyhedraBarrelGeometry,
+                                 ddml::OctogonalBarrelTrigger>>
     MultiParticleModelPolyhedraBarrelPyEmbeddedModel;
 
 typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::MultiParticleModel, ddml::EndcapGeometry,

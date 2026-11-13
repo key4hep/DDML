@@ -10,6 +10,7 @@ Serves two purposes:
 DDML embedded-Python contract:
     run_inference(inputs: list[np.ndarray]) -> np.ndarray (flat float32)
 """
+
 import math
 import os
 import tempfile
@@ -19,7 +20,6 @@ import numpy as np
 import torch
 import yaml
 from allshowers.unified_sampling import Generator, generate, init_sampler
-
 
 torch.set_num_threads(1)
 
@@ -105,9 +105,38 @@ _PDG_LIST = [11, -11, 22, 130, 211, -211, 321, -321, 2112, -2112, 2212, -2212]
 # Assumes the particle enters through the ECAL front face, as DDML's layer
 # numbering does.
 _LAYER_DEPTH_MM = np.array(
-    [6.80, 9.93, 19.27, 22.40, 31.74, 34.87, 44.21, 47.34, 56.68, 59.81,
-     69.15, 72.28, 81.62, 84.75, 94.09, 97.22, 106.56, 109.69, 119.03, 122.16,
-     133.60, 138.83, 150.27, 155.50, 166.94, 172.17, 183.61, 188.84, 200.28, 205.51]
+    [
+        6.80,
+        9.93,
+        19.27,
+        22.40,
+        31.74,
+        34.87,
+        44.21,
+        47.34,
+        56.68,
+        59.81,
+        69.15,
+        72.28,
+        81.62,
+        84.75,
+        94.09,
+        97.22,
+        106.56,
+        109.69,
+        119.03,
+        122.16,
+        133.60,
+        138.83,
+        150.27,
+        155.50,
+        166.94,
+        172.17,
+        183.61,
+        188.84,
+        200.28,
+        205.51,
+    ]
     + [277.70 + 26.5 * k for k in range(48)],
     dtype=np.float32,
 )
