@@ -25,9 +25,11 @@ cmake -DDDML_ENABLE_EMBEDDED_PYINFERENCE=ON ..
 
 When enabled, it requires
 
-- Python 3 (>= 3.9) including the development headers/library and NumPy
-  (`find_package(Python3 3.9 COMPONENTS Interpreter Development NumPy)`),
+- Python 3 (>= 3.9) including the development headers/library
+  (`find_package(Python3 3.9 COMPONENTS Interpreter Development)`),
 - pybind11 (>= 2.10, found via its CMake config).
+
+NumPy is only needed at runtime, since pybind11 loads its C API dynamically.
 
 ## Architecture
 
@@ -174,7 +176,8 @@ instances:
   runs in the same interpreter as the steering file, so it sees the same
   `sys.path`, environment and already-imported modules.
 - **Running from a pure C++ host:** the first `EmbeddedPyInference` instance
-  creates the interpreter (`pybind11::scoped_interpreter`). It is never
+  creates the interpreter (`pybind11::initialize_interpreter`) and then
+  releases the GIL, so that other threads can acquire it. It is never
   finalized, because finalizing CPython after NumPy (and typically torch) have
   been loaded is unreliable.
 
@@ -239,7 +242,9 @@ If the backend is enabled, the CTest suite contains `run_cc3_py_interface_ild`.
 It runs 10 single-particle-gun events in ILD with the
 `CC3_BARREL_PY_INTERFACE` and `CC3_ENDCAP_PY_INTERFACE` presets, with
 `python/examples` added to `PYTHONPATH`. `check_test_outputs` then verifies that
-the output file contains MC particles created by the fast simulation.
+the output file contains MC particles created by the fast simulation. It only
+checks the outputs of the tests that are configured for the backends that are
+built.
 
 To compare timings with the C++ backends, build with
 `-DDDML_INSTRUMENT_MODEL_SHOWER=1` added to the compile flags. Each

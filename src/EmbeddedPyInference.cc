@@ -6,6 +6,7 @@
 #include <cstring>
 #include <mutex>
 #include <stdexcept>
+#include <string>
 
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
@@ -26,17 +27,30 @@ struct __attribute__((visibility("hidden"))) EmbeddedPyInference::Impl {
 namespace {
   std::once_flag g_interpInit;
   void ensureInterpreter() {
-    // Leaked on purpose: process-lifetime interpreter.
-    // Finalising CPython with NumPy loaded is unreliable.
     std::call_once(g_interpInit, [] {
       if (Py_IsInitialized()) {
         // Host (e.g. ddsim running via cppyy) already owns the interpreter;
         // do not create a second one.
         return;
       }
-      static py::scoped_interpreter interp{};
-      (void)interp;
+      // Process-lifetime interpreter, intentionally never finalised:
+      // finalising CPython with NumPy (or torch) loaded is unreliable, and
+      // plugins may still be destroyed after main() returns.
+      py::initialize_interpreter();
+      // initialize_interpreter() leaves the calling thread holding the GIL.
+      // Release it so that other threads (e.g. Geant4 MT workers) can take it
+      // via gil_scoped_acquire. The saved thread state is intentionally leaked.
+      PyEval_SaveThread();
     });
+  }
+
+  /// Whether it is still safe to touch Python objects (take the GIL, decref)
+  bool interpreterAlive() {
+#if PY_VERSION_HEX >= 0x030D0000
+    return Py_IsInitialized() && !Py_IsFinalizing();
+#else
+    return Py_IsInitialized() && !_Py_IsFinalizing();
+#endif
   }
 
   std::string formatPyError(py::error_already_set& e) {
@@ -54,9 +68,30 @@ namespace {
   }
 } // namespace
 
-EmbeddedPyInference::EmbeddedPyInference() : m_impl(std::make_unique<Impl>()) { ensureInterpreter(); }
+EmbeddedPyInference::EmbeddedPyInference() {
+  // The interpreter has to exist and we need the GIL before creating any
+  // Python objects (Impl holds a py::list)
+  ensureInterpreter();
+  py::gil_scoped_acquire gil;
+  m_impl = std::make_unique<Impl>();
+}
 
 EmbeddedPyInference::~EmbeddedPyInference() {
+  if (!m_impl) {
+    return;
+  }
+  if (!interpreterAlive()) {
+    // The interpreter has already been (or is being) torn down, e.g. by the
+    // host. The Python objects are gone with it, so drop the handles without
+    // touching their reference counts.
+    m_impl->callable.release();
+    m_impl->pyInputs.release();
+    for (auto& arr : m_impl->inputArrays) {
+      arr.release();
+    }
+    m_impl.reset();
+    return;
+  }
   py::gil_scoped_acquire gil;
   m_impl.reset();
 }
@@ -94,12 +129,33 @@ void EmbeddedPyInference::initialize() {
 
 void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimVecs& tensDims,
                                        std::vector<float>& output) {
+  const size_t N = inputs.size();
+  // The inputs are handed to python as zero-copy views using these shapes, so
+  // a mismatch would make numpy read past the end of the input buffers
+  if (tensDims.size() != N) {
+    throw std::runtime_error("EmbeddedPyInference: got " + std::to_string(N) + " input vectors but " +
+                             std::to_string(tensDims.size()) + " tensor shapes");
+  }
+  for (size_t i = 0; i < N; ++i) {
+    int64_t nElements = 1;
+    for (const auto dim : tensDims[i]) {
+      if (dim < 0) {
+        throw std::runtime_error("EmbeddedPyInference: negative dimension in tensor shape for input " +
+                                 std::to_string(i));
+      }
+      nElements *= dim;
+    }
+    if (static_cast<size_t>(nElements) != inputs[i].size()) {
+      throw std::runtime_error("EmbeddedPyInference: tensor shape for input " + std::to_string(i) + " describes " +
+                               std::to_string(nElements) + " elements but the input vector has " +
+                               std::to_string(inputs[i].size()));
+    }
+  }
+
   py::gil_scoped_acquire gil;
 
-  dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "running inference with %d input vectors",
-                   inputs.size());
+  dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "running inference with %zu input vectors", N);
 
-  const size_t N = inputs.size();
   if (m_impl->inputArrays.size() != N) {
     m_impl->inputArrays.clear();
     m_impl->inputArrays.reserve(N);
@@ -137,7 +193,7 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
     }
     auto result = pyResult.cast<py::array_t<float, py::array::c_style>>();
     dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference",
-                     "After python inference. result has %d elements", result.size());
+                     "After python inference. result has %zd elements", result.size());
 
     // Caller pre-sizes `output` to the model's worst-case footprint. The actual
     // model output may be smaller (self-describing, variable-length payload);

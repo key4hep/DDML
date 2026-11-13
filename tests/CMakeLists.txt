@@ -8,30 +8,42 @@ function(set_test_env _test)
   set_property(TEST ${_test} PROPERTY ENVIRONMENT "${_test_env}")
 endfunction()
 
-add_test(NAME run_cc3_ild COMMAND
-  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
-        --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
-        --ml-model CC3_BARREL --ml-model CC3_ENDCAP
-        --record-calo-entry
-        -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
-        --outputFile cc3_ild_pgun.edm4hep.root
-)
-set_test_env(run_cc3_ild)
-set_tests_properties(run_cc3_ild PROPERTIES FIXTURES_SETUP cc3_ild_output)
+# Collect the checks that check_test_outputs.py should run and the fixtures
+# producing their inputs, depending on which backends are built
+set(_output_checks)
+set(_output_fixtures)
 
-add_test(NAME run_bibae_ild COMMAND
-  ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
-        --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
-        --ml-model BIBAE_BARREL --ml-model BIBAE_ENDCAP
-        -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
-        --outputFile bibae_ild_pgun.edm4hep.root
-)
-set_test_env(run_bibae_ild)
-set_tests_properties(run_bibae_ild PROPERTIES FIXTURES_SETUP bibae_ild_output)
+if (Torch_FOUND)
+  add_test(NAME run_cc3_ild COMMAND
+    ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
+          --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
+          --ml-model CC3_BARREL --ml-model CC3_ENDCAP
+          --record-calo-entry
+          -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
+          --outputFile cc3_ild_pgun.edm4hep.root
+  )
+  set_test_env(run_cc3_ild)
+  set_tests_properties(run_cc3_ild PROPERTIES
+    FIXTURES_SETUP cc3_ild_output
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts
+  )
 
-add_test(NAME check_test_outputs COMMAND
-  python3 ${PROJECT_SOURCE_DIR}/tests/check_test_outputs.py
-)
+  add_test(NAME run_bibae_ild COMMAND
+    ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py
+          --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
+          --ml-model BIBAE_BARREL --ml-model BIBAE_ENDCAP
+          -N 10 -G --gun.multiplicity 1 --gun.distribution=uniform
+          --outputFile bibae_ild_pgun.edm4hep.root
+  )
+  set_test_env(run_bibae_ild)
+  set_tests_properties(run_bibae_ild PROPERTIES
+    FIXTURES_SETUP bibae_ild_output
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts
+  )
+
+  list(APPEND _output_checks cc3 bibae)
+  list(APPEND _output_fixtures cc3_ild_output bibae_ild_output)
+endif()
 
 if (DDML_ENABLE_EMBEDDED_PYINFERENCE)
   add_test(NAME run_cc3_py_interface_ild COMMAND
@@ -46,21 +58,17 @@ if (DDML_ENABLE_EMBEDDED_PYINFERENCE)
     FIXTURES_SETUP cc3_py_interface_output
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts
   )
-  set_tests_properties(check_test_outputs PROPERTIES
-    FIXTURES_REQUIRED "cc3_ild_output;bibae_ild_output;cc3_py_interface_output"
-  )
-else()
-  set_tests_properties(check_test_outputs PROPERTIES
-    FIXTURES_REQUIRED "cc3_ild_output;bibae_ild_output"
-  )
+
+  list(APPEND _output_checks cc3_py_interface)
+  list(APPEND _output_fixtures cc3_py_interface_output)
 endif()
 
-set_tests_properties(
-  run_cc3_ild
-  run_bibae_ild
-  check_test_outputs
-
-  PROPERTIES
+if (_output_checks)
+  add_test(NAME check_test_outputs COMMAND
+    python3 ${PROJECT_SOURCE_DIR}/tests/check_test_outputs.py ${_output_checks}
+  )
+  set_tests_properties(check_test_outputs PROPERTIES
+    FIXTURES_REQUIRED "${_output_fixtures}"
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts
-)
-
+  )
+endif()

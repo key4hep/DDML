@@ -33,9 +33,9 @@ Prerequisites:
 	- DD4hep, Geant4, podio, EDM4hep, LCIO, ...
 - ONNXRuntime
 - libTorch.so/dylib
-- Python 3 (development files), NumPy and pybind11 for the embedded Python
+- Python 3 (development files) and pybind11 for the embedded Python
   inference backend (can be disabled with
-  `-DDDML_ENABLE_EMBEDDED_PYINFERENCE=OFF`)
+  `-DDDML_ENABLE_EMBEDDED_PYINFERENCE=OFF`). NumPy is needed at runtime.
 
 This setup can be achieved with the setup script provided:
 

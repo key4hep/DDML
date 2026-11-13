@@ -72,7 +72,7 @@ endif()
 option(DDML_ENABLE_EMBEDDED_PYINFERENCE "Build embedded-Python inference backend" ON)
 
 if(DDML_ENABLE_EMBEDDED_PYINFERENCE)
-  find_package(Python3 3.9 COMPONENTS Interpreter Development NumPy REQUIRED)
+  find_package(Python3 3.9 COMPONENTS Interpreter Development REQUIRED)
   find_package(pybind11 2.10 CONFIG REQUIRED)
   message("Embedded-Python inference backend enabled (Python ${Python3_VERSION}).")
 endif()
