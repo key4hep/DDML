@@ -1,8 +1,6 @@
 #include "DDML/EmbeddedPyInference.h"
 
 #include <algorithm>
-#include <cassert>
-#include <cstdlib> // setenv
 #include <cstring>
 #include <mutex>
 #include <stdexcept>
@@ -18,10 +16,6 @@ namespace ddml {
 
 struct __attribute__((visibility("hidden"))) EmbeddedPyInference::Impl {
   py::object callable;
-  py::list pyInputs;
-  std::vector<py::array_t<float>> inputArrays;
-  std::vector<const float*> lastDataPtrs;
-  std::vector<std::vector<ssize_t>> lastShapes;
 };
 
 namespace {
@@ -82,13 +76,9 @@ EmbeddedPyInference::~EmbeddedPyInference() {
   }
   if (!interpreterAlive()) {
     // The interpreter has already been (or is being) torn down, e.g. by the
-    // host. The Python objects are gone with it, so drop the handles without
-    // touching their reference counts.
+    // host. The Python objects are gone with it, so drop the handle without
+    // touching its reference count.
     m_impl->callable.release();
-    m_impl->pyInputs.release();
-    for (auto& arr : m_impl->inputArrays) {
-      arr.release();
-    }
     m_impl.reset();
     return;
   }
@@ -156,32 +146,25 @@ void EmbeddedPyInference::runInference(const InputVecs& inputs, const TensorDimV
 
   dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "running inference with %zu input vectors", N);
 
-  if (m_impl->inputArrays.size() != N) {
-    m_impl->inputArrays.clear();
-    m_impl->inputArrays.reserve(N);
-    m_impl->lastDataPtrs.assign(N, nullptr);
-    m_impl->lastShapes.assign(N, {});
-    m_impl->pyInputs = py::list(N);
-    for (size_t i = 0; i < N; ++i) {
-      m_impl->inputArrays.emplace_back();
-    }
-  }
-
+  // Wrap the inputs as zero-copy views. Passing a base object stops numpy from
+  // copying the data or taking ownership of it.
+  py::list pyInputs(N);
   for (size_t i = 0; i < N; ++i) {
-    const float* ptr = inputs[i].data();
-    std::vector<ssize_t> shape(tensDims[i].begin(), tensDims[i].end());
-    const bool needRebuild = (ptr != m_impl->lastDataPtrs[i]) || (shape != m_impl->lastShapes[i]);
-    if (needRebuild) {
-      m_impl->inputArrays[i] = py::array_t<float>(shape, {}, const_cast<float*>(ptr), py::none());
-      m_impl->pyInputs[i] = m_impl->inputArrays[i];
-      m_impl->lastDataPtrs[i] = ptr;
-      m_impl->lastShapes[i] = std::move(shape);
-    }
+// GCC sees through to the static None object used as base and warns about the
+// (dead) branch in pybind11 that reads the flags of base if it is an array
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+    pyInputs[i] = py::array_t<float>(tensDims[i], {}, const_cast<float*>(inputs[i].data()), py::none());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
   }
 
   try {
     dd4hep::printout(dd4hep::DEBUG, "EmbeddedPyInference::runInference", "Calling python inference now");
-    py::object pyResult = m_impl->callable(m_impl->pyInputs);
+    py::object pyResult = m_impl->callable(pyInputs);
     // pybind11 happily converts None into a 0-d array holding NaN, which would
     // silently corrupt the output. A None result is almost certainly a missing
     // return statement, so make it a proper Python error instead.

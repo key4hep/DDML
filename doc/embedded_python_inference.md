@@ -121,14 +121,10 @@ Because of the zero-copy wrapping, the following rules apply:
    modify them (`a.copy()`). Note that `torch.from_numpy` also aliases the
    buffer.
 2. **Do not keep references to the arrays (or tensors aliasing them) beyond
-   the call.** The arrays and the list are cached and reused across showers.
-   They are only rebuilt when the address of a buffer or its shape changes.
-   A retained reference will therefore either observe the inputs of later
-   showers or, if the C++ vector reallocated in the meantime, point to freed
-   memory.
-
-The list object passed to the function is the same object on every call (it is
-updated in place), so do not mutate or store it either.
+   the call.** The underlying C++ buffers are reused for the following
+   showers. A retained reference will therefore either observe the inputs of
+   later showers or, if the C++ vector reallocated in the meantime, point to
+   freed memory.
 
 ### Return value
 
