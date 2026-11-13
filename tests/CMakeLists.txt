@@ -1,7 +1,7 @@
 function(set_test_env _test)
   set(_test_env
     LD_LIBRARY_PATH=${PROJECT_BINARY_DIR}/src:$<$<TARGET_EXISTS:torch>:$<TARGET_FILE_DIR:torch>>:$<$<TARGET_EXISTS:OnnxRuntime>:$<TARGET_FILE_DIR:OnnxRuntime>>:$<$<TARGET_EXISTS:hdf5::hdf5>:$<TARGET_FILE_DIR:hdf5::hdf5>>:$ENV{LD_LIBRARY_PATH}
-    MODEL_DIR=${PROJECT_BINARY_DIR}/models
+    DDML_MODEL_DIR=${PROJECT_BINARY_DIR}/models
     PYTHONPATH=${PROJECT_SOURCE_DIR}/python:${PROJECT_SOURCE_DIR}/python/examples:$ENV{PYTHONPATH}
   )
 

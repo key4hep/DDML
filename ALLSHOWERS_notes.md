@@ -9,8 +9,7 @@ This is the same as what you would do if you followed the main `README.md`, with
 - Clone this repo
 - In an ideal world we would chose some fixed version of key4HEP rather than use the nightly (with the nightly, you'd have to rebuild when it changes), for example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r YYYY-MM-DD`. However, to get the sparse attention mask to work, you have to have a sufficiently recent version of torch, at least torch 2.13. At the time of writing, this is only available on the nightly, however, it is anticipated that a new tag will fix this very soon.
 - Build and install as normal (`mkdir build && cd build && cmake .. && make && make -j4 install`)
-- Source the install (`source ../install/bin/thisDDML.sh`)
-- Add things to the PYTHONPATH (`export PYTHONPATH=${PATH_TO_THIS_DDML}/python:${PATH_TO_THIS_DDML}/python/examples:$PYTHONPATH`)
+- Source the install (`source ../install/bin/thisDDML.sh`). This also puts the installed `ddml` python package and the `allshowers_wrapper` on the `PYTHONPATH`. The AllShowers model files are downloaded by the build and installed to `install/share/DDML/models`, where the wrapper finds them, so there is no need to add anything from the source tree to the `PYTHONPATH` (doing so would shadow the installed package; in that case `DDML_MODEL_DIR` has to point to a directory containing the models, e.g. `build/models`).
 
 ## AllShowers setup
 
@@ -30,11 +29,11 @@ If you come back to this after installing and want to run again, you need to set
 
 - Source the same version of key4hep (e.g. `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`, or `source setup_env_nightly.sh`)
 - Source the install (`source ../install/bin/thisDDML.sh`)
-- Add the python installs dir and the DDML dirs back to the PYTHONPATH (`export PYTHONPATH=/path/to/DDML/python:/path/to/DDML/python/examples:/path/to/my/python/libraries:$PYTHONPATH`)
+- Add the python libraries dir back to the PYTHONPATH (`export PYTHONPATH=/path/to/my/python/libraries:$PYTHONPATH`)
 
 ## To run
 
-Enter the scripts directory to find the steering files, and do;
+The steering files are in the `scripts` directory, but they can be run from anywhere, e.g. from within `scripts`;
 
 `ddsim --steeringFile ddsim_steer_photon_gun_allshowerspy.py  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml`
 

@@ -11,15 +11,14 @@ DDML embedded-Python contract:
     run_inference(inputs: list[np.ndarray]) -> np.ndarray (flat float32)
 """
 
-import os
 import numpy as np
 import torch
 
+from ddml.paths import model_path
+
 torch.set_num_threads(1)
 
-_model_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../models/CC3_SF_2A.pt")
-)
+_model_path = model_path("CC3_SF_2A.pt")
 _model = torch.jit.load(_model_path).eval().to("cpu")
 
 
