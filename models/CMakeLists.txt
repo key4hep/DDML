@@ -5,6 +5,11 @@ set(models
   CC3_SF_2A.pt
   CC3_paper_checkpoint.pt
   #L2LFlowsx9.pt
+
+  # AllShowers in three parts
+  AllShowers_CNF_v1.pt
+  AllShowers_pcfm_v1.pt
+  AllShowers_trafos_v1.pt
 )
 
 set(models_data)
