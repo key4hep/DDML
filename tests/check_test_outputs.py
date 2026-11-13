@@ -47,11 +47,15 @@ CHECKS = {
         )
     ),
     "bibae": lambda: check_any_mc_fastsim("bibae_ild_pgun.edm4hep.root"),
-    "cc3_py_interface": lambda: check_any_mc_fastsim("cc3_py_interface_ild_pgun.edm4hep.root"),
+    "cc3_py_interface": lambda: check_any_mc_fastsim(
+        "cc3_py_interface_ild_pgun.edm4hep.root"
+    ),
 }
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("checks", nargs="+", choices=CHECKS.keys(), help="Which test outputs to check")
+parser.add_argument(
+    "checks", nargs="+", choices=CHECKS.keys(), help="Which test outputs to check"
+)
 args = parser.parse_args()
 
 # Run all checks to get all errors reported, not only the first one
