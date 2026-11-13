@@ -21,20 +21,13 @@ import torch
 import yaml
 from allshowers.unified_sampling import Generator, generate, init_sampler
 
+from ddml.paths import model_path
+
 torch.set_num_threads(1)
 
-_TMP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/tmp"))
-if not os.path.exists(_TMP_DIR):
-    os.mkdir(_TMP_DIR)
-_CNF_WEIGHTS = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../models/AllShowers_CNF_v1.pt")
-)
-_CNF_TRAFOS = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../models/AllShowers_trafos_v1.pt")
-)
-_PCFM_WEIGHTS = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../models/AllShowers_pcfm_v1.pt")
-)
+_CNF_WEIGHTS = model_path("AllShowers_CNF_v1.pt")
+_CNF_TRAFOS = model_path("AllShowers_trafos_v1.pt")
+_PCFM_WEIGHTS = model_path("AllShowers_pcfm_v1.pt")
 
 # The parts of the CNF run's conf.yaml that Generator reads (repo defaults from
 # conf/transformer.yaml). Must match the run the weights came from.
@@ -155,7 +148,7 @@ def _make_run_dir(run_dir: Path, config: dict, links: dict[str, str]) -> Path:
 
 # Both loaders read every file in their constructor, so the run dirs only need
 # to exist while loading. A private temp dir per process leaves nothing to lock.
-with tempfile.TemporaryDirectory(dir=_TMP_DIR) as tmp:
+with tempfile.TemporaryDirectory() as tmp:
     cnf_dir = _make_run_dir(
         Path(tmp, "cnf"),
         _HARDCODED_CNF_CONFIG,

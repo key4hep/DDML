@@ -2,6 +2,7 @@
 
 from .model import ModelConfig
 from .geometry import PluginGeometry, DetectorGeometry
+from .paths import model_path
 
 from g4units import GeV
 
@@ -44,13 +45,13 @@ ALLSHOWERS_TRIGGERS = {name: 10.0 * GeV for name in ALLSHOWERS_PARTICLES}
 _cc3_common_properties = {
     "OptimizeFlag": 1,
     "IntraOpNumThreads": 1,
-    "ModelPath": "../models/CC3_paper_checkpoint.pt",
+    "ModelPath": model_path("CC3_paper_checkpoint.pt"),
 }
 
 _bibae_common_properties = {
     "OptimizeFlag": 1,
     "IntraOpNumThreads": 1,
-    "ModelPath": "../models/BIBAE_Two_Angle_Full_PP_cut.pt",
+    "ModelPath": model_path("BIBAE_Two_Angle_Full_PP_cut.pt"),
 }
 
 # CaloClouds3 default configuration

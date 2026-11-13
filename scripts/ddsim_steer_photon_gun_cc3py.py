@@ -3,11 +3,10 @@ interface, configured entirely by the presets in python/ddml/configs.py
 (CC3_BARREL_PY_INTERFACE and CC3_ENDCAP_PY_INTERFACE). Nothing from the presets
 is overridden here; only the gun, event count and output are set.
 
-Needs the ddml package and the wrapper module (cc3_sf_2a_wrapper) importable,
-as DDML's own tests set them up, and models/CC3_SF_2A.pt fetched by the build:
+Needs the ddml package and the wrapper module (cc3_sf_2a_wrapper) importable and
+CC3_SF_2A.pt fetched by the build. Both are installed and set up by:
 
   source $DDML/install/bin/thisDDML.sh
-  export PYTHONPATH=$DDML/python:$DDML/python/examples:$PYTHONPATH
   ddsim --steeringFile ddsim_steer_cc3_py_interface.py \
         --compactFile $k4geo_DIR/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
 """

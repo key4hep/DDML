@@ -156,11 +156,17 @@ presets, record_calo_entry = get_fastsim_configuration()
 SIM.physics.setupUserPhysics(ddml_physics(presets, record_calo_entry))
 ```
 
-Running this requires adding a few more folders to the `$PYTHONPATH`.
+The `ddml` python package (and the wrappers in `python/examples`) are
+installed alongside the library and are made available by sourcing
+`thisDDML.sh`. The model files are installed to `share/DDML/models` and are
+looked up from there (see `ddml.paths.model_path`), so the steering files can
+be run from any directory. To use a different model directory set
+`DDML_MODEL_DIR`.
 
-```
-export PYTHONPATH=${PATH_TO_THIS_DDML}/python:${PATH_TO_THIS_DDML}/python/examples:$PYTHONPATH
-```
+If you work directly with the python files from the source tree instead (i.e.
+`export PYTHONPATH=${PATH_TO_THIS_DDML}/python:${PATH_TO_THIS_DDML}/python/examples:$PYTHONPATH`),
+you also need to point `DDML_MODEL_DIR` to a directory containing the models,
+e.g. `<build>/models`, where the build places symlinks to the downloaded models.
 
 One or more named model configurations (defined in `python/ddml/configs.py`) are then
 selected on the command line with the `--ml-model` flag:
@@ -195,7 +201,7 @@ SIM.physics.setupUserPhysics(ddml_physics([my_model]))
 
 In addition to the models imported with python, it is also possible to run a model directly on a python kernel.
 One example of this is baked into this repository; see `scripts/ddsim_steer_photon_gun_cc3py.py`, which is a steering file for running the [CaloClouds3](https://arxiv.org/pdf/2511.01460) model via a python kernel, with inbuilt photon.
-Running it requires supplying the detector model only. After the standard setup, plus the `$PYTHONPATH` extensions;
+Running it requires supplying the detector model only. After the standard setup;
 
 ```
 ddsim --steeringFile ddsim_steer_photon_gun_allshowerspy.py  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml

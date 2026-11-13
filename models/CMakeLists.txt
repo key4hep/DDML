@@ -22,18 +22,17 @@ ExternalData_Expand_Arguments(model_download
     ${models_data}
 )
 
-# Link them back to model directory
-add_custom_target(copy_models_to_source ALL
-  COMMENT "Copying models (symlinking) to source directory"
-  DEPENDS model_download
-)
-
+# Install the actual files (not the symlinks into the build tree), so that the
+# installation is self-contained. ddml.paths finds them there at runtime.
 foreach(path ${download_paths})
-  add_custom_command(
-    TARGET copy_models_to_source
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${path} ${PROJECT_SOURCE_DIR}/models
-  )
+  get_filename_component(model_name ${path} NAME)
+  install(CODE "
+    get_filename_component(_ddml_model_file \"${path}\" REALPATH)
+    file(INSTALL
+      DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${DDML_MODEL_INSTALL_DIR}\"
+      TYPE FILE
+      RENAME \"${model_name}\"
+      FILES \"\${_ddml_model_file}\"
+    )
+  ")
 endforeach()
-
-install(FILES ${models} DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/models)
