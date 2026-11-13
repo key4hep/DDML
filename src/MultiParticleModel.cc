@@ -8,8 +8,8 @@
 
 namespace ddml {
 
-void MultiParticleModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir,
-                                           InputVecs& inputs, TensorDimVecs& tensDims, std::vector<float>& output) {
+void MultiParticleModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVector const& localDir, InputVecs& inputs,
+                                      TensorDimVecs& tensDims, std::vector<float>& output) {
   tensDims = m_tensDims;
 
   G4int PDG = aFastTrack.GetPrimaryTrack()->GetParticleDefinition()->GetPDGEncoding();
@@ -29,8 +29,8 @@ void MultiParticleModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVect
   localDir_.setX(-1. * localDir_.x()); // *(-1) to align local to global convention in ddml
   localDir_.setY(-1. * localDir_.y()); // *(-1) to align local to global convention in ddml
 
-  dd4hep::printout(dd4hep::DEBUG, "MultiParticleModel::prepareInput", "DDML::localDir: (%f, %f, %f)",
-                   localDir_.x(), localDir_.y(), localDir_.z());
+  dd4hep::printout(dd4hep::DEBUG, "MultiParticleModel::prepareInput", "DDML::localDir: (%f, %f, %f)", localDir_.x(),
+                   localDir_.y(), localDir_.z());
 
   // compute local incident angles
   double r = sqrt(localDir_.x() * localDir_.x() + localDir_.y() * localDir_.y() + localDir_.z() * localDir_.z());
@@ -64,7 +64,7 @@ void MultiParticleModel::prepareInput(G4FastTrack const& aFastTrack, G4ThreeVect
 }
 
 void MultiParticleModel::convertOutput(G4FastTrack const&, G4ThreeVector const&, const std::vector<float>& output,
-                                            std::vector<SpacePointVec>& spacepoints) {
+                                       std::vector<SpacePointVec>& spacepoints) {
   int nLayer = m_nLayer; // number of layers is z dimension
   int layerNum = 0;
   int numSP = 0;

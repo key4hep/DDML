@@ -22,12 +22,23 @@ PHOTONS = frozenset({"gamma"})
 PHOTON_TRIGGER_5_GEV = {"gamma": 5.0 * GeV}
 PHOTON_TRIGGER_10_GEV = {"gamma": 10.0 * GeV}
 
-ALLSHOWERS_PARTICLES = frozenset({
-    "gamma", "e-", "e+", "pi-", "pi+", "kaon-", "kaon+",
-    "kaon0L", "proton", "anti_proton", "neutron", "anti_neutron",
-})
+ALLSHOWERS_PARTICLES = frozenset(
+    {
+        "gamma",
+        "e-",
+        "e+",
+        "pi-",
+        "pi+",
+        "kaon-",
+        "kaon+",
+        "kaon0L",
+        "proton",
+        "anti_proton",
+        "neutron",
+        "anti_neutron",
+    }
+)
 ALLSHOWERS_TRIGGERS = {name: 10.0 * GeV for name in ALLSHOWERS_PARTICLES}
-
 
 
 _cc3_common_properties = {
