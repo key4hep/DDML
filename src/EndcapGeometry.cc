@@ -24,6 +24,22 @@ void EndcapGeometry::initialize() {
   } else {
     dd4hep::printout(dd4hep::ERROR, "EndcapGeometry::initialize", "Detector %s not found!", m_detector.c_str());
   }
+
+  // For hadronic shower simulation: the HCAL endcap sits behind the ECAL endcap
+  // in |z|, so its layers continue the (increasing) list of layer distances
+  if (m_isHadShower) {
+    auto det_had = theDetector.detector(m_hadDetector);
+    auto* cal_had = det_had.extension<dd4hep::rec::LayeredCalorimeterData>();
+    if (cal_had) {
+      for (const auto& l_had : cal_had->layers) {
+        m_caloLayerDistances.push_back((l_had.distance + l_had.inner_thickness) / dd4hep::mm);
+      }
+      dd4hep::printout(dd4hep::INFO, "EndcapGeometry::initialize", "Added %zu %s layers, %zu layers in total",
+                       cal_had->layers.size(), m_hadDetector.c_str(), m_caloLayerDistances.size());
+    } else {
+      dd4hep::printout(dd4hep::ERROR, "EndcapGeometry::initialize", "Detector %s not found!", m_hadDetector.c_str());
+    }
+  }
 }
 
 G4ThreeVector EndcapGeometry::localDirection(G4FastTrack const& aFastTrack) const {

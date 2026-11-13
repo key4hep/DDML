@@ -119,7 +119,7 @@ typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::RegularGridTwoAngleBIBAEM
 typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::PolyhedraBarrelGeometry,
                                  ddml::OctogonalBarrelTrigger>> // add ML trigger
     LoadHDF5PionCloudsPCHadronModelPolyhedraBarrel;
-// Endcap // ENDCAP IS CURRENTLY NOT IMPLEMENTED!!!!
+// Endcap (set isHadShower = True so the HCAL endcap layers are placed too)
 typedef FastMLShower<FastMLModel<ddml::LoadHdf5, ddml::PionCloudsModel, ddml::EndcapGeometry,
                                  ddml::EndcapTriggerTwoAngleBIBAE>> // add ML trigger
     LoadHDF5PionCloudsPCHadronModelEndcap;

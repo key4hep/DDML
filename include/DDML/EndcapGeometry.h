@@ -12,6 +12,11 @@ namespace ddml {
  *
  *  @author F.Gaede, DESY
  *  @date Mar 2023
+ *
+ * Additional option to support hadronic shower simulation in ECAL + HCAL, as in
+ * PolyhedraBarrelGeometry: with isHadShower the layers of HadDetector (behind
+ * the ECAL endcap along z) are appended after the ECAL layers, so model layer
+ * indices run over the ECAL endcap first and then the HCAL endcap.
  */
 
 class EndcapGeometry {
@@ -26,6 +31,8 @@ public:
   /// declare the proerties needed for the plugin
   void declareProperties(dd4hep::sim::Geant4Action* plugin) {
     plugin->declareProperty("Detector", this->m_detector);
+    plugin->declareProperty("isHadShower", this->m_isHadShower);
+    plugin->declareProperty("HadDetector", this->m_hadDetector);
     plugin->declareProperty("CorrectForAngles", this->m_correctForAngles);
   }
 
@@ -44,6 +51,8 @@ private:
   /// model properties for plugin
   std::string m_detector = {"EcalEndcap"};
   bool m_correctForAngles = false;
+  bool m_isHadShower = false;
+  std::string m_hadDetector = {"HcalEndcap"};
 };
 
 // Static assert to ensure EndcapGeometry models the GeometryInterface concept
