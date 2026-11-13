@@ -43,7 +43,24 @@ This setup can be achieved with the setup script provided:
 source setup_env_nightly.sh
 ```
 
-Now build as usual
+However, if you do setup with that script, you must rebuild whenever the nightly changes. You might alternatively wish to chose a fixed tag, and build to that. For example;
+
+```
+source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08
+# then the rest of the setup script;
+
+TORCH_PATH=$(dirname $(python -c 'import torch; print(f"{torch.__file__}")'))
+export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${TORCH_PATH}/share/cmake
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TORCH_PATH}/lib
+
+ONNXRUNTIME_PATH=$(dirname $(python -c 'import onnxruntime; print(f"{onnxruntime.__file__}")'))
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(realpath ${ONNXRUNTIME_PATH}/../../../../)/lib64  # CentOS7
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(realpath ${ONNXRUNTIME_PATH}/../../../../)/lib    # Ubuntu
+```
+
+You need to do that setup again, whenever you return with a fresh shell.
+
+Now build as usual (one time process)
 
 ```
 mkdir build
@@ -57,6 +74,7 @@ and ensure to set up the library correctly
 ```
 source ../install/bin/thisDDML.sh
 ```
+which also will require repeating in every fresh shell.
 
 ### Running the example
 
@@ -138,6 +156,18 @@ presets, record_calo_entry = get_fastsim_configuration()
 SIM.physics.setupUserPhysics(ddml_physics(presets, record_calo_entry))
 ```
 
+The `ddml` python package (and the wrappers in `python/examples`) are
+installed alongside the library and are made available by sourcing
+`thisDDML.sh`. The model files are installed to `share/DDML/models` and are
+looked up from there (see `ddml.paths.model_path`), so the steering files can
+be run from any directory. To use a different model directory set
+`DDML_MODEL_DIR`.
+
+If you work directly with the python files from the source tree instead (i.e.
+`export PYTHONPATH=${PATH_TO_THIS_DDML}/python:${PATH_TO_THIS_DDML}/python/examples:$PYTHONPATH`),
+you also need to point `DDML_MODEL_DIR` to a directory containing the models,
+e.g. `<build>/models`, where the build places symlinks to the downloaded models.
+
 One or more named model configurations (defined in `python/ddml/configs.py`) are then
 selected on the command line with the `--ml-model` flag:
 
@@ -167,6 +197,17 @@ my_model = ModelConfig(
 )
 SIM.physics.setupUserPhysics(ddml_physics([my_model]))
 ```
+
+
+In addition to the models imported with python, it is also possible to run a model directly on a python kernel.
+One example of this is baked into this repository; see `scripts/ddsim_steer_photon_gun_cc3py.py`, which is a steering file for running the [CaloClouds3](https://arxiv.org/pdf/2511.01460) model via a python kernel, with inbuilt photon.
+Running it requires supplying the detector model only. After the standard setup;
+
+```
+ddsim --steeringFile ddsim_steer_photon_gun_allshowerspy.py  --compactFile $k4geo_DIR/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml
+```
+
+The basic framework to run the [AllShowers](https://arxiv.org/pdf/2601.11716) is already in place in the repository, but as the model is not itself compiled (yet), the user must install the code for it separately. It's also a little sensitive to the torch version. Full details can be seen in [`ALLSHOWERS_notes.md`](./ALLSHOWERS_notes.md).
 
 
 ## Coding style

@@ -22,6 +22,7 @@
 #include "DDML/EndcapGeometry.h"
 #include "DDML/EndcapTriggerTwoAngleBIBAE.h"
 #include "DDML/L2LFlowsModel.h"
+#include "DDML/MultiParticleModel.h"
 #include "DDML/OctogonalBarrelTrigger.h"
 #include "DDML/Par04ExampleVAE.h"
 #include "DDML/PionCloudsModel.h"
@@ -107,13 +108,13 @@ typedef FastMLShower<FastMLModel<ddml::TorchInference, ddml::L2LFlowsModel, ddml
 
 #ifdef DDML_USE_EMBEDDED_PYINFERENCE
 /// CaloClouds model for the barrel calorimeter with embedded Python (CC3_SF_2A verification example)
-typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::CaloCloudsTwoAngleModel,
-                                 ddml::PolyhedraBarrelGeometry, ddml::OctogonalBarrelTrigger>>
-    CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel;
+typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::MultiParticleModel, ddml::PolyhedraBarrelGeometry,
+                                 ddml::OctogonalBarrelTrigger>>
+    MultiParticleModelPolyhedraBarrelPyEmbeddedModel;
 
-typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::CaloCloudsTwoAngleModel, ddml::EndcapGeometry,
+typedef FastMLShower<FastMLModel<ddml::EmbeddedPyInference, ddml::MultiParticleModel, ddml::EndcapGeometry,
                                  ddml::EndcapTriggerTwoAngleBIBAE>>
-    CaloCloudsTwoAngleModelEndcapPyEmbeddedModel;
+    MultiParticleModelEndcapPyEmbeddedModel;
 
 #endif
 
@@ -164,8 +165,8 @@ DECLARE_GEANT4ACTION_NS(ddml, L2LFlowsModelEndcapTorchModel)
 #endif
 
 #ifdef DDML_USE_EMBEDDED_PYINFERENCE
-DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel)
-DECLARE_GEANT4ACTION_NS(ddml, CaloCloudsTwoAngleModelEndcapPyEmbeddedModel);
+DECLARE_GEANT4ACTION_NS(ddml, MultiParticleModelPolyhedraBarrelPyEmbeddedModel)
+DECLARE_GEANT4ACTION_NS(ddml, MultiParticleModelEndcapPyEmbeddedModel);
 #endif
 
 #ifdef DDML_USE_LOAD_HDF5
