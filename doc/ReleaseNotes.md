@@ -1,3 +1,46 @@
+# v00-04
+
+* 2026-11-13 Henry Day-Hall ([PR#39](https://github.com/key4hep/DDML/pull/39))
+  - Make it possible to also generate showers in the HCAL Endcaps by adding the corresponding layers
+
+* 2026-11-13 Thomas Madlener ([PR#22](https://github.com/key4hep/DDML/pull/22))
+  - Add a `EmbeddedPyInference` inference interface that allows to run model inference directly through an embedded python interpreter for ML models that cannot be exported to be loaded via ONNXruntime or Torch
+
+* 2026-10-02 Thomas Madlener ([PR#19](https://github.com/key4hep/DDML/pull/19))
+  - Add a `ddml` python module that provides `ddml_physics` as well as `add_shower_model` to streamline the setup of a fast sim model in ddsim steering files.
+    - Plus some pre-configured configurations for included models
+
+* 2026-10-01 Peter McKeown ([PR#34](https://github.com/key4hep/DDML/pull/34))
+  - Add BIBAE two angle model for retrieval via `ExternalData`
+
+* 2026-10-01 Thomas Madlener ([PR#33](https://github.com/key4hep/DDML/pull/33))
+  - Make errors in model loading a bit easier to see from the log outputs
+
+* 2026-10-01 Thomas Madlener ([PR#16](https://github.com/key4hep/DDML/pull/16))
+  - Run the ML model initialization before the event loop
+  - Complete the concepts to cover all the necessary functionality
+  - Make sure to initialize the geometry late enough for DD4hep settings to be available
+  - Default to non-hadron showers
+
+* 2026-09-30 Thomas Madlener ([PR#31](https://github.com/key4hep/DDML/pull/31))
+  - Switch to the the cmake targets that newer versions of onnxruntime provide (`onnxruntime::onnxruntime`) and remove the custom `FindOnnxRuntime.cmake` module. **This effectively mandates onnxruntime >= 1.16**.
+
+* 2026-09-30 Thomas Madlener ([PR#30](https://github.com/key4hep/DDML/pull/30))
+  - Start using the default `Key4hepConfig.cmake` for configuring builds the same way as all other Key4hep packages
+
+* 2026-09-30 Thomas Madlener ([PR#28](https://github.com/key4hep/DDML/pull/28))
+  - Switch to latest version of Key4hep CI
+
+* 2026-09-30 Thomas Madlener ([PR#20](https://github.com/key4hep/DDML/pull/20))
+  - Make sure to only copy data to the `output` that the model actually returns when running inference
+
+* 2026-09-30 Thomas Madlener ([PR#18](https://github.com/key4hep/DDML/pull/18))
+  - Make sure the example CaloClouds3 configuration is properly configured for the Endcap
+
+* 2026-09-30 Thomas Madlener ([PR#17](https://github.com/key4hep/DDML/pull/17))
+  - Add a very basic test setup that uses CaloClouds3 to verify that things run
+  - "Fix" some reference counting issue by leaking a resource (with a proper fix deferred to the future)
+
 # v00-03
 
 * 2026-08-06 Juan Miguel Carceller ([PR#25](https://github.com/key4hep/DDML/pull/25))
