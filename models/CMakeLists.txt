@@ -4,6 +4,7 @@ set(models
   BIBAE_Two_Angle_Full_PP_cut.pt
   CC3_SF_2A.pt
   CC3_paper_checkpoint.pt
+  #PionClouds_50GeV_sp_scaled.h5 ## only for testing
   #L2LFlowsx9.pt
 )
 
