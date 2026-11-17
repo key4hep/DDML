@@ -3,6 +3,12 @@
 cmake_minimum_required(VERSION 3.15)
 project(DDML LANGUAGES CXX)
 
+SET( ${PROJECT_NAME}_VERSION_MAJOR 0 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 4 )
+SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
+
+SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
+
 # Provides install directory variables as defined for GNU software
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_LIBDIR lib)  # Make sure that the generated thisDDML.sh script points to the right location
