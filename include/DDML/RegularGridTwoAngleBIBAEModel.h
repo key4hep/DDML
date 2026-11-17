@@ -70,16 +70,6 @@ private:
                                             const double& p_co_x, const double& p_co_y, const double& p_co_z,
                                             const double& p_no_x, const double& p_no_y, const double& p_no_z);
 
-  struct Vector3d {
-    double x;
-    double y;
-    double z;
-  };
-
-  Vector3d crossProduct(const Vector3d& v1, const Vector3d& v2);
-
-  Vector3d normalize(const Vector3d& v);
-
   TensorDimVecs m_tensDims = {{1, 1}, {1, 1}, {1, 1}, {1, 3}};
 };
 
