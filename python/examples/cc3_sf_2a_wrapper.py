@@ -11,23 +11,23 @@ DDML embedded-Python contract:
     run_inference(inputs: list[np.ndarray]) -> np.ndarray (flat float32)
 """
 
-import os
 import numpy as np
 import torch
 
+from ddml.paths import model_path
+
 torch.set_num_threads(1)
 
-_model_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../models/CC3_SF_2A.pt")
-)
+_model_path = model_path("CC3_SF_2A.pt")
 _model = torch.jit.load(_model_path).eval().to("cpu")
 
 
 @torch.inference_mode()
 def run_inference(inputs):
-    # inputs is a list of 3 float32 numpy arrays: energy, theta_deg, phi_deg.
+    # inputs is a list of 4 float32 numpy arrays: energy, theta_deg, phi_deg, pdg.
+    # we ignore PDG for caloclouds
     # torch.from_numpy aliases the C++ buffer — do NOT mutate the arrays.
-    tensors = [torch.from_numpy(a) for a in inputs]
+    tensors = [torch.from_numpy(a) for a in inputs[:3]]
     out = _model(*tensors)
     # Return a contiguous flat float32 view; the C++ side memcpy's into
     # the pre-allocated std::vector<float>.

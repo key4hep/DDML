@@ -32,6 +32,8 @@ option(INSTRUMENT_MODEL "Instrument the steps of the showerModel call" OFF)
 
 
 option(DOWNLOAD_MODELS "Download and install the models that are stored externally" ON)
+# Where the models end up in the installation
+set(DDML_MODEL_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/models)
 
 #---------------------------------------------------
 # external packages

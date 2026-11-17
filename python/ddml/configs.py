@@ -2,6 +2,7 @@
 
 from .model import ModelConfig
 from .geometry import PluginGeometry, DetectorGeometry
+from .paths import model_path
 
 from g4units import GeV
 
@@ -22,17 +23,35 @@ PHOTONS = frozenset({"gamma"})
 PHOTON_TRIGGER_5_GEV = {"gamma": 5.0 * GeV}
 PHOTON_TRIGGER_10_GEV = {"gamma": 10.0 * GeV}
 
+ALLSHOWERS_PARTICLES = frozenset(
+    {
+        "gamma",
+        "e-",
+        "e+",
+        "pi-",
+        "pi+",
+        "kaon-",
+        "kaon+",
+        "kaon0L",
+        "proton",
+        "anti_proton",
+        "neutron",
+        "anti_neutron",
+    }
+)
+ALLSHOWERS_TRIGGERS = {name: 10.0 * GeV for name in ALLSHOWERS_PARTICLES}
+
 
 _cc3_common_properties = {
     "OptimizeFlag": 1,
     "IntraOpNumThreads": 1,
-    "ModelPath": "../models/CC3_paper_checkpoint.pt",
+    "ModelPath": model_path("CC3_paper_checkpoint.pt"),
 }
 
 _bibae_common_properties = {
     "OptimizeFlag": 1,
     "IntraOpNumThreads": 1,
-    "ModelPath": "../models/BIBAE_Two_Angle_Full_PP_cut.pt",
+    "ModelPath": model_path("BIBAE_Two_Angle_Full_PP_cut.pt"),
 }
 
 # CaloClouds3 default configuration
@@ -71,12 +90,41 @@ BIBAE_ENDCAP = ModelConfig(
     triggers=PHOTON_TRIGGER_10_GEV,
 )
 
+AS_BARREL_PY_INTERFACE = ModelConfig(
+    plugin="MultiParticleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    geometry=ILD_BARREL,
+    plugin_properties={
+        "PythonModule": "allshowers_wrapper",
+        "EntryPoint": "run_inference",
+        "NumberOfLayers": 78,
+    },
+    correct_angles=False,
+    applicable_particles=ALLSHOWERS_PARTICLES,
+    triggers=ALLSHOWERS_TRIGGERS,
+    is_hadron=True,  # fine even if not always hadron. Just makes HCAL exist
+)
+
+AS_ENDCAP_PY_INTERFACE = ModelConfig(
+    plugin="MultiParticleModelEndcapPyEmbeddedModel/EndcapModelPython",
+    geometry=ILD_ENDCAP,
+    plugin_properties={
+        "PythonModule": "allshowers_wrapper",
+        "EntryPoint": "run_inference",
+        "NumberOfLayers": 78,
+    },
+    correct_angles=False,
+    applicable_particles=ALLSHOWERS_PARTICLES,
+    triggers=ALLSHOWERS_TRIGGERS,
+    is_hadron=True,  # fine even if not always hadron. Just makes HCAL exist
+)
+
 CC3_BARREL_PY_INTERFACE = ModelConfig(
-    plugin="CaloCloudsTwoAngleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
+    plugin="MultiParticleModelPolyhedraBarrelPyEmbeddedModel/BarrelModelPython",
     geometry=ILD_BARREL,
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
         "EntryPoint": "run_inference",
+        "NumberOfLayers": 30,
     },
     correct_angles=False,
     applicable_particles=PHOTONS,
@@ -84,11 +132,12 @@ CC3_BARREL_PY_INTERFACE = ModelConfig(
 )
 
 CC3_ENDCAP_PY_INTERFACE = ModelConfig(
-    plugin="CaloCloudsTwoAngleModelEndcapPyEmbeddedModel/EndcapModelPython",
+    plugin="MultiParticleModelEndcapPyEmbeddedModel/EndcapModelPython",
     geometry=ILD_ENDCAP,
     plugin_properties={
         "PythonModule": "cc3_sf_2a_wrapper",
         "EntryPoint": "run_inference",
+        "NumberOfLayers": 30,
     },
     correct_angles=False,
     applicable_particles=PHOTONS,
