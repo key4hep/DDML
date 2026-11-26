@@ -11,6 +11,7 @@ set(sources
   OctogonalBarrelTrigger.cc
   EndcapTriggerTwoAngleBIBAE.cc
   CaloCloudsTwoAngleModel.cc
+  MultiParticleModel.cc
   L2LFlowsModel.cc
   DDMLRunAction.cc
   DDMLEventAction.cc
@@ -104,6 +105,7 @@ set(headers
   ${PROJECT_SOURCE_DIR}/include/DDML/TriggerInterface.h
   ${PROJECT_SOURCE_DIR}/include/DDML/DDML.h
   ${PROJECT_SOURCE_DIR}/include/DDML/CaloCloudsTwoAngleModel.h
+  ${PROJECT_SOURCE_DIR}/include/DDML/MultiParticleModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/L2LFlowsModel.h
   ${PROJECT_SOURCE_DIR}/include/DDML/DDMLRunAction.h
   ${PROJECT_SOURCE_DIR}/include/DDML/DDMLEventAction.h
