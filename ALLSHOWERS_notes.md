@@ -7,21 +7,21 @@ Explanation of how to run AllShowers in DDML.
 This is the same as what you would do if you followed the main `README.md`, with some minor notes on acceptable versions.
 
 - Clone this repo
-- In an ideal world we would chose some fixed version of key4HEP rather than use the nightly (with the nightly, you'd have to rebuild when it changes), for example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r YYYY-MM-DD`. However, to get the sparse attention mask to work, you have to have a sufficiently recent version of torch, at least torch 2.13. At the time of writing, this is only available on the nightly, however, it is anticipated that a new tag will fix this very soon.
+- In an ideal world we would chose some fixed version of Key4hep rather than use the nightly (with the nightly, you'd have to rebuild when it changes), for example `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r YYYY-MM-DD`. However, to get the sparse attention mask to work, you have to have a sufficiently recent version of torch, at least torch 2.13. At the time of writing, this is only available on the nightly, however, it is anticipated that a new tag will fix this very soon.
 - Build and install as normal (`mkdir build && cd build && cmake .. && make && make -j4 install`)
 - Source the install (`source ../install/bin/thisDDML.sh`). This also puts the installed `ddml` python package and the `allshowers_wrapper` on the `PYTHONPATH`. The AllShowers model files are downloaded by the build and installed to `install/share/DDML/models`, where the wrapper finds them, so there is no need to add anything from the source tree to the `PYTHONPATH` (doing so would shadow the installed package; in that case `DDML_MODEL_DIR` has to point to a directory containing the models, e.g. `build/models`).
 
 ## AllShowers setup
 
-This assumes you did the DDML setup and have that env active. You need a local install of AllShowers. Lets say you want it in `/path/to/my/python/libraries/`, so you `export MY_PYTHON_LIBRARIES=/path/to/my/python/libraries`.
+This assumes you did the DDML setup and have that env active. AllShowers, PointCountFM and the few dependencies they need on top of Key4hep are installed with [uv](https://docs.astral.sh/uv/) by sourcing
 
-- Create the path and add to the PYTHONPATH; `mkdir -p ${MY_PYTHON_LIBRARIES} && export PYTHONPATH=${MY_PYTHON_LIBRARIES}:$PYTHONPATH`
-- Install a commit of AllShowers that points to the unified sampling branch; `pip install --no-deps --target ${MY_PYTHON_LIBRARIES} git+https://github.com/FLC-QU-hep/AllShowers@05a458a1b7de0cb0e217266cecc13d42942c1c37`. Gotta use `--no-deps` to prevent AllShowers from getting it's own torch version.
-- Install a corresponding commit of PointCountFM `pip install --no-deps --target=${MY_PYTHON_LIBRARIES} git+https://github.com/FLC-QU-hep/PointCountFM@a0a11c617ae79680a5426cb55afec18a1a32fb6e`
-- Install the minimal dependencies needed to run this. `pip install --no-deps --target ${MY_PYTHON_LIBRARIES} showerdata pot rich`.
-- Check if you can do `python -c "import AllShowers"`.
+```
+source scripts/setup_allshowers.sh [/path/to/my/python/libraries]
+```
 
-Note, if the local disk is small, it's advisable to also use the `--cache-dir` flag on pip. Set it to any location you have space, you can nuke it after the install.
+The packages are installed into the given directory (default: `${ALLSHOWERS_INSTALL_DIR}` if set, otherwise `allshowers_libs` in the current directory), which is also put on the `PYTHONPATH`. Only packages that are not yet present in that directory are installed, so sourcing the script again with the same directory just sets up the environment. Everything is installed with `--no-deps` to prevent AllShowers from getting its own torch version.
+
+The installed commits can be changed via `ALLSHOWERS_REF` and `POINTCOUNTFM_REF`. If the local disk is small, point `UV_CACHE_DIR` to any location where you have space; you can nuke it after the install.
 
 ## When rerunning
 
@@ -29,7 +29,7 @@ If you come back to this after installing and want to run again, you need to set
 
 - Source the same version of key4hep (e.g. `source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2026-04-08`, or `source setup_env_nightly.sh`)
 - Source the install (`source ../install/bin/thisDDML.sh`)
-- Add the python libraries dir back to the PYTHONPATH (`export PYTHONPATH=/path/to/my/python/libraries:$PYTHONPATH`)
+- Source the AllShowers setup again with the same directory (`source scripts/setup_allshowers.sh /path/to/my/python/libraries`)
 
 ## To run
 
