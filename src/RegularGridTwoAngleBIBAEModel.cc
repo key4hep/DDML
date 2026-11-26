@@ -377,31 +377,4 @@ std::vector<double> RegularGridTwoAngleBIBAEModel::isect_line_plane_3Vec(const d
   }
 }
 
-// 3D vector structure
-// struct RegularGridTwoAngleBIBAEModel::Vector3d {
-//  double x, y, z;
-// }
-
-// Function to calculate cross product of two vectors
-RegularGridTwoAngleBIBAEModel::Vector3d RegularGridTwoAngleBIBAEModel::crossProduct(const Vector3d& v1,
-                                                                                    const Vector3d& v2) {
-  Vector3d result;
-  result.x = v1.y * v2.z - v1.z * v2.y;
-  result.y = v1.z * v2.x - v1.x * v2.z;
-  result.z = v1.x * v2.y - v1.y * v2.x;
-  return result;
-}
-
-// Function to normalize a vector
-RegularGridTwoAngleBIBAEModel::Vector3d RegularGridTwoAngleBIBAEModel::normalize(const Vector3d& v) {
-  double length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-  Vector3d result;
-  if (length != 0.0) {
-    result.x = v.x / length;
-    result.y = v.y / length;
-    result.z = v.z / length;
-  }
-  return result;
-}
-
 } // namespace ddml
