@@ -85,6 +85,7 @@ if (DDML_ENABLE_EMBEDDED_PYINFERENCE)
              --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml \
              --inputFiles ${PROJECT_BINARY_DIR}/allshowers_species_input.edm4hep.root \
              -N 24 \
+             --random.seed 42 \
              --outputFile allshowers_ild_species.edm4hep.root \
              --ml-model AS_BARREL_PY_INTERFACE --ml-model AS_ENDCAP_PY_INTERFACE"
   )
