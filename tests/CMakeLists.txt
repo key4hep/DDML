@@ -84,7 +84,7 @@ if (DDML_ENABLE_EMBEDDED_PYINFERENCE)
        ddsim --steeringFile ${PROJECT_SOURCE_DIR}/scripts/ddsim_steer.py \
              --compactFile $ENV{k4geo_DIR}/ILD/compact/ILD_l5_v02/ILD_l5_v02.xml \
              --inputFiles ${PROJECT_BINARY_DIR}/allshowers_species_input.edm4hep.root \
-             -N -1 \
+             -N 24 \
              --outputFile allshowers_ild_species.edm4hep.root \
              --ml-model AS_BARREL_PY_INTERFACE --ml-model AS_ENDCAP_PY_INTERFACE"
   )
