@@ -7,6 +7,8 @@ import sys
 import ROOT
 from podio.reading import get_reader
 
+from create_allshowers_input import ALLSHOWERS_SPECIES
+
 
 def check_any_mc_fastsim(filename):
     """Check if any of the mc particles in the file has been handled by fast simulation"""
@@ -20,6 +22,30 @@ def check_any_mc_fastsim(filename):
 
     print(f"ERROR: Could not find any fast simmed MCParticles in {filename}")
     return False
+
+
+def check_all_species_fastsim(filename, pdgs):
+    """Check that each of the passed species has been handled by fast simulation
+    at least once (considering only the primary particles)"""
+    reader = get_reader(filename)
+    n_fastsim = {pdg: 0 for pdg in pdgs}
+    for event in reader.get("events"):
+        for mcp in event.get("MCParticles"):
+            pdg = mcp.getPDG()
+            if (
+                mcp.getGeneratorStatus() == 1
+                and pdg in n_fastsim
+                and mcp.isHandledByFastSim()
+            ):
+                n_fastsim[pdg] += 1
+
+    missing = [pdg for pdg, n in n_fastsim.items() if n == 0]
+    if missing:
+        print(
+            f"ERROR: Could not find fast simmed MCParticles in {filename} for PDGs: {missing}"
+        )
+        return False
+    return True
 
 
 def check_calo_entry_recording(filename):
@@ -49,6 +75,9 @@ CHECKS = {
     "bibae": lambda: check_any_mc_fastsim("bibae_ild_pgun.edm4hep.root"),
     "cc3_py_interface": lambda: check_any_mc_fastsim(
         "cc3_py_interface_ild_pgun.edm4hep.root"
+    ),
+    "allshowers": lambda: check_all_species_fastsim(
+        "allshowers_ild_species.edm4hep.root", ALLSHOWERS_SPECIES.keys()
     ),
 }
 
